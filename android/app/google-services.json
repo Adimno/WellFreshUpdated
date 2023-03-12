@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "183131066828",
+    "project_id": "wellfresh-f971a",
+    "storage_bucket": "wellfresh-f971a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:183131066828:android:645860fd8d3dff2cca0d69",
+        "android_client_info": {
+          "package_name": "com.example.wellfreshlogin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "183131066828-plsvfp8rl6cl4pdhft3jmd1csaktlq43.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSUa88bCIJ-Xl27KdY2loDg-6QAiC7K5I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "183131066828-plsvfp8rl6cl4pdhft3jmd1csaktlq43.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

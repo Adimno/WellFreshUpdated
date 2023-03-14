@@ -18,7 +18,7 @@ class GetUserName extends StatelessWidget {
         Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
         if(data['role'] == 'Patient'){
           return Text('${data['firstname']} ${data['lastname']}',
-            style: const TextStyle(fontSize: 20.0),);
+            style: const TextStyle(fontSize: 20.0,color: Colors.black,),);
         }
 
       }

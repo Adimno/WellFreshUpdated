@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:wellfreshlogin/appointment.dart';
 import 'package:wellfreshlogin/get_user_name.dart';
 import 'navigation_drawer_widget.dart';
 import 'login.dart';
@@ -202,32 +203,48 @@ class _PatientState extends State<Patient> {
                       itemBuilder: (context, index) {
                         return Card(
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
+                            borderRadius: BorderRadius.circular(20.0),
                           ),
-                          child: SizedBox(
-                            height: 120.0,
-                            child: Row(
-                              children: [
-                                const Image(
-                                  image: AssetImage('assets/photo.jpg'),
-                                ),
-                                Expanded(child:
-                                  SizedBox(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => Appointment(docId: docIDs[index]),
+                              ));
+                            },
+                            child: SizedBox(
+                              height: 120.0,
+                              child: Row(
+                                children: [
+                                  const Image(
+                                    image: AssetImage('assets/photo.jpg'),
+                                  ),
+                                  Expanded(
+                                      child: SizedBox(
                                     width: 150.0,
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                          child:
-                                          GetUserName(documentId: docIDs[index]),
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 0, 0, 0),
+                                          child: GetUserName(
+                                              documentId: docIDs[index]),
                                         ),
                                         const Padding(
-                                          padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                          padding:
+                                              EdgeInsets.fromLTRB(0, 0, 0, 10),
                                           child: Text(
                                             'Dental Surgeon',
-                                            style: TextStyle(fontSize: 15.0),
+                                            style: TextStyle(
+                                              fontSize: 15.0,
+                                              color: Colors.black,
+                                            ),
                                           ),
                                         ),
                                         Row(
@@ -238,20 +255,23 @@ class _PatientState extends State<Patient> {
                                               size: 18.0,
                                             ),
                                             Padding(
-                                              padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                              padding: EdgeInsets.fromLTRB(
+                                                  5, 0, 0, 0),
                                               child: Text(
                                                 '4.8',
-                                                style: TextStyle(fontSize: 15.0),
+                                                style: TextStyle(
+                                                  fontSize: 15.0,
+                                                  color: Colors.black,
+                                                ),
                                               ),
                                             ),
                                           ],
                                         )
                                       ],
                                     ),
-                                  )
-                                ),
-
-                              ],
+                                  )),
+                                ],
+                              ),
                             ),
                           ),
                         );

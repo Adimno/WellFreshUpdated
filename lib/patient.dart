@@ -21,19 +21,18 @@ class _PatientState extends State<Patient> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   List<String> docIDs = [];
-  Future getDocId() async {
+  Future<void> getDocId() async {
     if (docIDs.isEmpty) {
-      QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('users').get();
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('users').get();
       for (int i = 0; i < querySnapshot.size; i++) {
         DocumentSnapshot documentSnapshot = querySnapshot.docs[i];
-        if (docIDs.contains(documentSnapshot.reference.id)) {
-          // ID already exists in the list, skip it
-          continue;
-        }
-        docIDs.add(documentSnapshot.reference.id);
-        if (kDebugMode) {
-          print('${documentSnapshot.reference} count:$i');
+        String docId = documentSnapshot.reference.id;
+        Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+        if (data['role'] == 'Doctor' && !docIDs.contains(docId)) {
+          docIDs.add(docId);
+          if (kDebugMode) {
+            print('${documentSnapshot.reference} count:$i');
+          }
         }
       }
     }

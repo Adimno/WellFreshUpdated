@@ -210,7 +210,7 @@ class _PatientState extends State<Patient> {
                             ),
                             onPressed: () {
                               Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => Appointment(docId: docIDs[index]),
+                                builder: (context) => AppointmentScreen(docId: docIDs[index]),
                               ));
                             },
                             child: SizedBox(

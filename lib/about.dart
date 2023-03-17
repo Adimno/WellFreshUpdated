@@ -28,7 +28,7 @@ class AboutPage extends StatelessWidget {
             Container(
               height: 300, // set height of the image container
               width: double.infinity,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('assets/dentallogo.png'), // add image path
                   // set image fit
@@ -42,7 +42,7 @@ class AboutPage extends StatelessWidget {
                 padding: EdgeInsets.all(16), // set padding for the card content
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                  children: const [
                     Text(
                       'Welcome to our App!',
                       style: TextStyle(

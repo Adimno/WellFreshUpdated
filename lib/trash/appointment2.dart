@@ -26,11 +26,11 @@ class _AppointmentScreen extends State<AppointmentScreen> {
         builder: ((context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             Map<String, dynamic> data =
-            snapshot.data!.data() as Map<String, dynamic>;
+                snapshot.data!.data() as Map<String, dynamic>;
             String firstname =
-            data.containsKey('firstname') ? data['firstname'] : '';
+                data.containsKey('firstname') ? data['firstname'] : '';
             String lastname =
-            data.containsKey('lastname') ? data['lastname'] : '';
+                data.containsKey('lastname') ? data['lastname'] : '';
             return Scaffold(
               key: _scaffoldKey, // Add a Scaffold key
               backgroundColor: const Color(0xFFF8FAFF),
@@ -86,7 +86,7 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                           height: 120.0,
                           child: Row(
                             children: [
-                              ClipRRect(
+                                ClipRRect(
                                 borderRadius: BorderRadius.circular(20.0),
                                 child: const Image(
                                   image: AssetImage('assets/photo.png'),
@@ -94,60 +94,60 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                               ),
                               Expanded(
                                   child: SizedBox(
-                                    width: 150.0,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
+                                width: 150.0,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          10, 0, 0, 5),
+                                      child: Text(
+                                        '$firstname $lastname',
+                                        style: const TextStyle(
+                                          fontSize: 20.0,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                    const Padding(
+                                      padding:
+                                          EdgeInsets.fromLTRB(10, 0, 0, 10),
+                                      child: Text(
+                                        'Dental Surgeon',
+                                        style: TextStyle(
+                                          fontSize: 15.0,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                    Row(
+                                      children: const [
                                         Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              10, 0, 0, 5),
-                                          child: Text(
-                                            '$firstname $lastname',
-                                            style: const TextStyle(
-                                              fontSize: 20.0,
-                                              color: Colors.black,
-                                            ),
+                                          padding:
+                                              EdgeInsets.fromLTRB(8, 0, 0, 0),
+                                          child: Icon(
+                                            Icons.star,
+                                            color: Colors.yellow,
+                                            size: 18.0,
                                           ),
                                         ),
-                                        const Padding(
+                                        Padding(
                                           padding:
-                                          EdgeInsets.fromLTRB(10, 0, 0, 10),
+                                              EdgeInsets.fromLTRB(5, 0, 0, 0),
                                           child: Text(
-                                            'Dental Surgeon',
+                                            '4.8',
                                             style: TextStyle(
                                               fontSize: 15.0,
                                               color: Colors.black,
                                             ),
                                           ),
                                         ),
-                                        Row(
-                                          children: const [
-                                            Padding(
-                                              padding:
-                                              EdgeInsets.fromLTRB(8, 0, 0, 0),
-                                              child: Icon(
-                                                Icons.star,
-                                                color: Colors.yellow,
-                                                size: 18.0,
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                              EdgeInsets.fromLTRB(5, 0, 0, 0),
-                                              child: Text(
-                                                '4.8',
-                                                style: TextStyle(
-                                                  fontSize: 15.0,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        )
                                       ],
-                                    ),
-                                  )),
+                                    )
+                                  ],
+                                ),
+                              )),
                             ],
                           ),
                         ),
@@ -210,32 +210,32 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                                               children: [
                                                 Padding(
                                                   padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      4, 5, 0, 5),
+                                                      const EdgeInsets.fromLTRB(
+                                                          4, 5, 0, 5),
                                                   child: Container(
                                                     width: 160.0,
                                                     height: 50.0,
                                                     decoration: BoxDecoration(
                                                       color: Colors.white,
                                                       borderRadius:
-                                                      BorderRadius
-                                                          .circular(10.0),
+                                                          BorderRadius
+                                                              .circular(10.0),
                                                       boxShadow: [
                                                         BoxShadow(
                                                           color: Colors.grey
                                                               .withOpacity(
-                                                              0.1),
+                                                                  0.1),
                                                           spreadRadius: 2,
                                                           blurRadius: 1,
                                                           offset:
-                                                          const Offset(0, 3),
+                                                              const Offset(0, 3),
                                                         ),
                                                       ],
                                                     ),
                                                     child: const Padding(
                                                         padding: EdgeInsets
                                                             .fromLTRB(
-                                                            0, 12, 0, 0),
+                                                                0, 12, 0, 0),
                                                         child: Text(
                                                           'Dental Surgeon',
                                                           textAlign: TextAlign
@@ -248,7 +248,7 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                                                 ),
                                                 const SizedBox(
                                                     width:
-                                                    20.0), // Add space between containers
+                                                        20.0), // Add space between containers
                                               ],
                                             );
                                           },
@@ -453,28 +453,28 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                         child: Column(
                           children: [
                             const SizedBox(height: 16),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-                              child:
-                              ElevatedButton(
-                                onPressed: () {
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                          child:
+                            ElevatedButton(
+                              onPressed: () {
 
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blue,
-                                  padding: const EdgeInsets.symmetric(horizontal: 70, vertical: 19),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30),
-                                  ),
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue,
+                                padding: const EdgeInsets.symmetric(horizontal: 70, vertical: 19),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
                                 ),
-                                child: const Text(
-                                  "Book Appointment",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.white,
-                                  ),
+                              ),
+                              child: const Text(
+                                "Book Appointment",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
                                 ),
-                              ),),
+                              ),
+                            ),),
                           ],
                         ),
                       )

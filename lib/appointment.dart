@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class AppointmentScreen extends StatefulWidget{
   String docId;
@@ -21,6 +22,55 @@ class _AppointmentScreen extends State<AppointmentScreen> {
   @override
   Widget build(BuildContext context) {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
+    DocumentReference listSpecialties = users.doc(widget.docId);
+    DocumentReference listDate = users.doc(widget.docId);
+
+    List<String> specialties = [];
+    List<String> time = [];
+    List<String> amPmIndicators = [];
+    List<String> date = [];
+    List<String> weekdays = [];
+    List<String> months = [];
+    final List<String> weekdayNames = ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun'];
+    final List<String> monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+
+    listSpecialties.get().then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+        specialties = List<String>.from(data['specialties']);
+        print('List retrieved successfully!');
+      } else {
+        print('Document does not exist on the database');
+        print(specialties);
+      }
+    }).catchError((error) => print('Failed to retrieve list: $error'));
+
+
+    listDate.get().then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+        // Convert the Timestamp values to DateTime objects and format them as strings
+        date = List<String>.from(data['date'].map((timestamp) => DateFormat('d').format(timestamp.toDate())));
+        time = List<String>.from(data['date'].map((timestamp) => '${timestamp.toDate().hour}:${timestamp.toDate().minute}'));
+        amPmIndicators = List<String>.from(data['date'].map((timestamp) {
+          DateTime localDateTime = timestamp.toDate().toLocal();
+          int hour = localDateTime.hour;
+          return hour < 12 ? 'AM' : 'PM'; // Extract the AM/PM indicator based on the hour value
+        }));
+        weekdays = List<String>.from(data['date'].map((timestamp) => weekdayNames[timestamp.toDate().weekday - 1]));
+        months = List<String>.from(data['date'].map((timestamp) => monthNames[timestamp.toDate().month - 1]));
+        print('List retrieved successfully!');
+        print(date);
+        print(time);
+        print(amPmIndicators);
+        print(weekdays);
+        print(months);
+      } else {
+        print('Document does not exist on the database');
+      }
+    }).catchError((error) => print('Failed to retrieve list: $error'));
+
     return FutureBuilder<DocumentSnapshot>(
         future: users.doc(widget.docId).get(),
         builder: ((context, snapshot) {
@@ -31,6 +81,8 @@ class _AppointmentScreen extends State<AppointmentScreen> {
             data.containsKey('firstname') ? data['firstname'] : '';
             String lastname =
             data.containsKey('lastname') ? data['lastname'] : '';
+            String biography =
+            data.containsKey('biography') ? data['biography'] : '';
             return Scaffold(
               key: _scaffoldKey, // Add a Scaffold key
               backgroundColor: const Color(0xFFF8FAFF),
@@ -110,12 +162,12 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                                             ),
                                           ),
                                         ),
-                                        const Padding(
+                                         Padding(
                                           padding:
-                                          EdgeInsets.fromLTRB(10, 0, 0, 10),
+                                          const EdgeInsets.fromLTRB(10, 0, 0, 10),
                                           child: Text(
-                                            'Dental Surgeon',
-                                            style: TextStyle(
+                                            specialties[0],
+                                            style: const TextStyle(
                                               fontSize: 15.0,
                                               color: Colors.black,
                                             ),
@@ -169,7 +221,7 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                                   Padding(
                                     padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                                     child: Text(
-                                      '$firstname $lastname is a medical professional who specializes in the diagnosis, prevention, and treatment of diseases and conditions of the teeth and oral cavity.',
+                                      '$firstname $lastname $biography',
                                       style: const TextStyle(
                                         fontSize: 15,
                                       ),
@@ -202,7 +254,7 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                                             vertical: 0.0),
                                         height: 50.0,
                                         child: ListView.builder(
-                                          itemCount: 10,
+                                          itemCount: specialties.length,
                                           scrollDirection: Axis.horizontal,
                                           itemBuilder: (BuildContext context,
                                               int index) {
@@ -232,15 +284,15 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                                                         ),
                                                       ],
                                                     ),
-                                                    child: const Padding(
-                                                        padding: EdgeInsets
+                                                    child:Padding(
+                                                        padding: const EdgeInsets
                                                             .fromLTRB(
                                                             0, 12, 0, 0),
                                                         child: Text(
-                                                          'Dental Surgeon',
+                                                          specialties[index],
                                                           textAlign: TextAlign
                                                               .center,
-                                                          style: TextStyle(
+                                                          style: const TextStyle(
                                                             fontSize: 15.0,
                                                           ),
                                                         )),
@@ -290,17 +342,17 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                                           shape: MaterialStateProperty.all<OutlinedBorder>(const StadiumBorder()),
                                         ),
                                         child: Row(
-                                          children: const [
+                                          children: [
                                             Text(
-                                              'January',
-                                              style: TextStyle(
+                                              months[0],
+                                              style: const TextStyle(
                                                 fontSize: 15,
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.w400,
                                               ),
                                             ),
-                                            SizedBox(width: 5), // Add some space between the icon and text
-                                            Icon(
+                                            const SizedBox(width: 5), // Add some space between the icon and text
+                                            const Icon(
                                               Icons.arrow_forward_ios,
                                               color: Colors.black,
                                               size: 15,
@@ -319,7 +371,7 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                                             vertical: 0.0),
                                         height: 75.0,
                                         child: ListView.builder(
-                                          itemCount: 5,
+                                          itemCount: date.length,
                                           scrollDirection: Axis.horizontal,
                                           itemBuilder: (BuildContext context, int index) {
                                             return Row(
@@ -344,18 +396,18 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                                                     child: Padding(
                                                       padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
                                                       child: Column(
-                                                        children: const [
+                                                        children: [
                                                           Text(
-                                                            '1',
+                                                            date[index],
                                                             textAlign: TextAlign.center,
-                                                            style: TextStyle(
+                                                            style: const TextStyle(
                                                               fontSize: 20.0,
                                                             ),
                                                           ),
                                                           Text(
-                                                            'Mon',
+                                                            weekdays[index],
                                                             textAlign: TextAlign.center,
-                                                            style: TextStyle(
+                                                            style: const TextStyle(
                                                               fontWeight: FontWeight.w300,
                                                               fontSize: 20.0,
                                                             ),
@@ -400,7 +452,7 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                                             vertical: 0.0),
                                         height: 50.0,
                                         child: ListView.builder(
-                                          itemCount: 5,
+                                          itemCount: time.length,
                                           scrollDirection: Axis.horizontal,
                                           itemBuilder: (BuildContext context, int index) {
                                             return Row(
@@ -422,12 +474,12 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                                                       ),
                                                       elevation: 2.0,
                                                     ),
-                                                    child: const Padding(
-                                                      padding: EdgeInsets.fromLTRB(0, 2, 0, 0),
+                                                    child:  Padding(
+                                                      padding: const EdgeInsets.fromLTRB(0, 2, 0, 0),
                                                       child: Text(
-                                                        '01:00 AM',
+                                                        '${time[index]} ${amPmIndicators[index]}',
                                                         textAlign: TextAlign.center,
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                           fontWeight: FontWeight.w300,
                                                           fontSize: 15.0,
                                                         ),

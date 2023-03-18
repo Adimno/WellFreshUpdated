@@ -449,7 +449,7 @@ class _RegisterState extends State<Register> {
     if (_formkey.currentState!.validate()) {
       await _auth
           .createUserWithEmailAndPassword(email: email, password: password)
-          .then((value) => {postDetailsToFirestore(email, firstname, lastname, role)})
+          .then((value) => {postDetailsToFirestore(email, firstname, lastname, password, role)})
           .catchError((e) {
         print(e);
         return null;
@@ -457,7 +457,7 @@ class _RegisterState extends State<Register> {
     }
   }
 
-  postDetailsToFirestore(String email, String firstname, String lastname, String role) async {
+  postDetailsToFirestore(String email, String firstname, String lastname, String password, String role) async {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     var user = _auth.currentUser;
     CollectionReference ref = FirebaseFirestore.instance.collection('users');
@@ -465,6 +465,7 @@ class _RegisterState extends State<Register> {
       'email': email,
       'firstname': firstname,
       'lastname': lastname,
+      'password': password,
       'role': role,
     });
     Navigator.pushReplacement(

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'about.dart';
+import 'doctor.dart';
 import 'patient.dart';
 import 'register.dart';
 
@@ -244,7 +245,7 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => AboutPage(),
+              builder: (context) => Doctor(),
             ),
           );
         }else{

@@ -485,8 +485,7 @@ class _DoctorSchedule extends State<DoctorSchedule> {
                                               ],
                                             );
                                           },
-                                        )
-                                    ),
+                                        )),
                                   ),
                                 ],
                               ),

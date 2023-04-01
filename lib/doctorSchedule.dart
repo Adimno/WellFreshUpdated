@@ -66,6 +66,8 @@ class _DoctorSchedule extends State<DoctorSchedule> {
 
 
 
+
+
   void _showMonthPicker(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -107,41 +109,24 @@ class _DoctorSchedule extends State<DoctorSchedule> {
     getDayOfWeekInMonth(2023,currentMonth);
   }
 
+
+  List<String> newTime = [];
+  List<String> specialties = [];
+  List<String> time = [];
+  List<String> date = [];
+  List<String> weekdays = [];
+  List<String> months = [];
+
   @override
   Widget build(BuildContext context) {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
     DocumentReference listSpecialties = users.doc(widget.docId);
     DocumentReference listDate = users.doc(widget.docId);
 
-    List<String> specialties = [];
-    List<String> time = [];
-    List<String> amPmIndicators = [];
-    List<String> date = [];
-    List<String> weekdays = [];
-    List<String> months = [];
-    final List<String> weekdayNames = [
-      'Mon',
-      'Tues',
-      'Wed',
-      'Thurs',
-      'Fri',
-      'Sat',
-      'Sun'
-    ];
-    final List<String> monthNames = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December'
-    ];
+
+
+
+
 
     listSpecialties.get().then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
@@ -162,29 +147,46 @@ class _DoctorSchedule extends State<DoctorSchedule> {
         // Convert the Timestamp values to DateTime objects and format them as strings
         date = List<String>.from(data['date']
             .map((timestamp) => DateFormat('d').format(timestamp.toDate())));
-        time = List<String>.from(data['date'].map((timestamp) =>
-            '${timestamp.toDate().hour}:${timestamp.toDate().minute}'));
-        amPmIndicators = List<String>.from(data['date'].map((timestamp) {
-          DateTime localDateTime = timestamp.toDate().toLocal();
-          int hour = localDateTime.hour;
-          return hour < 12
-              ? 'AM'
-              : 'PM'; // Extract the AM/PM indicator based on the hour value
-        }));
+        time = List<String>.from(data['date'].map((timestamp) => DateFormat('jm').format(timestamp.toDate())));
         weekdays = List<String>.from(data['date']
-            .map((timestamp) => weekdayNames[timestamp.toDate().weekday - 1]));
+            .map((timestamp) => DateFormat('EEEE').format(timestamp.toDate())));
         months = List<String>.from(data['date']
-            .map((timestamp) => monthNames[timestamp.toDate().month - 1]));
+            .map((timestamp) => DateFormat('MMMM').format(timestamp.toDate())));
         print('List retrieved successfully!');
         print(date);
         print(time);
-        print(amPmIndicators);
         print(weekdays);
         print(months);
       } else {
         print('Document does not exist on the database');
       }
     }).catchError((error) => print('Failed to retrieve list: $error'));
+
+    TimeOfDay timeOfDay = const TimeOfDay(hour: 10, minute: 30);
+
+
+
+
+    List<String> showTime(String month, int day){
+      String dayString = day.toString();
+      for(int i=0; i <time.length; i++){
+        if(months[i] == month && date[i] == dayString){
+          if(newTime.contains(time[i])){
+            continue;
+          } else {
+            newTime.add(time[i]);
+          }
+        } else{
+          // newTime = [];
+        }
+      }
+      return newTime;
+    }
+
+
+    print('newtime: $date');
+
+
 
     return FutureBuilder<DocumentSnapshot>(
         future: users.doc(widget.docId).get(),
@@ -333,6 +335,9 @@ class _DoctorSchedule extends State<DoctorSchedule> {
                                                   child: ElevatedButton(
                                                     onPressed: () {
                                                       setState(() {
+                                                        showTime(_months[_selectedMonth], numbersInMonth[index]);
+                                                        print('${_months[_selectedMonth]}, ${numbersInMonth[index]}');
+                                                        print('$newTime test ${newTime.length}');
                                                         DateButtonIndex =
                                                             index; // keep track of selected button index
                                                       });
@@ -411,13 +416,40 @@ class _DoctorSchedule extends State<DoctorSchedule> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
-                                    'Time',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
+                                  Row(children: [
+                                    const Text(
+                                      'Time',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ),
                                     ),
-                                  ),
+                                    const Spacer(),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          showTimePicker(context: context, initialTime: timeOfDay);
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.blue,
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 15, vertical: 10),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(30),
+                                          ),
+                                        ),
+                                        child: const Text(
+                                          "Add a time",
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],),
+
                                   Padding(
                                     padding:
                                         const EdgeInsets.fromLTRB(0, 5, 0, 0),
@@ -426,7 +458,7 @@ class _DoctorSchedule extends State<DoctorSchedule> {
                                             vertical: 0.0),
                                         height: 50.0,
                                         child: ListView.builder(
-                                          itemCount: time.length,
+                                          itemCount: newTime.length,
                                           scrollDirection: Axis.horizontal,
                                           itemBuilder: (BuildContext context,
                                               int index) {
@@ -467,7 +499,7 @@ class _DoctorSchedule extends State<DoctorSchedule> {
                                                       padding: const EdgeInsets
                                                           .fromLTRB(0, 2, 0, 0),
                                                       child: Text(
-                                                        '${time[index]} ${amPmIndicators[index]}',
+                                                        newTime[index],
                                                         textAlign:
                                                             TextAlign.center,
                                                         style: const TextStyle(

@@ -169,6 +169,7 @@ class _DoctorSchedule extends State<DoctorSchedule> {
 
     List<String> showTime(String month, int day){
       String dayString = day.toString();
+      newTime = [];
       for(int i=0; i <time.length; i++){
         if(months[i] == month && date[i] == dayString){
           if(newTime.contains(time[i])){

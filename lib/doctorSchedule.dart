@@ -44,7 +44,6 @@ class _DoctorSchedule extends State<DoctorSchedule> {
       days.add(i);
     }
     numbersInMonth = days.cast<int>();
-    print(numbersInMonth);
     return days;
   }
 
@@ -58,7 +57,6 @@ class _DoctorSchedule extends State<DoctorSchedule> {
       days.add(dayOfWeek);
     }
     daysInMonths = days;
-    print(daysInMonths);
     return days;
   }
 
@@ -133,10 +131,8 @@ class _DoctorSchedule extends State<DoctorSchedule> {
         Map<String, dynamic> data =
             documentSnapshot.data() as Map<String, dynamic>;
         specialties = List<String>.from(data['specialties']);
-        print('List retrieved successfully!');
       } else {
         print('Document does not exist on the database');
-        print(specialties);
       }
     }).catchError((error) => print('Failed to retrieve list: $error'));
 
@@ -153,17 +149,18 @@ class _DoctorSchedule extends State<DoctorSchedule> {
         months = List<String>.from(data['date']
             .map((timestamp) => DateFormat('MMMM').format(timestamp.toDate())));
         print('List retrieved successfully!');
-        print(date);
-        print(time);
-        print(weekdays);
-        print(months);
       } else {
         print('Document does not exist on the database');
       }
     }).catchError((error) => print('Failed to retrieve list: $error'));
 
-    TimeOfDay timeOfDay = const TimeOfDay(hour: 10, minute: 30);
+    TimeOfDay timeOfDay = const TimeOfDay(hour: 12, minute: 00);
 
+
+    List<String> resetTime(){
+      newTime = [];
+      return newTime;
+    }
 
 
 
@@ -183,11 +180,6 @@ class _DoctorSchedule extends State<DoctorSchedule> {
       }
       return newTime;
     }
-
-
-    print('newtime: $date');
-
-
 
     return FutureBuilder<DocumentSnapshot>(
         future: users.doc(widget.docId).get(),
@@ -268,31 +260,13 @@ class _DoctorSchedule extends State<DoctorSchedule> {
                                         ),
                                       ),
                                       const Spacer(),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          // Your button action here
-                                        },
-                                        style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateProperty.all<Color>(
-                                                  Colors.transparent),
-                                          overlayColor:
-                                              MaterialStateProperty.all<Color>(
-                                                  Colors.transparent),
-                                          elevation:
-                                              MaterialStateProperty.all<double>(
-                                                  0),
-                                          side: MaterialStateProperty.all<
-                                              BorderSide>(BorderSide.none),
-                                          shape: MaterialStateProperty.all<
-                                                  OutlinedBorder>(
-                                              const StadiumBorder()),
-                                        ),
-                                        child: Row(
+                                      Row(
                                           children: [
                                             GestureDetector(
-                                              onTap: () =>
-                                                  _showMonthPicker(context),
+                                              onTap: () {
+                                                  _showMonthPicker(context);
+                                                  resetTime();
+                                                  },
                                               child: Text(
                                                 _months[_selectedMonth],
                                                 style: const TextStyle(
@@ -312,7 +286,6 @@ class _DoctorSchedule extends State<DoctorSchedule> {
                                             ),
                                           ],
                                         ),
-                                      ),
                                     ],
                                   ),
                                   Padding(
@@ -337,8 +310,6 @@ class _DoctorSchedule extends State<DoctorSchedule> {
                                                     onPressed: () {
                                                       setState(() {
                                                         showTime(_months[_selectedMonth], numbersInMonth[index]);
-                                                        print('${_months[_selectedMonth]}, ${numbersInMonth[index]}');
-                                                        print('$newTime test ${newTime.length}');
                                                         DateButtonIndex =
                                                             index; // keep track of selected button index
                                                       });

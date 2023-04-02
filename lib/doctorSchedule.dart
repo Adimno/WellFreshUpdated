@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 class DoctorSchedule extends StatefulWidget {
   String docId;
   DoctorSchedule({Key? key, required this.docId}) : super(key: key);
@@ -400,13 +400,41 @@ class _DoctorSchedule extends State<DoctorSchedule> {
                                     Padding(
                                       padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                                       child: ElevatedButton(
-                                        onPressed: () {
-                                          showTimePicker(context: context, initialTime: timeOfDay);
+                                        onPressed: () async {
+                                          final TimeOfDay? pickedTime = await showTimePicker(
+                                            context: context,
+                                            initialTime: timeOfDay,
+                                          );
+                                          if (pickedTime != null) {
+                                            setState(() {
+                                              timeOfDay = pickedTime;
+                                              final DateTime now = DateTime.now();
+                                              final String currentMonth = DateFormat('MMMM').format(now);
+
+                                              // Get the current user ID from Firebase Auth
+                                              final String userId = FirebaseAuth.instance.currentUser!.uid;
+
+                                              // Create a reference to the doctor's user document
+                                              final doctorDocRef = FirebaseFirestore.instance
+                                                  .collection('users')
+                                                  .doc(userId);
+
+                                              // Add the schedule as a subcollection to the doctor's user document
+                                              doctorDocRef.collection('schedule').add({
+                                                'time': timeOfDay.format(context),
+                                                'month': currentMonth,
+                                                'day': now.day,
+                                              }).then((value) => print('Schedule added successfully'))
+                                                  .catchError((error) => print('Failed to add schedule: $error'));
+
+                                              newTime.add(timeOfDay.format(context));
+                                              TimeButtonIndex = newTime.length - 1;
+                                            });
+                                          }
                                         },
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.blue,
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 15, vertical: 10),
+                                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(30),
                                           ),

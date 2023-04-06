@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+
 class DoctorSchedule extends StatefulWidget {
   String docId;
   DoctorSchedule({Key? key, required this.docId}) : super(key: key);
@@ -60,12 +62,6 @@ class _DoctorSchedule extends State<DoctorSchedule> {
     return days;
   }
 
-
-
-
-
-
-
   void _showMonthPicker(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -118,23 +114,9 @@ class _DoctorSchedule extends State<DoctorSchedule> {
   @override
   Widget build(BuildContext context) {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
-    DocumentReference listSpecialties = users.doc(widget.docId);
     DocumentReference listDate = users.doc(widget.docId);
 
 
-
-
-
-
-    listSpecialties.get().then((DocumentSnapshot documentSnapshot) {
-      if (documentSnapshot.exists) {
-        Map<String, dynamic> data =
-            documentSnapshot.data() as Map<String, dynamic>;
-        specialties = List<String>.from(data['specialties']);
-      } else {
-        print('Document does not exist on the database');
-      }
-    }).catchError((error) => print('Failed to retrieve list: $error'));
 
     listDate.get().then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
@@ -149,6 +131,8 @@ class _DoctorSchedule extends State<DoctorSchedule> {
         months = List<String>.from(data['date']
             .map((timestamp) => DateFormat('MMMM').format(timestamp.toDate())));
         print('List retrieved successfully!');
+        print(date);
+        print(months);
       } else {
         print('Document does not exist on the database');
       }
@@ -187,12 +171,6 @@ class _DoctorSchedule extends State<DoctorSchedule> {
           if (snapshot.connectionState == ConnectionState.done) {
             Map<String, dynamic> data =
                 snapshot.data!.data() as Map<String, dynamic>;
-            String firstname =
-                data.containsKey('firstname') ? data['firstname'] : '';
-            String lastname =
-                data.containsKey('lastname') ? data['lastname'] : '';
-            String biography =
-                data.containsKey('biography') ? data['biography'] : '';
             return Scaffold(
               key: _scaffoldKey, // Add a Scaffold key
               backgroundColor: const Color(0xFFF8FAFF),
@@ -408,8 +386,6 @@ class _DoctorSchedule extends State<DoctorSchedule> {
                                           if (pickedTime != null) {
                                             setState(() {
                                               timeOfDay = pickedTime;
-                                              final DateTime now = DateTime.now();
-                                              final String currentMonth = DateFormat('MMMM').format(now);
 
                                               // Get the current user ID from Firebase Auth
                                               final String userId = FirebaseAuth.instance.currentUser!.uid;
@@ -419,13 +395,39 @@ class _DoctorSchedule extends State<DoctorSchedule> {
                                                   .collection('users')
                                                   .doc(userId);
 
-                                              // Add the schedule as a subcollection to the doctor's user document
-                                              doctorDocRef.collection('schedule').add({
-                                                'time': timeOfDay.format(context),
-                                                'month': currentMonth,
-                                                'day': now.day,
+                                              final DateTime date = DateTime(2023, _selectedMonth+1, numbersInMonth[DateButtonIndex]); // use your own date here
+                                              final TimeOfDay time = timeOfDay; // use your own time here
+                                              print(timeOfDay);
+                                              final Timestamp timestamp = Timestamp.fromDate(DateTime(
+                                                date.year, // year
+                                                date.month, // month
+                                                date.day, // day
+                                                time.hour, // hour
+                                                time.minute, // minute
+                                              ));
+
+
+
+                                              doctorDocRef.update({
+                                                'date': FieldValue.arrayUnion([timestamp]),
                                               }).then((value) => print('Schedule added successfully'))
                                                   .catchError((error) => print('Failed to add schedule: $error'));
+
+                                              // doctorDocRef.update({
+                                              //   'time': timeOfDay.format(context),
+                                              //   'month': _months[_selectedMonth],
+                                              //   'day': numbersInMonth[DateButtonIndex],
+                                              // }).then((value) => print('Schedule added successfully'))
+                                              //     .catchError((error) => print('Failed to add schedule: $error'));
+
+                                              // doctorDocRef.update({
+                                              //   'date': FieldValue.arrayUnion(['newItem']),
+                                              //   'month': _months[_selectedMonth],
+                                              //   'day': numbersInMonth[DateButtonIndex],
+                                              // }).then((value) => print('Schedule added successfully'))
+                                              //     .catchError((error) => print('Failed to add schedule: $error'));
+
+
 
                                               newTime.add(timeOfDay.format(context));
                                               TimeButtonIndex = newTime.length - 1;

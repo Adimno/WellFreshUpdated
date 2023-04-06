@@ -3,6 +3,7 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:wellfreshlogin/navigation_drawer_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:wellfreshlogin/theme.dart';
 import 'package:wellfreshlogin/widgets/widgets.dart';
 import 'package:wellfreshlogin/screens/screens.dart';
 import 'package:wellfreshlogin/controllers/home_controller.dart';
@@ -25,32 +26,23 @@ class StoreScreen extends StatelessWidget {
           children: [
             Container(
               height: 48,
-              margin: const EdgeInsets.all(20.0),
-              padding: const EdgeInsets.only(left: 24.0, right: 8.0, top: 4.0, bottom: 4.0),
+              margin: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(4),
               clipBehavior: Clip.hardEdge,
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(9999.0),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color.fromRGBO(178, 178, 178, .2),
-                    blurRadius: 30,
-                    offset: Offset(0, 5),
-                  ),
-                ],
+                color: cardColor,
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: const [containerShadow],
               ),
               child: TextFormField(
                 controller: controller.searchController,
-                textAlignVertical: TextAlignVertical.center,
                 decoration: InputDecoration(
                   hintStyle: const TextStyle(
-                    fontSize: 15.0,
+                    fontSize: 14,
                     fontWeight: FontWeight.normal,
-                    color: Color(0xff5e6177),
+                    color: secondaryTextColor,
                   ),
                   hintText: 'Search products',
-                  fillColor: Colors.white,
-                  filled: true,
                   border: InputBorder.none,
                   focusedBorder: const OutlineInputBorder(
                     borderSide: BorderSide(
@@ -58,15 +50,26 @@ class StoreScreen extends StatelessWidget {
                     ),
                   ),
                   contentPadding: const EdgeInsets.symmetric(vertical: 11),
-                  alignLabelWithHint: true,
-                  suffixIcon: IconButton(
-                    icon: const Icon(IconlyBroken.search),
-                    onPressed: () {
-                      if (controller.searchController.text.isNotEmpty) {
-                        Get.to(() => SearchScreen(title: controller.searchController.text));
-                      }
-                    },
+                  prefixIcon: const Icon(IconlyBroken.search),
+                  suffixIcon: Container(
+                    padding: EdgeInsets.zero,
+                    decoration: BoxDecoration(
+                      color: accentColor,
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(IconlyBroken.arrowRight2),
+                      color: Colors.white,
+                      onPressed: () {
+                        if (controller.searchController.text.isNotEmpty) {
+                          Get.to(() => SearchScreen(title: controller.searchController.text));
+                        }
+                      },
+                    ),
                   ),
+                ),
+                style: const TextStyle(
+                  fontSize: 14,
                 ),
               ),
             ),
@@ -87,7 +90,7 @@ class StoreScreen extends StatelessWidget {
               onPressed: () {
                 Get.to(() => const CartScreen());
               },
-              backgroundColor: const Color(0xFF51A8FF),
+              backgroundColor: accentColor,
               child: const Icon(IconlyBroken.buy),
             ),
             StreamBuilder(
@@ -102,13 +105,7 @@ class StoreScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(4),
                     constraints: const BoxConstraints(minHeight: 28, minWidth: 28),
                     decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          spreadRadius: 1,
-                          blurRadius: 16,
-                          color: Colors.black.withAlpha(50)
-                        ),
-                      ],
+                      boxShadow: const [containerShadow],
                       borderRadius: BorderRadius.circular(16),
                       color: Colors.red,
                     ),

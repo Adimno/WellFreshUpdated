@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wellfreshlogin/theme.dart';
 
 class CustomTextField extends StatelessWidget {
   const CustomTextField({
@@ -19,35 +20,25 @@ class CustomTextField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title!,
-          style: Theme.of(context).textTheme.titleSmall!.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 5),
         Container(
+          height: 56,
+          padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15.0),
-            boxShadow: const [
-              BoxShadow(
-                color: Color.fromRGBO(178, 178, 178, .2),
-                blurRadius: 30,
-                offset: Offset(0, 5),
-              ),
-            ],
+            color: cardColor,
+            borderRadius: BorderRadius.circular(28),
+            boxShadow: const [containerShadow],
           ),
           child: TextFormField(
             controller: controller,
             decoration: InputDecoration(
               hintStyle: const TextStyle(
+                fontSize: 14,
                 fontWeight: FontWeight.normal,
-                color: Colors.grey,
+                color: secondaryTextColor,
               ),
               hintText: hint,
-              isDense: true,
-              fillColor: Colors.white,
+              fillColor: Colors.transparent,
               filled: true,
               border: InputBorder.none,
               focusedBorder: const OutlineInputBorder(
@@ -55,12 +46,12 @@ class CustomTextField extends StatelessWidget {
                   color: Colors.transparent,
                 ),
               ),
-              alignLabelWithHint: true,
+              contentPadding: const EdgeInsets.symmetric(vertical: 16),
               prefixIcon: Icon(icon),
             ),
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 16),
       ],
     );
   }

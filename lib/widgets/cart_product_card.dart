@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:wellfreshlogin/services/firebase_services.dart';
+import 'package:wellfreshlogin/theme.dart';
 
 class CartProductCard extends StatelessWidget {
   const CartProductCard({
@@ -23,20 +24,14 @@ class CartProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10.0),
+      margin: const EdgeInsets.fromLTRB(20, 0, 20, 10),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15.0),
-        boxShadow: const [
-          BoxShadow(
-            color: Color.fromRGBO(178, 178, 178, .2),
-            blurRadius: 30,
-            offset: Offset(0, 5),
-          ),
-        ],
+        color: cardColor,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: const [containerShadow],
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
         child: Row(
           children: [
             Image.network(
@@ -59,15 +54,15 @@ class CartProductCard extends StatelessWidget {
                   Text(
                     'PHP $price',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          color: const Color(0xff51a8ff),
-                          fontWeight: FontWeight.bold,
-                        ),
+                      color: accentTextColor,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   Text(
                     category,
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: const Color(0xff5e6177),
-                        ),
+                      color: secondaryTextColor,
+                    ),
                   ),
                 ],
               ),
@@ -77,15 +72,9 @@ class CartProductCard extends StatelessWidget {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15.0),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color.fromRGBO(178, 178, 178, .2),
-                        blurRadius: 30,
-                        offset: Offset(0, 5),
-                      ),
-                    ],
+                    color: cardColor,
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: const [containerShadow],
                   ),
                   child: Row(
                     children: [
@@ -110,15 +99,9 @@ class CartProductCard extends StatelessWidget {
                 ),
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15.0),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Color.fromRGBO(178, 178, 178, .2),
-                        blurRadius: 30,
-                        offset: Offset(0, 5),
-                      ),
-                    ],
+                    color: cardColor,
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: const [containerShadow],
                   ),
                   child: Row(
                     children: [

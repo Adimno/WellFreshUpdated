@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
+import 'package:wellfreshlogin/theme.dart';
 import 'package:wellfreshlogin/widgets/widgets.dart';
 import 'package:wellfreshlogin/controllers/product_controller.dart';
 
 class ProductScreen extends StatelessWidget {
   final String? title;
   final dynamic data;
+  final dynamic hero;
 
   const ProductScreen({
     Key? key,
     required this.title,
     required this.data,
+    required this.hero,
   }) : super(key: key);
 
   @override
@@ -34,36 +37,64 @@ class ProductScreen extends StatelessWidget {
             userId: 1,
             context: context,
           );
-          const itemAdded = SnackBar(
-            content: Text('Item successfully added to cart!'),
-            behavior: SnackBarBehavior.floating,
-          );
-          ScaffoldMessenger.of(context).showSnackBar(itemAdded);
+          FloatingSnackBar.show(context, 'Item added successfully!');
         },
       ),
       body: ListView(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Align(
                   alignment: Alignment.topCenter,
-                  child: Image.network(
-                    data['imageUrl'],
+                  child: Stack(
+                    alignment: const Alignment(1, 1),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(48),
+                        child: Hero(
+                          tag: 'productImage$hero',
+                          child: Image.network(
+                            data['imageUrl'],
+                          ),
+                        ),
+                      ),
+                      CircleAvatar(
+                        radius: 28,
+                        backgroundColor: Colors.grey[500],
+                        child: IconButton(
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (_) {
+                              return ImageScreen(
+                                imageUrl: data['imageUrl'],
+                                altText: data['name'],
+                                hero: data.id,
+                              );
+                            }));
+                          },
+                          color: Colors.white,
+                          icon: const Icon(IconlyBroken.search),
+                          tooltip: 'View full image',
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 16),
                 Text(
                   data['name'],
-                  style: Theme.of(context).textTheme.displayMedium,
+                  style: Theme.of(context).textTheme.displayMedium!.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
+                const SizedBox(height: 5),
                 Text(
                   'PHP ${data['price']}',
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: const Color(0xff51a8ff),
+                  style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                    color: accentTextColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -71,7 +102,7 @@ class ProductScreen extends StatelessWidget {
                 Text(
                   data['description'],
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                    color: const Color.fromRGBO(8, 12, 47, .65),
+                    color: tertiaryTextColor,
                   ),
                 ),
               ],
@@ -79,6 +110,55 @@ class ProductScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class ImageScreen extends StatelessWidget {
+  final String imageUrl;
+  final String altText;
+  final dynamic hero;
+
+  const ImageScreen({
+    Key? key,
+    required this.imageUrl,
+    required this.altText,
+    required this.hero,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Hero(
+              tag: 'productImage$hero',
+              child: Image.network(imageUrl),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              altText,
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: Colors.grey[600],
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(top: 24),
+        child: FloatingActionButton.small(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          backgroundColor: Colors.grey[800],
+          child: const Icon(Icons.close),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
     );
   }
 }

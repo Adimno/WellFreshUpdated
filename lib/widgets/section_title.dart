@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wellfreshlogin/theme.dart';
 
 class SectionTitle extends StatelessWidget {
   final String title;
@@ -9,22 +10,18 @@ class SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              title,
-              style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                fontWeight: FontWeight.bold,
-                color: const Color.fromARGB(255, 8, 12, 47),
-              ),
-            ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: Text(
+          title,
+          style: Theme.of(context).textTheme.displaySmall!.copyWith(
+            fontWeight: FontWeight.bold,
+            color: titleTextColor,
           ),
         ),
-      ],
+      ),
     );
   }
 }

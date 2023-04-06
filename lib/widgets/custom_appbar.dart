@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:wellfreshlogin/theme.dart';
 
-class CustomAppBar extends StatelessWidget with PreferredSizeWidget{
+class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   final String title;
   final bool backButton;
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -16,32 +17,28 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget{
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 10),
+      margin: const EdgeInsets.only(left: 20, right: 20),
       clipBehavior: Clip.none,
       child: AppBar(
-        backgroundColor: const Color.fromARGB(255, 248, 250, 255),
-        foregroundColor: const Color.fromRGBO(8, 12, 47, .75),
+        backgroundColor: surfaceColor,
+        foregroundColor: tertiaryTextColor,
         automaticallyImplyLeading: backButton,
+        toolbarHeight: 80,
         title: Text(
           title,
           style: Theme.of(context).textTheme.titleMedium!.copyWith(
-            color: const Color.fromRGBO(8, 12, 47, .75),
+            color: tertiaryTextColor,
           ),
         ),
         centerTitle: true,
         leading: (backButton == false) ?
         Container(
+          margin: const EdgeInsets.symmetric(vertical: 12),
           clipBehavior: Clip.none,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: cardColor,
             borderRadius: BorderRadius.circular(15.0),
-            boxShadow: const [
-              BoxShadow(
-                color: Color.fromRGBO(178, 178, 178, .2),
-                blurRadius: 30,
-                offset: Offset(0, 5),
-              ),
-            ],
+            boxShadow: const [containerShadow],
           ),
           child: IconButton(
             icon: const Icon(Icons.menu),
@@ -51,17 +48,12 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget{
             },
           ),
         ) : Container(
+          margin: const EdgeInsets.symmetric(vertical: 12),
           clipBehavior: Clip.none,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: cardColor,
             borderRadius: BorderRadius.circular(15.0),
-            boxShadow: const [
-              BoxShadow(
-                color: Color.fromRGBO(178, 178, 178, .2),
-                blurRadius: 30,
-                offset: Offset(0, 5),
-              ),
-            ],
+            boxShadow: const [containerShadow],
           ),
           child: IconButton(
             icon: const Icon(IconlyBroken.arrowLeft2),

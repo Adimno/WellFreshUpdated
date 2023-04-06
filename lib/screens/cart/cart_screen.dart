@@ -14,6 +14,11 @@ class CartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var controller = Get.put(CartController());
     var scaffoldKey = GlobalKey<ScaffoldState>();
+    var appBar = CustomAppBar(
+      title: 'Cart',
+      backButton: true,
+      scaffoldKey: scaffoldKey
+    );
 
     return StreamBuilder(
       // TODO: Change 1 to the logged user's ID
@@ -22,8 +27,8 @@ class CartScreen extends StatelessWidget {
         if (!snapshot.hasData) {
           return Scaffold(
             key: scaffoldKey,
-            appBar: CustomAppBar(title: 'Cart', backButton: true, scaffoldKey: scaffoldKey),
-            body: Center(
+            appBar: appBar,
+            body: const Center(
               child: CircularProgressIndicator(),
             ),
           );
@@ -31,21 +36,8 @@ class CartScreen extends StatelessWidget {
         else if (snapshot.data!.docs.isEmpty) {
           return Scaffold(
             key: scaffoldKey,
-            appBar: CustomAppBar(title: 'Cart', backButton: true, scaffoldKey: scaffoldKey),
-            body: Align(
-              alignment: Alignment.center,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(
-                    IconlyBroken.buy,
-                    size: 48.0,
-                  ),
-                  SizedBox(height: 16),
-                  Text('Cart is empty'),
-                ],
-              ),
-            ),
+            appBar: appBar,
+            body: const ItemIndicator(icon: IconlyBroken.buy, text: 'Cart is empty'),
           );
         }
         else {
@@ -55,7 +47,7 @@ class CartScreen extends StatelessWidget {
 
           return Scaffold(
             key: scaffoldKey,
-            appBar: CustomAppBar(title: 'Cart', backButton: true, scaffoldKey: scaffoldKey),
+            appBar: appBar,
             bottomNavigationBar: CustomNavBar(
               title: 'Proceed to Shipping',
               icon: const Icon(IconlyBroken.paper),
@@ -64,7 +56,7 @@ class CartScreen extends StatelessWidget {
               },
             ),
             body: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+              padding: const EdgeInsets.symmetric(vertical: 10),
               child: Column(
                 children: [
                   Expanded(

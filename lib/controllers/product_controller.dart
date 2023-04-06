@@ -17,8 +17,6 @@ class ProductController extends GetxController {
       'price': price,
       'userId': userId,
       'quantity': 1,
-    }).catchError((error) {
-
-    });
+    }).catchError((error) { });
   }
 }

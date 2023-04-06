@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wellfreshlogin/theme.dart';
 
 class CustomNavBar extends StatelessWidget {
   final String title;
@@ -15,19 +16,19 @@ class CustomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
-      color: const Color.fromARGB(0, 0, 0, 0),
-      elevation: 0.0,
+      color: Colors.transparent,
+      elevation: 0,
       child: Container(
         height: 110,
         padding: const EdgeInsets.symmetric(horizontal: 64, vertical: 24),
         child: ElevatedButton(
           onPressed: action,
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF51A8FF),
+            backgroundColor: accentColor,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(99.0),
+              borderRadius: BorderRadius.circular(99),
             ),
-            shadowColor: const Color.fromRGBO(178, 178, 178, .2),
+            shadowColor: boxShadowColor,
             elevation: 10,
           ),
           child: Row(

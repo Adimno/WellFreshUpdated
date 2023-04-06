@@ -6,6 +6,7 @@ import 'package:wellfreshlogin/services/firebase_services.dart';
 
 class SearchScreen extends StatelessWidget {
   final String? title;
+
   const SearchScreen({
     Key? key,
     this.title,
@@ -26,20 +27,7 @@ class SearchScreen extends StatelessWidget {
             );
           }
           else if (snapshot.data!.docs.isEmpty) {
-            return Align(
-              alignment: Alignment.center,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(
-                    IconlyBroken.search,
-                    size: 48.0,
-                  ),
-                  SizedBox(height: 16),
-                  Text('No products found'),
-                ],
-              ),
-            );
+            return const ItemIndicator(icon: IconlyBroken.search, text: 'No products found');
           }
           else {
             var data = snapshot.data!.docs;
@@ -47,7 +35,7 @@ class SearchScreen extends StatelessWidget {
       
             if (filteredData.isNotEmpty) {
               return Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.all(12),
                 child: GridView.builder(
                   shrinkWrap: true,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -57,28 +45,19 @@ class SearchScreen extends StatelessWidget {
                   itemCount: filteredData.length,
                   itemBuilder: (BuildContext context, int index) {
                     return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ProductCard(product: filteredData[index], widthFactor: 2,),
+                      padding: const EdgeInsets.all(8),
+                      child: ProductCard(
+                        product: filteredData[index],
+                        widthFactor: 2,
+                        enableHero: false,
+                      ),
                     );
                   },
                 ),
               );
             }
             else {
-              return Align(
-                alignment: Alignment.center,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(
-                      IconlyBroken.search,
-                      size: 48.0,
-                    ),
-                    SizedBox(height: 16),
-                    Text('No products found'),
-                  ],
-                ),
-              );
+              return const ItemIndicator(icon: IconlyBroken.search, text: 'No products found');
             }
           }
         },

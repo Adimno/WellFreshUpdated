@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wellfreshlogin/theme.dart';
 import 'package:wellfreshlogin/widgets/widgets.dart';
 import 'package:wellfreshlogin/screens/screens.dart';
 import 'package:wellfreshlogin/consts/consts.dart';
@@ -30,11 +31,7 @@ class PaymentMethods extends StatelessWidget {
                 if (paymentMethods[controller.paymentIndex.value]['name'] == 'PayPal') {
                   // TODO: Put dummy PayPal here
 
-                  const orderPlaced = SnackBar(
-                    content: Text('You got PayPal!'),
-                    behavior: SnackBarBehavior.floating,
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(orderPlaced);
+                  FloatingSnackBar.show(context, 'You got PayPal!');
                   Get.offAll(const StoreScreen());
                 }
                 else if (paymentMethods[controller.paymentIndex.value]['name'] == 'Cash') {
@@ -43,12 +40,8 @@ class PaymentMethods extends StatelessWidget {
                     total: controller.total.value,
                   );
                   await controller.clearCart();
-                  const orderPlaced = SnackBar(
-                    content: Text('Your order has been successfully placed!'),
-                    behavior: SnackBarBehavior.floating,
-                  );
                   // ignore: use_build_context_synchronously
-                  ScaffoldMessenger.of(context).showSnackBar(orderPlaced);
+                  FloatingSnackBar.show(context, 'You got PayPal!');
                   Get.offAll(const StoreScreen());
                 }
               },
@@ -110,15 +103,9 @@ class PaymentMethods extends StatelessWidget {
                         width: 128,
                         margin: const EdgeInsets.only(right: 8),
                         decoration: BoxDecoration(
-                          color: controller.paymentIndex.value == index ? const Color(0xFF51A8FF)  : Colors.white,
+                          color: controller.paymentIndex.value == index ? accentColor : cardColor,
                           borderRadius: BorderRadius.circular(15.0),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Color.fromRGBO(178, 178, 178, .2),
-                              blurRadius: 30,
-                              offset: Offset(0, 5),
-                            ),
-                          ],
+                          boxShadow: const [containerShadow],
                         ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),

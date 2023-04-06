@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:wellfreshlogin/profile_screen.dart';
+import 'package:wellfreshlogin/screens/screens.dart';
 import 'patient.dart';
 import 'user_page.dart';
 import 'about.dart';
@@ -163,7 +164,11 @@ class NavigationDrawerWidget extends StatelessWidget {
           builder: (context) => Patient(),
         ));
         break;
-
+      case 3:
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => const StoreScreen(),
+        ));
+        break;
       case 4:
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => AboutPage(),

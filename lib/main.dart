@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wellfreshlogin/theme.dart';
 import 'navigation_drawer_widget.dart';
 import 'register.dart';
 import 'patient.dart';
@@ -24,9 +25,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: Colors.blue[900],
-      ),
+      theme: theme(),
       home:  LoginPage(),
     );
   }

@@ -1,9 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'about.dart';
-import 'doctor.dart';
-import 'patient.dart';
 import 'register.dart';
 
 
@@ -17,15 +13,14 @@ class _LoginPageState extends State<LoginPage> {
   bool _isObscure3 = true;
   bool visible = false;
   final _formkey = GlobalKey<FormState>();
-  final TextEditingController emailController = new TextEditingController();
-  final TextEditingController passwordController = new TextEditingController();
-  final _auth = FirebaseAuth.instance;
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   String errorMessage = "";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF8FAFF),
+      backgroundColor: const Color(0xFFF8FAFF),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -34,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
               height: MediaQuery.of(context).size.height * 1,
               child: Center(
                 child: Container(
-                  margin: EdgeInsets.all(12),
+                  margin: const EdgeInsets.all(12),
                   child: Form(
                     key: _formkey,
                     child: Column(
@@ -44,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
                         Container(
                           alignment: Alignment.centerLeft,
                           margin: const EdgeInsets.only(left: 20.0, right: 20.0),
-                          child: Text(
+                          child: const Text(
                             'Sign In \n ',
                             style: TextStyle(
                               fontSize: 24,
@@ -55,27 +50,27 @@ class _LoginPageState extends State<LoginPage> {
                         Container(
                           alignment: Alignment.centerLeft,
                           margin: const EdgeInsets.only(left: 20.0, right: 20.0),
-                          child: Text(
+                          child: const Text(
                             'Welcome back to WellFresh! ',
                             style: TextStyle(
                               fontSize: 20,
                             ),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 40,
                         ),
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(28),
-                            boxShadow: [
+                            boxShadow: const [
                               BoxShadow(
                                 color: Color.fromRGBO(178, 178, 178, 0.2),
                                 blurRadius: 30,
                                 offset: Offset(0, 5),
                               )
                             ],
-                            gradient: LinearGradient(
+                            gradient: const LinearGradient(
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
                               colors: [
@@ -91,27 +86,27 @@ class _LoginPageState extends State<LoginPage> {
                               filled: true,
                               fillColor: Colors.transparent,
                               hintText: 'Email',
-                              prefixIcon: Icon(Icons.email),
+                              prefixIcon: const Icon(Icons.email),
                               enabled: true,
                               contentPadding:
                               const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
-                              border: OutlineInputBorder(borderSide: BorderSide.none),
+                              border: const OutlineInputBorder(borderSide: BorderSide.none),
                               focusedBorder: OutlineInputBorder(
-                                borderSide: new BorderSide(color: Colors.white),
-                                borderRadius: new BorderRadius.circular(30),
+                                borderSide: const BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(30),
                               ),
                               enabledBorder: UnderlineInputBorder(
-                                borderSide: new BorderSide(color: Colors.white),
-                                borderRadius: new BorderRadius.circular(30),
+                                borderSide: const BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(30),
                               ),
-                              errorBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                              disabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                              errorBorder: const OutlineInputBorder(borderSide: BorderSide.none),
+                              disabledBorder: const OutlineInputBorder(borderSide: BorderSide.none),
                             ),
                             validator: (value) {
-                              if (value!.length == 0) {
+                              if (value!.isEmpty) {
                                 return "Email cannot be empty";
                               }
-                              if (!RegExp(r'^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+                              if (!RegExp(r'^[a-zA-Z\d+_.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$')
                                   .hasMatch(value)) {
                                 return ("Please enter a valid email");
                               } else {
@@ -124,20 +119,20 @@ class _LoginPageState extends State<LoginPage> {
                             keyboardType: TextInputType.emailAddress,
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(28),
-                            boxShadow: [
+                            boxShadow: const [
                               BoxShadow(
                                 color: Color.fromRGBO(178, 178, 178, 0.2),
                                 blurRadius: 30,
                                 offset: Offset(0, 5),
                               )
                             ],
-                            gradient: LinearGradient(
+                            gradient: const LinearGradient(
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
                               colors: [
@@ -163,24 +158,24 @@ class _LoginPageState extends State<LoginPage> {
                               filled: true,
                               fillColor: Colors.transparent,
                               hintText: 'Password',
-                              prefixIcon: Icon(Icons.lock),
+                              prefixIcon: const Icon(Icons.lock),
                               enabled: true,
                               contentPadding: const EdgeInsets.only(
                                   left: 14.0, bottom: 8.0, top: 15.0),
-                              border: OutlineInputBorder(borderSide: BorderSide.none),
+                              border: const OutlineInputBorder(borderSide: BorderSide.none),
                               focusedBorder: OutlineInputBorder(
-                                borderSide: new BorderSide(color: Colors.white),
-                                borderRadius: new BorderRadius.circular(30),
+                                borderSide: const BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(30),
                               ),
                               enabledBorder: UnderlineInputBorder(
-                                borderSide: new BorderSide(color: Colors.white),
-                                borderRadius: new BorderRadius.circular(30),
+                                borderSide: const BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(30),
                               ),
-                              errorBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                              disabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                              errorBorder: const OutlineInputBorder(borderSide: BorderSide.none),
+                              disabledBorder: const OutlineInputBorder(borderSide: BorderSide.none),
                             ),
                             validator: (value) {
-                              RegExp regex = new RegExp(r'^.{6,}$');
+                              RegExp regex = RegExp(r'^.{6,}$');
                               if (value!.isEmpty) {
                                 return "Password cannot be empty";
                               }
@@ -197,14 +192,14 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
 
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
 
                         Align(
                           alignment: Alignment.centerRight,
                           child: MaterialButton(
-                            shape: RoundedRectangleBorder(
+                            shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.all(Radius.circular(30.0)),
                             ),
                             elevation: 5.0,
@@ -216,6 +211,7 @@ class _LoginPageState extends State<LoginPage> {
                               });
                               signIn(emailController.text, passwordController.text);
                             },
+                            color: Colors.blue,
                             child: Text(
                               "Sign in",
                               style: TextStyle(
@@ -223,26 +219,25 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Colors.white.withOpacity(1.0),
                               ),
                             ),
-                            color: Colors.blue,
                           ),
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
 
                         Container(
                           alignment: FractionalOffset.bottomCenter,
                           child: Column(
                             children: [
-                              Text(
+                              const Text(
                                 "Don't have an account?",
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.black,
                                 ),
                               ),
-                              SizedBox(height: 16),
+                              const SizedBox(height: 16),
                               ElevatedButton(
                                 onPressed: () {
-                                  CircularProgressIndicator();
+                                  const CircularProgressIndicator();
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -250,18 +245,18 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                                   );
                                 },
-                                child: Text(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color.fromRGBO(20, 55, 106, 0.45),
+                                  padding: const EdgeInsets.symmetric(horizontal: 70, vertical: 19),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                ),
+                                child: const Text(
                                   "Sign up",
                                   style: TextStyle(
                                     fontSize: 20,
                                     color: Colors.white,
-                                  ),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  primary: Color.fromRGBO(20, 55, 106, 0.45),
-                                  padding: EdgeInsets.symmetric(horizontal: 70, vertical: 19),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30),
                                   ),
                                 ),
                               ),
@@ -282,42 +277,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void route() {
-    User? user = FirebaseAuth.instance.currentUser;
-    var kk = FirebaseFirestore.instance
-        .collection('users')
-        .doc(user!.uid)
-        .get()
-        .then((DocumentSnapshot documentSnapshot) {
-      if (documentSnapshot.exists) {
-        if (documentSnapshot.get('role') == "Doctor") {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Doctor(),
-            ),
-          );
-        }else{
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>  Patient(),
-            ),
-          );
-        }
-      } else {
-        print('Document does not exist on the database');
-      }
-    });
   }
 
   void signIn(String email, String password) async {
     if (_formkey.currentState!.validate()) {
       try {
-        UserCredential userCredential =
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
         route();
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
@@ -325,14 +289,14 @@ class _LoginPageState extends State<LoginPage> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text("Invalid Credentials"),
-                content: Text("No user found for that email."),
+                title: const Text("Invalid Credentials"),
+                content: const Text("No user found for that email."),
                 actions: [
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: Text("OK"),
+                    child: const Text("OK"),
                   ),
                 ],
               );
@@ -343,14 +307,14 @@ class _LoginPageState extends State<LoginPage> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text("Login failed"),
-                content: Text("Your email or password is incorrect. Please try again"),
+                title: const Text("Login failed"),
+                content: const Text("Your email or password is incorrect. Please try again"),
                 actions: [
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    child: Text("OK"),
+                    child: const Text("OK"),
                   ),
                 ],
               );

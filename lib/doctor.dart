@@ -14,13 +14,16 @@ class Doctor extends StatefulWidget {
   State<Doctor> createState() => _DoctorState();
 }
 
+List<String> patientID = [];
+List<TimeOfDay> date = [];
+
+
 class _DoctorState extends State<Doctor> {
   final CollectionReference usersCollection =
   FirebaseFirestore.instance.collection('users');
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  List<String> patientID = [];
-  List<String> patientReferences = [];
+
 
   Future<void> getAppoinment() async {
     if (patientID.isEmpty) {
@@ -30,16 +33,20 @@ class _DoctorState extends State<Doctor> {
       querySnapshot2.docs.forEach((patient) {
         if (!patientID.contains(patient.id)) {
           patientID.add(patient.id);
+
+
         }
       });
     }
   }
 
+
+
+
   @override
   void initState() {
     super.initState();
     getAppoinment();
-    print(patientReferences);
   }
 
 
@@ -278,6 +285,7 @@ class _DoctorState extends State<Doctor> {
                               backgroundColor: Colors.white,
                             ),
                             onPressed: () {
+                              print(date);
 
                             },
                             child: SizedBox(
@@ -296,36 +304,31 @@ class _DoctorState extends State<Doctor> {
                                           crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                           children: [
-                                            // Padding(
-                                            //   padding: const EdgeInsets.fromLTRB(
-                                            //       0, 0, 0, 0),
-                                            //   child: GetUserName(
-                                            //       documentId: docIDs[index]),
-                                            // ),
-                                            const Padding(
+                                            Padding(
+                                              padding: const EdgeInsets.fromLTRB(
+                                                  0, 0, 0, 0),
+                                              child: Text(patientID[index],
+                                                style: const TextStyle(color: Colors.black),),
+                                            ),
+                                            Padding(
                                               padding:
-                                              EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                              const EdgeInsets.fromLTRB(0, 0, 0, 10),
                                               child: Text(
-                                                'Dental Surgeon',
-                                                style: TextStyle(
+                                                ' 2023',
+                                                style: const TextStyle(
                                                   fontSize: 15.0,
                                                   color: Colors.black,
                                                 ),
                                               ),
                                             ),
                                             Row(
-                                              children: const [
-                                                Icon(
-                                                  Icons.star,
-                                                  color: Colors.yellow,
-                                                  size: 18.0,
-                                                ),
+                                              children:  [
                                                 Padding(
-                                                  padding: EdgeInsets.fromLTRB(
+                                                  padding: const EdgeInsets.fromLTRB(
                                                       5, 0, 0, 0),
                                                   child: Text(
-                                                    '4.8',
-                                                    style: TextStyle(
+                                                    '',
+                                                    style: const TextStyle(
                                                       fontSize: 15.0,
                                                       color: Colors.black,
                                                     ),

@@ -690,21 +690,39 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                                                       'time': newTime[TimeButtonIndex],
                                                       'day': numbersInMonth[
                                                       DateButtonIndex],
-                                                      'month': _months[_selectedMonth]
+                                                      'month': _months[_selectedMonth],
+
                                                     }).then((value) => print('Schedule added successfully'))
                                                         .catchError((error) => print('Failed to add schedule: $error'));
 
                                                     final appointmentDoctorRef = FirebaseFirestore.instance
                                                         .collection('users').doc(widget.docId);
 
+                                                    String timeString = newTime[TimeButtonIndex];
+                                                    DateFormat inputFormat = DateFormat('hh:mm a');
+                                                    DateTime dateTime = inputFormat.parse(timeString);
+                                                    String formattedTime = DateFormat('HH:mm').format(dateTime);
+                                                    print(formattedTime);
+
+                                                    List<String> parts = formattedTime.split(':');
+                                                    int hours = int.parse(parts[0]);
+                                                    int minutes = int.parse(parts[1]);
+
+                                                    final DateTime date = DateTime(2023, _selectedMonth+1, numbersInMonth[DateButtonIndex]); // use your own date here
+                                                    final TimeOfDay time = TimeOfDay(hour: hours, minute: minutes); // use your own time here
+                                                    final Timestamp timestamp = Timestamp.fromDate(DateTime(
+                                                      date.year, // year
+                                                      date.month, // month
+                                                      date.day, // day
+                                                      time.hour, // hour
+                                                      time.minute, // minute
+                                                    ));
+
                                                     appointmentDoctorRef.collection('appointments').add({
+                                                      'timeStamp': timestamp,
                                                       'docReference': widget.docId,
                                                       'patientReference': FirebaseAuth.instance
                                                           .currentUser!.uid,
-                                                      'time': newTime[TimeButtonIndex],
-                                                      'day': numbersInMonth[
-                                                      DateButtonIndex],
-                                                      'month': _months[_selectedMonth]
                                                     }).then((value) => print('Schedule added successfully'))
                                                         .catchError((error) => print('Failed to add schedule: $error'));
                                                   });

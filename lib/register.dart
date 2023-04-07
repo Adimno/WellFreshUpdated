@@ -51,7 +51,7 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white60,
+      backgroundColor: Color(0xFFF8FAFF),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -68,7 +68,7 @@ class _RegisterState extends State<Register> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SizedBox(
-                          height: 100,
+                          height: 50,
                         ),
                         Container(
                           alignment: Alignment.centerLeft,
@@ -92,200 +92,285 @@ class _RegisterState extends State<Register> {
                           ),
                         ),
                         SizedBox(
-                          height: 10,
+                          height: 20,
                         ),
-                        SizedBox(
-                          height: 50,
-                        ),
-                        TextFormField(
-                          controller: firstnameController,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'Firstname',
-                            prefixIcon: Icon(Icons.person),
-                            enabled: true,
-                            contentPadding: const EdgeInsets.only(
-                                left: 14.0, bottom: 8.0, top: 8.0),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: new BorderSide(color: Colors.white),
-                              borderRadius: new BorderRadius.circular(20),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: new BorderSide(color: Colors.white),
-                              borderRadius: new BorderRadius.circular(20),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(28),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color.fromRGBO(178, 178, 178, 0.2),
+                                blurRadius: 30,
+                                offset: Offset(0, 5),
+                              )
+                            ],
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Color(0xFFFFFFFF),
+                                Color.fromRGBO(255, 255, 255, 0.9),
+                              ],
+                              stops: [0.0625, 0.8768],
                             ),
                           ),
-                          validator: (value) {
-                            RegExp regex = new RegExp(r'^.{6,}$');
-                            if (value!.isEmpty) {
-                              return "Name cannot be empty";
-                            }
-                            if (!regex.hasMatch(value)) {
-                              return ("please enter Name min. 6 character");
-                            } else {
-                              return null;
-                            }
-                          },
-                          onChanged: (value) {},
+                          child: TextFormField(
+                            controller: firstnameController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.transparent,
+                              hintText: 'Firstname',
+                              prefixIcon: Icon(Icons.person),
+                              enabled: true,
+                              contentPadding:
+                              const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+                              border: OutlineInputBorder(borderSide: BorderSide.none),
+                              focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                              errorBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                              disabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                            ),
+                            validator: (value) {
+                              RegExp regex = RegExp(r'^.{6,}$');
+                              if (value!.isEmpty) {
+                                return "Name cannot be empty";
+                              }
+                              if (!regex.hasMatch(value)) {
+                                return "Please enter a name with at least 6 characters";
+                              } else {
+                                return null;
+                              }
+                            },
+                            onChanged: (value) {},
+                          ),
                         ),
                         SizedBox(
                           height: 20,
                         ),
-                        TextFormField(
-                          controller: lastnameController,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'Lastname',
-                            prefixIcon: Icon(Icons.person),
-                            enabled: true,
-                            contentPadding: const EdgeInsets.only(
-                                left: 14.0, bottom: 8.0, top: 8.0),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: new BorderSide(color: Colors.white),
-                              borderRadius: new BorderRadius.circular(20),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: new BorderSide(color: Colors.white),
-                              borderRadius: new BorderRadius.circular(20),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(28),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color.fromRGBO(178, 178, 178, 0.2),
+                                blurRadius: 30,
+                                offset: Offset(0, 5),
+                              )
+                            ],
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Color(0xFFFFFFFF),
+                                Color.fromRGBO(255, 255, 255, 0.9),
+                              ],
+                              stops: [0.0625, 0.8768],
                             ),
                           ),
-                          validator: (value) {
-                            RegExp regex = new RegExp(r'^.{6,}$');
-                            if (value!.isEmpty) {
-                              return "Name cannot be empty";
-                            }
-                            if (!regex.hasMatch(value)) {
-                              return ("please enter Name min. 6 character");
-                            } else {
-                              return null;
-                            }
-                          },
-                          onChanged: (value) {},
+                          child: TextFormField(
+                            controller: lastnameController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.transparent,
+                              hintText: 'Lastname',
+                              prefixIcon: Icon(Icons.person),
+                              enabled: true,
+                              contentPadding:
+                              const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+                              border: OutlineInputBorder(borderSide: BorderSide.none),
+                              focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                              errorBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                              disabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                            ),
+                            validator: (value) {
+                              RegExp regex = RegExp(r'^.{6,}$');
+                              if (value!.isEmpty) {
+                                return "Name cannot be empty";
+                              }
+                              if (!regex.hasMatch(value)) {
+                                return "Please enter a name with at least 6 characters";
+                              } else {
+                                return null;
+                              }
+                            },
+                            onChanged: (value) {},
+                          ),
                         ),
                         SizedBox(
                           height: 20,
                         ),
-                        TextFormField(
-                          controller: emailController,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'Email',
-                            prefixIcon: Icon(Icons.email),
-                            enabled: true,
-                            contentPadding: const EdgeInsets.only(
-                                left: 14.0, bottom: 8.0, top: 8.0),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: new BorderSide(color: Colors.white),
-                              borderRadius: new BorderRadius.circular(20),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: new BorderSide(color: Colors.white),
-                              borderRadius: new BorderRadius.circular(20),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(28),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color.fromRGBO(178, 178, 178, 0.2),
+                                blurRadius: 30,
+                                offset: Offset(0, 5),
+                              )
+                            ],
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Color(0xFFFFFFFF),
+                                Color.fromRGBO(255, 255, 255, 0.9),
+                              ],
+                              stops: [0.0625, 0.8768],
                             ),
                           ),
-                          validator: (value) {
-                            if (value!.length == 0) {
-                              return "Email cannot be empty";
-                            }
-                            if (!RegExp(r'^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
-                                .hasMatch(value)) {
-                              return ("Please enter a valid email");
-                            } else {
-                              return null;
-                            }
-                          },
-                          onChanged: (value) {},
-                          keyboardType: TextInputType.emailAddress,
+                          child: TextFormField(
+                            controller: emailController,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.transparent,
+                              hintText: 'Email',
+                              prefixIcon: Icon(Icons.email),
+                              enabled: true,
+                              contentPadding:
+                              const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+                              border: OutlineInputBorder(borderSide: BorderSide.none),
+                              focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                              errorBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                              disabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                            ),
+                            validator: (value) {
+                              if (value!.length == 0) {
+                                return "Email cannot be empty";
+                              }
+                              if (!RegExp(r'^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+                                  .hasMatch(value)) {
+                                return ("Please enter a valid email");
+                              } else {
+                                return null;
+                              }
+                            },
+                            onChanged: (value) {},
+                            keyboardType: TextInputType.emailAddress,
+                          ),
                         ),
                         SizedBox(
                           height: 20,
                         ),
-                        TextFormField(
-                          obscureText: _isObscure,
-                          controller: passwordController,
-                          decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                                icon: Icon(_isObscure
-                                    ? Icons.visibility_off
-                                    : Icons.visibility),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(28),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color.fromRGBO(178, 178, 178, 0.2),
+                                blurRadius: 30,
+                                offset: Offset(0, 5),
+                              )
+                            ],
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Color(0xFFFFFFFF),
+                                Color.fromRGBO(255, 255, 255, 0.9),
+                              ],
+                              stops: [0.0625, 0.8768],
+                            ),
+                          ),
+                          child: TextFormField(
+                            obscureText: _isObscure,
+                            controller: passwordController,
+                            decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                icon: Icon(_isObscure ? Icons.visibility_off : Icons.visibility),
                                 onPressed: () {
                                   setState(() {
                                     _isObscure = !_isObscure;
                                   });
-                                }),
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'Password',
-                            prefixIcon: Icon(Icons.lock),
-                            enabled: true,
-                            contentPadding: const EdgeInsets.only(
-                                left: 14.0, bottom: 8.0, top: 15.0),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: new BorderSide(color: Colors.white),
-                              borderRadius: new BorderRadius.circular(20),
+                                },
+                              ),
+                              filled: true,
+                              fillColor: Colors.transparent,
+                              hintText: 'Password',
+                              prefixIcon: Icon(Icons.lock),
+                              enabled: true,
+                              contentPadding: const EdgeInsets.only(
+                                left: 14.0,
+                                bottom: 8.0,
+                                top: 15.0,
+                              ),
+                              border: OutlineInputBorder(borderSide: BorderSide.none),
+                              focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                              errorBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                              disabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
                             ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: new BorderSide(color: Colors.white),
-                              borderRadius: new BorderRadius.circular(20),
-                            ),
+                            validator: (value) {
+                              RegExp regex = RegExp(r'^.{6,}$');
+                              if (value!.isEmpty) {
+                                return "Password cannot be empty";
+                              }
+                              if (!regex.hasMatch(value)) {
+                                return "Please enter a valid password with at least 6 characters";
+                              } else {
+                                return null;
+                              }
+                            },
+                            onChanged: (value) {},
                           ),
-                          validator: (value) {
-                            RegExp regex = new RegExp(r'^.{6,}$');
-                            if (value!.isEmpty) {
-                              return "Password cannot be empty";
-                            }
-                            if (!regex.hasMatch(value)) {
-                              return ("please enter valid password min. 6 character");
-                            } else {
-                              return null;
-                            }
-                          },
-                          onChanged: (value) {},
                         ),
                         SizedBox(
                           height: 20,
                         ),
-                        TextFormField(
-                          obscureText: _isObscure2,
-                          controller: confirmpassController,
-                          decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                                icon: Icon(_isObscure2
-                                    ? Icons.visibility_off
-                                    : Icons.visibility),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(28),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color.fromRGBO(178, 178, 178, 0.2),
+                                blurRadius: 30,
+                                offset: Offset(0, 5),
+                              )
+                            ],
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Color(0xFFFFFFFF),
+                                Color.fromRGBO(255, 255, 255, 0.9),
+                              ],
+                              stops: [0.0625, 0.8768],
+                            ),
+                          ),
+                          child: TextFormField(
+                            obscureText: _isObscure2,
+                            controller: confirmpassController,
+                            decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                icon: Icon(_isObscure2 ? Icons.visibility_off : Icons.visibility),
                                 onPressed: () {
                                   setState(() {
                                     _isObscure2 = !_isObscure2;
                                   });
-                                }),
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'Confirm Password',
-                            prefixIcon: Icon(Icons.lock),
-                            enabled: true,
-                            contentPadding: const EdgeInsets.only(
-                                left: 14.0, bottom: 8.0, top: 15.0),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: new BorderSide(color: Colors.white),
-                              borderRadius: new BorderRadius.circular(20),
+                                },
+                              ),
+                              filled: true,
+                              fillColor: Colors.transparent,
+                              hintText: 'Confirm Password',
+                              prefixIcon: Icon(Icons.lock),
+                              enabled: true,
+                              contentPadding: const EdgeInsets.only(
+                                left: 14.0,
+                                bottom: 8.0,
+                                top: 15.0,
+                              ),
+                              border: OutlineInputBorder(borderSide: BorderSide.none),
+                              focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                              errorBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                              disabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
                             ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: new BorderSide(color: Colors.white),
-                              borderRadius: new BorderRadius.circular(20),
-                            ),
+                            validator: (value) {
+                              if (confirmpassController.text != passwordController.text) {
+                                return "Password did not match";
+                              } else {
+                                return null;
+                              }
+                            },
+                            onChanged: (value) {},
                           ),
-                          validator: (value) {
-                            if (confirmpassController.text !=
-                                passwordController.text) {
-                              return "Password did not match";
-                            } else {
-                              return null;
-                            }
-                          },
-                          onChanged: (value) {},
                         ),
                         SizedBox(
                           height: 20,
@@ -298,14 +383,14 @@ class _RegisterState extends State<Register> {
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                                color: Colors.black,
                               ),
                             ),
                             DropdownButton<String>(
                               dropdownColor: Colors.blue[900],
                               isDense: true,
                               isExpanded: false,
-                              iconEnabledColor: Colors.white,
+                              iconEnabledColor: Colors.black,
                               focusColor: Colors.white,
                               items: options.map((String dropDownStringItem) {
                                 return DropdownMenuItem<String>(
@@ -313,7 +398,7 @@ class _RegisterState extends State<Register> {
                                   child: Text(
                                     dropDownStringItem,
                                     style: TextStyle(
-                                      color: Colors.white,
+                                      color: Colors.black,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20,
                                     ),
@@ -418,7 +503,7 @@ class _RegisterState extends State<Register> {
                                   ),
                                 ),
                                 style: ElevatedButton.styleFrom(
-                                  primary: Colors.blue,
+                                  primary: Color.fromRGBO(20, 55, 106, 0.45),
                                   padding: EdgeInsets.symmetric(horizontal: 70, vertical: 19),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30),

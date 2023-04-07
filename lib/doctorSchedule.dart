@@ -273,7 +273,7 @@ class _DoctorSchedule extends State<DoctorSchedule> {
                                     child: Container(
                                         margin: const EdgeInsets.symmetric(
                                             vertical: 0.0),
-                                        height: 75.0,
+                                        height: 80.0,
                                         child: ListView.builder(
                                           itemCount: numbersInMonth.length,
                                           scrollDirection: Axis.horizontal,
@@ -413,22 +413,6 @@ class _DoctorSchedule extends State<DoctorSchedule> {
                                                 'date': FieldValue.arrayUnion([timestamp]),
                                               }).then((value) => print('Schedule added successfully'))
                                                   .catchError((error) => print('Failed to add schedule: $error'));
-
-                                              // doctorDocRef.update({
-                                              //   'time': timeOfDay.format(context),
-                                              //   'month': _months[_selectedMonth],
-                                              //   'day': numbersInMonth[DateButtonIndex],
-                                              // }).then((value) => print('Schedule added successfully'))
-                                              //     .catchError((error) => print('Failed to add schedule: $error'));
-
-                                              // doctorDocRef.update({
-                                              //   'date': FieldValue.arrayUnion(['newItem']),
-                                              //   'month': _months[_selectedMonth],
-                                              //   'day': numbersInMonth[DateButtonIndex],
-                                              // }).then((value) => print('Schedule added successfully'))
-                                              //     .catchError((error) => print('Failed to add schedule: $error'));
-
-
 
                                               newTime.add(timeOfDay.format(context));
                                               TimeButtonIndex = newTime.length - 1;

@@ -19,6 +19,28 @@ class _DoctorState extends State<Doctor> {
   FirebaseFirestore.instance.collection('users');
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  List<String> patientID = [];
+  List<String> patientReferences = [];
+
+  Future<void> getAppoinment() async {
+    if (patientID.isEmpty) {
+      final querySnapshot = await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid);
+      final finalQuerysnapshot = querySnapshot.collection('appointments');
+      final querySnapshot2 = await finalQuerysnapshot.get();
+      querySnapshot2.docs.forEach((patient) {
+        if (!patientID.contains(patient.id)) {
+          patientID.add(patient.id);
+        }
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getAppoinment();
+    print(patientReferences);
+  }
 
 
   @override
@@ -28,7 +50,7 @@ class _DoctorState extends State<Doctor> {
         appBar: AppBar(
           elevation: 0,
           leading: IconButton(
-            icon: Icon(Icons.menu),
+            icon: const Icon(Icons.menu),
             onPressed: () {
               _scaffoldKey.currentState!
                   .openDrawer(); // Use Scaffold key to open drawer
@@ -47,7 +69,7 @@ class _DoctorState extends State<Doctor> {
               onPressed: () {
                 logout(context);
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.logout,
               ),
             )
@@ -101,7 +123,7 @@ class _DoctorState extends State<Doctor> {
                               alignment: Alignment.centerLeft,
                               child: Text(
                                 'Hi, Dr. $firstname $lastname',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 15,
                                   color: Colors.white,
                                 ),
@@ -117,7 +139,7 @@ class _DoctorState extends State<Doctor> {
                             children: [
                               ElevatedButton(
                                 onPressed: () {
-                                  CircularProgressIndicator();
+                                  const CircularProgressIndicator();
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -125,8 +147,15 @@ class _DoctorState extends State<Doctor> {
                                     ),
                                   );
                                 },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 15),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                ),
                                 child: Row(
-                                  children: [
+                                  children: const [
                                     Icon(Icons.calendar_month_outlined, color: Colors.black),
                                     SizedBox(width: 10),
                                     Text(
@@ -138,17 +167,10 @@ class _DoctorState extends State<Doctor> {
                                     ),
                                   ],
                                 ),
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors.white,
-                                  padding: EdgeInsets.symmetric(horizontal: 35, vertical: 15),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30),
-                                  ),
-                                ),
                               ),
                               ElevatedButton(
                                 onPressed: () {
-                                  CircularProgressIndicator();
+                                  const CircularProgressIndicator();
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -156,8 +178,15 @@ class _DoctorState extends State<Doctor> {
                                     ),
                                   );
                                 },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                ),
                                 child: Row(
-                                  children: [
+                                  children: const [
                                     Icon(Icons.people_alt_rounded, color: Colors.black),
                                     SizedBox(width: 10),
                                     Text(
@@ -169,13 +198,6 @@ class _DoctorState extends State<Doctor> {
                                     ),
                                   ],
                                 ),
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors.white,
-                                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30),
-                                  ),
-                                ),
                               ),
                             ],
                           ),)
@@ -183,11 +205,11 @@ class _DoctorState extends State<Doctor> {
                         ],
                       );
                     } else if (snapshot.hasError) {
-                      return Center(
+                      return const Center(
                         child: Text('Error fetching data'),
                       );
                     } else {
-                      return Center(
+                      return const Center(
                         child: CircularProgressIndicator(),
                       );
                     }
@@ -204,7 +226,7 @@ class _DoctorState extends State<Doctor> {
                       child: Text(
                         'Upcoming Appointments',
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
@@ -212,7 +234,7 @@ class _DoctorState extends State<Doctor> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(25.0, 20.0, 12.0,
+                    padding: const EdgeInsets.fromLTRB(25.0, 20.0, 0.0,
                         20.0), // add padding to top, left, and right
                     child: Align(
                       alignment: Alignment.centerLeft,
@@ -220,24 +242,109 @@ class _DoctorState extends State<Doctor> {
                         onPressed: () {
                           // Add your logic for the button here
                         },
-                        child: Text(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        child: const Text(
                           'View All',
                           style: TextStyle(
                             fontSize: 15,
                             color: Colors.black,
                           ),
                         ),
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.white,
-                          padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                        ),
                       ),
                     ),
                   ),
                 ],
+              ),
+              Expanded(
+                child: FutureBuilder(
+                  future: getAppoinment(),
+                  builder: (context, snapshot) {
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: patientID.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                            ),
+                            onPressed: () {
+
+                            },
+                            child: SizedBox(
+                              height: 120.0,
+                              child: Row(
+                                children: [
+                                  const Image(
+                                    image: AssetImage('assets/photo.jpg'),
+                                  ),
+                                  Expanded(
+                                      child: SizedBox(
+                                        width: 150.0,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+                                            // Padding(
+                                            //   padding: const EdgeInsets.fromLTRB(
+                                            //       0, 0, 0, 0),
+                                            //   child: GetUserName(
+                                            //       documentId: docIDs[index]),
+                                            // ),
+                                            const Padding(
+                                              padding:
+                                              EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                              child: Text(
+                                                'Dental Surgeon',
+                                                style: TextStyle(
+                                                  fontSize: 15.0,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ),
+                                            Row(
+                                              children: const [
+                                                Icon(
+                                                  Icons.star,
+                                                  color: Colors.yellow,
+                                                  size: 18.0,
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.fromLTRB(
+                                                      5, 0, 0, 0),
+                                                  child: Text(
+                                                    '4.8',
+                                                    style: TextStyle(
+                                                      fontSize: 15.0,
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      )),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
 
             ],

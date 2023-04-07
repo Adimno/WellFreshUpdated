@@ -16,6 +16,8 @@ class Doctor extends StatefulWidget {
 
 List<String> patientID = [];
 List<TimeOfDay> date = [];
+List<String> patientRef = [];
+
 
 
 class _DoctorState extends State<Doctor> {
@@ -33,7 +35,11 @@ class _DoctorState extends State<Doctor> {
       querySnapshot2.docs.forEach((patient) {
         if (!patientID.contains(patient.id)) {
           patientID.add(patient.id);
-
+          patientRef.add(patient['patientReference']);
+          Timestamp timestamp = patient['timestamp'];
+          DateTime dateTime = timestamp.toDate();
+          TimeOfDay timeOfDay = TimeOfDay.fromDateTime(dateTime);
+          date.add(timeOfDay);
 
         }
       });
@@ -285,6 +291,7 @@ class _DoctorState extends State<Doctor> {
                               backgroundColor: Colors.white,
                             ),
                             onPressed: () {
+                              print(patientRef);
                               print(date);
 
                             },

@@ -530,7 +530,7 @@ class _RegisterState extends State<Register> {
 
 
   void signUp(String email, String firstname, String lastname, String password, String role) async {
-    CircularProgressIndicator();
+    const CircularProgressIndicator();
     if (_formkey.currentState!.validate()) {
       await _auth
           .createUserWithEmailAndPassword(email: email, password: password)

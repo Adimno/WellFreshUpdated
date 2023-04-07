@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -144,7 +145,6 @@ class _AppointmentScreen extends State<AppointmentScreen> {
         print('Document does not exist on the database');
       }
     }).catchError((error) => print('Failed to retrieve list: $error'));
-
 
     List<String> resetTime() {
       newTime = [];
@@ -464,7 +464,7 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                                     child: Container(
                                         margin: const EdgeInsets.symmetric(
                                             vertical: 0.0),
-                                        height: 75.0,
+                                        height: 80.0,
                                         child: ListView.builder(
                                           itemCount: numbersInMonth.length,
                                           scrollDirection: Axis.horizontal,
@@ -571,7 +571,7 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                                   ),
                                   Padding(
                                     padding:
-                                    const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                        const EdgeInsets.fromLTRB(0, 5, 0, 0),
                                     child: Container(
                                         margin: const EdgeInsets.symmetric(
                                             vertical: 0.0),
@@ -585,8 +585,8 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                                               children: [
                                                 Padding(
                                                   padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      4, 5, 0, 5),
+                                                      const EdgeInsets.fromLTRB(
+                                                          4, 5, 0, 5),
                                                   child: ElevatedButton(
                                                     onPressed: () {
                                                       setState(() {
@@ -597,20 +597,20 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                                                     style: ElevatedButton
                                                         .styleFrom(
                                                       foregroundColor:
-                                                      TimeButtonIndex ==
-                                                          index
-                                                          ? Colors.white
-                                                          : Colors.black,
+                                                          TimeButtonIndex ==
+                                                                  index
+                                                              ? Colors.white
+                                                              : Colors.black,
                                                       backgroundColor:
-                                                      TimeButtonIndex ==
-                                                          index
-                                                          ? Colors.blue
-                                                          : Colors.white,
+                                                          TimeButtonIndex ==
+                                                                  index
+                                                              ? Colors.blue
+                                                              : Colors.white,
                                                       shape:
-                                                      RoundedRectangleBorder(
+                                                          RoundedRectangleBorder(
                                                         borderRadius:
-                                                        BorderRadius
-                                                            .circular(20.0),
+                                                            BorderRadius
+                                                                .circular(20.0),
                                                       ),
                                                       elevation: 2.0,
                                                     ),
@@ -620,10 +620,10 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                                                       child: Text(
                                                         newTime[index],
                                                         textAlign:
-                                                        TextAlign.center,
+                                                            TextAlign.center,
                                                         style: const TextStyle(
                                                           fontWeight:
-                                                          FontWeight.w300,
+                                                              FontWeight.w300,
                                                           fontSize: 15.0,
                                                         ),
                                                       ),
@@ -632,7 +632,7 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                                                 ),
                                                 const SizedBox(
                                                     width:
-                                                    20.0), // Add space between containers
+                                                        20.0), // Add space between containers
                                               ],
                                             );
                                           },
@@ -650,9 +650,132 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                           children: [
                             const SizedBox(height: 16),
                             Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                              padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
                               child: ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  if (newTime.isNotEmpty &&
+                                      TimeButtonIndex >= 0 &&
+                                      TimeButtonIndex < newTime.length) {
+                                    if (newTime[TimeButtonIndex]?.isEmpty ??
+                                        true) {
+                                    } else {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: const Text(
+                                                'Important Reminder'),
+                                            content: const Text(
+                                                'Failure to go to your appointment will incur a charge of 500 pesos. This is due to the high volume of patients who want to settle an appointment. This fee shall be collected on your next visit in our clinic.'),
+                                            actions: <Widget>[
+                                              ElevatedButton(
+                                                  child: const Text('Cancel'),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                ),
+                                              const Spacer(),
+                                              ElevatedButton(
+                                                child: const Text('Confirm'),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    final String userId = FirebaseAuth.instance.currentUser!.uid;
+                                                    final appointmentPatientRef = FirebaseFirestore.instance
+                                                        .collection('users').doc(userId);
+
+                                                    appointmentPatientRef.collection('appointments').add({
+                                                      'docReference': widget.docId,
+                                                      'patientReference': FirebaseAuth.instance
+                                                          .currentUser!.uid,
+                                                      'time': newTime[TimeButtonIndex],
+                                                      'day': numbersInMonth[
+                                                      DateButtonIndex],
+                                                      'month': _months[_selectedMonth],
+
+                                                    }).then((value) => print('Schedule added successfully'))
+                                                        .catchError((error) => print('Failed to add schedule: $error'));
+
+                                                    final appointmentDoctorRef = FirebaseFirestore.instance
+                                                        .collection('users').doc(widget.docId);
+
+                                                    String timeString = newTime[TimeButtonIndex];
+                                                    DateFormat inputFormat = DateFormat('hh:mm a');
+                                                    DateTime dateTime = inputFormat.parse(timeString);
+                                                    String formattedTime = DateFormat('HH:mm').format(dateTime);
+                                                    print(formattedTime);
+
+                                                    List<String> parts = formattedTime.split(':');
+                                                    int hours = int.parse(parts[0]);
+                                                    int minutes = int.parse(parts[1]);
+
+                                                    final DateTime date = DateTime(2023, _selectedMonth+1, numbersInMonth[DateButtonIndex]); // use your own date here
+                                                    final TimeOfDay time = TimeOfDay(hour: hours, minute: minutes); // use your own time here
+                                                    final Timestamp timestamp = Timestamp.fromDate(DateTime(
+                                                      date.year, // year
+                                                      date.month, // month
+                                                      date.day, // day
+                                                      time.hour, // hour
+                                                      time.minute, // minute
+                                                    ));
+
+                                                    appointmentDoctorRef.collection('appointments').add({
+                                                      'timeStamp': timestamp,
+                                                      'docReference': widget.docId,
+                                                      'patientReference': FirebaseAuth.instance
+                                                          .currentUser!.uid,
+                                                    }).then((value) => print('Schedule added successfully'))
+                                                        .catchError((error) => print('Failed to add schedule: $error'));
+                                                  });
+                                                  Navigator.of(context).pop();
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return AlertDialog(
+                                                        title: const Text('Successful'),
+                                                        content: Text(
+                                                            'Your scheduled date is on ${_months[_selectedMonth]} ${numbersInMonth[
+                                                            DateButtonIndex]}, 2023 at ${newTime[TimeButtonIndex]}'),
+                                                        actions: <Widget>[
+                                                          ElevatedButton(
+                                                            child: const Text('OK'),
+                                                            onPressed: () {
+                                                              Navigator.of(context).pop();
+                                                              Navigator.of(context).pop();
+                                                            },
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
+                                                  );
+
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    }
+                                  } else {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: const Text('Select a Time'),
+                                          content: const Text(
+                                              'Please select a schedule first'),
+                                          actions: <Widget>[
+                                            ElevatedButton(
+                                              child: const Text('OK'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
+                                },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.blue,
                                   padding: const EdgeInsets.symmetric(

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:wellfreshlogin/doctorSchedule.dart';
+import 'get_patient_details.dart';
 import 'navigation_drawer_widget.dart';
 import 'login.dart';
 import 'package:flutter/services.dart';
@@ -36,6 +37,7 @@ class _DoctorState extends State<Doctor> {
       for (var patient in querySnapshot2.docs) {
         if (!patientID.contains(patient.id)) {
           patientID.add(patient.id);
+          patientRef.add(patient['patientReference']);
           month.add(patient['month']);
           time.add(patient['time']);
           day.add(patient['day'].toString());
@@ -43,6 +45,12 @@ class _DoctorState extends State<Doctor> {
       }
     }
   }
+
+
+
+
+
+
 
 
 
@@ -312,9 +320,8 @@ class _DoctorState extends State<Doctor> {
                                             Padding(
                                               padding: const EdgeInsets.fromLTRB(
                                                   0, 0, 0, 0),
-                                              child: Text(patientID[index],
-                                                style: const TextStyle(color: Colors.black),),
-                                            ),
+                                              child: GetPatientDetails(
+                                                  documentId: patientRef[index]),),
                                             Padding(
                                               padding:
                                               const EdgeInsets.fromLTRB(0, 0, 0, 10),

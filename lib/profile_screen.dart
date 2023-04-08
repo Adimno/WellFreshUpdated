@@ -1,142 +1,97 @@
 import 'package:flutter/material.dart';
-import 'navigation_drawer_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'edit_profile.dart';
-class ProfileScreen extends StatefulWidget {
-  @override
-  _ProfileScreenState createState() => _ProfileScreenState();
-}
 
-class _ProfileScreenState extends State<ProfileScreen> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+class ProfileScreen extends StatelessWidget {
+  final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
       appBar: AppBar(
         title: Text('Profile'),
-        centerTitle: true,
-        backgroundColor: Colors.blue,
-        leading: IconButton(
-          icon: Icon(Icons.menu),
-          onPressed: () {
-            _scaffoldKey.currentState!.openDrawer();
-          },
-        ),
       ),
-      drawer: NavigationDrawerWidget(),
-      body: Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 5,
-              blurRadius: 7,
-              offset: Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Align(
-          alignment: Alignment.center,
-          child: Padding(
-            padding: EdgeInsets.only(top: 30),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(height: 20),
-                InkWell(
-                  onTap: () {},
-                  child: Column(
-                    children: [
-                      CircleAvatar(
-                        radius: 60,
-                        backgroundImage: AssetImage('assets/userf.png'),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        'Miguel Santos',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        'Migs12@gmail.com',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
+      body: FutureBuilder<DocumentSnapshot>(
+        future: usersCollection.doc(FirebaseAuth.instance.currentUser!.uid).get(),
+        builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasData && snapshot.data!.exists) {
+            Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
+            String firstname = data.containsKey('firstname') ? data['firstname'] : '';
+            String lastname = data.containsKey('lastname') ? data['lastname'] : '';
+            String name = '$firstname $lastname';
+            String email = FirebaseAuth.instance.currentUser!.email!;
+            String phoneNumber = data.containsKey('phoneNumber') ? data['phoneNumber'] : '';
+            String imageUrl = data.containsKey('image_url') ? data['image_url'] : '';
+
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    radius: 50,
+
                   ),
-                ),
-                SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                  SizedBox(height: 20),
+                  Text(
+                    name,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    email,
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    '# $phoneNumber',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  SizedBox(height: 10),
+                  Card(
+                    margin: EdgeInsets.symmetric(horizontal: 20),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                      child: Column(
                         children: [
-                          Icon(Icons.location_on),
-                          Text(
-                            'San Mateo Rizal',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
+                          ListTile(
+                            leading: Icon(Icons.edit),
+                            title: Text('Edit Profile'),
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => EditProfile(),
+                              ));
+                            },
                           ),
-                          SizedBox(width: 20),
-                          Icon(Icons.phone),
-                          Text(
-                            '555-555-5555',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
+                          ListTile(
+                            leading: Icon(Icons.shopping_cart),
+                            title: Text('Purchase History'),
+                            onTap: () {},
+                          ),
+                          ListTile(
+                            leading: Icon(Icons.settings),
+                            title: Text('Settings'),
+                            onTap: () {},
                           ),
                         ],
                       ),
-                SizedBox(height: 10),
-                Card(
-                  margin: EdgeInsets.symmetric(horizontal: 20),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-                    child: Column(
-                      children: [
-                        ListTile(
-                          leading: Icon(Icons.edit),
-                          title: Text('Edit Profile'),
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => EditProfile()),
-                            );
-                          },
-
-                        ),
-                        ListTile(
-                          leading: Icon(Icons.calendar_today),
-                          title: Text('View Appointments'),
-                          onTap: () {},
-                        ),
-                        ListTile(
-                          leading: Icon(Icons.shopping_cart),
-                          title: Text('Purchase History'),
-                          onTap: () {},
-                        ),
-                        ListTile(
-                          leading: Icon(Icons.settings),
-                          title: Text('Settings'),
-                          onTap: () {},
-                        ),
-                      ],
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-        ),
+                ],
+              ),
+            );
+          } else {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
       ),
     );
   }

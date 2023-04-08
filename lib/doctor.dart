@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:wellfreshlogin/doctorSchedule.dart';
+import 'package:wellfreshlogin/patient_details.dart';
 import 'get_patient_details.dart';
 import 'navigation_drawer_widget.dart';
 import 'login.dart';
@@ -27,6 +28,7 @@ class _DoctorState extends State<Doctor> {
   List<String> month = [];
   List<String> time = [];
   List<String> patientRef = [];
+  List<String> docRef = [];
 
 
   Future<void> getAppoinment() async {
@@ -38,6 +40,7 @@ class _DoctorState extends State<Doctor> {
         if (!patientID.contains(patient.id)) {
           patientID.add(patient.id);
           patientRef.add(patient['patientReference']);
+          docRef.add(patient['docReference']);
           month.add(patient['month']);
           time.add(patient['time']);
           day.add(patient['day'].toString());
@@ -258,7 +261,7 @@ class _DoctorState extends State<Doctor> {
                       alignment: Alignment.centerLeft,
                       child: ElevatedButton(
                         onPressed: () {
-                          // Add your logic for the button here
+
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
@@ -296,10 +299,9 @@ class _DoctorState extends State<Doctor> {
                               backgroundColor: Colors.white,
                             ),
                             onPressed: () {
-                              print(day);
-                              print(month);
-                              print(time);
-
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => PatientDetails(docId: docRef[index],patientId: patientRef[index]),
+                              ));
                             },
                             child: SizedBox(
                               height: 120.0,

@@ -14,10 +14,6 @@ class Doctor extends StatefulWidget {
   State<Doctor> createState() => _DoctorState();
 }
 
-List<String> patientID = [];
-List<TimeOfDay> date = [];
-List<String> patientRef = [];
-
 
 
 class _DoctorState extends State<Doctor> {
@@ -25,6 +21,11 @@ class _DoctorState extends State<Doctor> {
   FirebaseFirestore.instance.collection('users');
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  List<String> patientID = [];
+  List<String> day = [];
+  List<String> month = [];
+  List<String> time = [];
+  List<String> patientRef = [];
 
 
   Future<void> getAppoinment() async {
@@ -32,20 +33,16 @@ class _DoctorState extends State<Doctor> {
       final querySnapshot = await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid);
       final finalQuerysnapshot = querySnapshot.collection('appointments');
       final querySnapshot2 = await finalQuerysnapshot.get();
-      querySnapshot2.docs.forEach((patient) {
+      for (var patient in querySnapshot2.docs) {
         if (!patientID.contains(patient.id)) {
           patientID.add(patient.id);
-          patientRef.add(patient['patientReference']);
-          Timestamp timestamp = patient['timestamp'];
-          DateTime dateTime = timestamp.toDate();
-          TimeOfDay timeOfDay = TimeOfDay.fromDateTime(dateTime);
-          date.add(timeOfDay);
-
+          month.add(patient['month']);
+          time.add(patient['time']);
+          day.add(patient['day'].toString());
         }
-      });
+      }
     }
   }
-
 
 
 
@@ -291,8 +288,9 @@ class _DoctorState extends State<Doctor> {
                               backgroundColor: Colors.white,
                             ),
                             onPressed: () {
-                              print(patientRef);
-                              print(date);
+                              print(day);
+                              print(month);
+                              print(time);
 
                             },
                             child: SizedBox(
@@ -321,7 +319,7 @@ class _DoctorState extends State<Doctor> {
                                               padding:
                                               const EdgeInsets.fromLTRB(0, 0, 0, 10),
                                               child: Text(
-                                                ' 2023',
+                                                '${month[index]} ${day[index]} 2023',
                                                 style: const TextStyle(
                                                   fontSize: 15.0,
                                                   color: Colors.black,
@@ -334,7 +332,7 @@ class _DoctorState extends State<Doctor> {
                                                   padding: const EdgeInsets.fromLTRB(
                                                       5, 0, 0, 0),
                                                   child: Text(
-                                                    '',
+                                                    time[index],
                                                     style: const TextStyle(
                                                       fontSize: 15.0,
                                                       color: Colors.black,

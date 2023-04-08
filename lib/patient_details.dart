@@ -1,11 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class PatientDetails extends StatefulWidget {
   String patientId;
   String docId;
-  PatientDetails({Key? key, required this.docId, required this.patientId})
+  String appointmentId;
+  PatientDetails(
+      {Key? key,
+      required this.appointmentId,
+      required this.docId,
+      required this.patientId})
       : super(key: key);
   @override
   State<PatientDetails> createState() => _AppointmentScreen();
@@ -14,12 +18,34 @@ class PatientDetails extends StatefulWidget {
 class _AppointmentScreen extends State<PatientDetails> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
+  int day = 0;
+  String month = '';
+  String time = '';
+
+  Future<void> getAppointmentDetails() async {
+    final doctor =
+        FirebaseFirestore.instance.collection('users').doc(widget.docId);
+    final doctorQuerysnapshot =
+        await doctor.collection('appointments').doc(widget.appointmentId).get();
+    final appointmentData = doctorQuerysnapshot.data();
+    if (appointmentData != null) {
+      day = appointmentData['day'];
+      month = appointmentData['month'];
+      time = appointmentData['time'];
+      print('${day} ${month} ${time}');
+      // do something with patientName and appointmentTime
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getAppointmentDetails();
+  }
+
   @override
   Widget build(BuildContext context) {
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
-    DocumentReference listSpecialties = users.doc(widget.patientId);
-    DocumentReference listDate = users.doc(widget.patientId);
-
     return FutureBuilder<DocumentSnapshot>(
         future: users.doc(widget.patientId).get(),
         builder: ((context, snapshot) {
@@ -31,7 +57,7 @@ class _AppointmentScreen extends State<PatientDetails> {
             String lastname =
                 data.containsKey('lastname') ? data['lastname'] : '';
             String phoneNumber =
-            data.containsKey('phoneNumber') ? data['phoneNumber'] : '';
+                data.containsKey('phoneNumber') ? data['phoneNumber'] : '';
 
             String email = data.containsKey('email') ? data['email'] : '';
             return Scaffold(
@@ -113,9 +139,9 @@ class _AppointmentScreen extends State<PatientDetails> {
                                         ),
                                       ),
                                     ),
-                                     Padding(
-                                      padding:
-                                          const EdgeInsets.fromLTRB(10, 0, 0, 5),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          10, 0, 0, 5),
                                       child: Text(
                                         phoneNumber,
                                         style: const TextStyle(
@@ -165,20 +191,27 @@ class _AppointmentScreen extends State<PatientDetails> {
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
-                                  Text(
+                                children: [
+                                  const Text(
                                     'Date',
                                     style: TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                   Padding(
-                                    padding:
-                                    EdgeInsets.fromLTRB(0, 10, 0, 0),
-                                    child: Text(
-                                      'DATE',
-                                      style: TextStyle(
-                                        fontSize: 15,
+                                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      child: Text(
+                                        '$month $day, 2023',
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -188,20 +221,27 @@ class _AppointmentScreen extends State<PatientDetails> {
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
-                                  Text(
+                                children: [
+                                  const Text(
                                     'Time',
                                     style: TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                   Padding(
-                                    padding:
-                                    EdgeInsets.fromLTRB(0, 10, 0, 0),
-                                    child: Text(
-                                      'Time',
-                                      style: TextStyle(
-                                        fontSize: 15,
+                                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      child: Text(
+                                        time,
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -222,7 +262,8 @@ class _AppointmentScreen extends State<PatientDetails> {
                                   Text(
                                     'Note',
                                     style: TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ],
@@ -230,27 +271,67 @@ class _AppointmentScreen extends State<PatientDetails> {
                             ),
                             Expanded(
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
-                                  Text(
-                                    'Add a note',
-                                    style: TextStyle(
-                                      fontSize: 18,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      print('add a note');
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ), backgroundColor: Colors.blue,
+                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
                                     ),
-                                  ),
+                                    child: const Text(
+                                      'Add a note',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  )
                                 ],
                               ),
                             ),
                           ],
                         ),
                       ),
+                      Container(
+                        alignment: FractionalOffset.bottomCenter,
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 16),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 330, 0, 0),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  print('Mark as Done');
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blue,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 35, vertical: 19),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                ),
+                                child: const Text(
+                                  "Mark as Done",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
                     ],
                   ),
-
-
                 ],
               ),
-
             );
           }
           return const Scaffold(

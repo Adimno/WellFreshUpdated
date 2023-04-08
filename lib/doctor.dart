@@ -31,7 +31,7 @@ class _DoctorState extends State<Doctor> {
   List<String> docRef = [];
 
 
-  Future<void> getAppoinment() async {
+  Future<void> getAppointment() async {
     if (patientID.isEmpty) {
       final querySnapshot = await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid);
       final finalQuerysnapshot = querySnapshot.collection('appointments');
@@ -60,7 +60,7 @@ class _DoctorState extends State<Doctor> {
   @override
   void initState() {
     super.initState();
-    getAppoinment();
+    getAppointment();
   }
 
 
@@ -284,7 +284,7 @@ class _DoctorState extends State<Doctor> {
               ),
               Expanded(
                 child: FutureBuilder(
-                  future: getAppoinment(),
+                  future: getAppointment(),
                   builder: (context, snapshot) {
                     return ListView.builder(
                       shrinkWrap: true,
@@ -300,7 +300,7 @@ class _DoctorState extends State<Doctor> {
                             ),
                             onPressed: () {
                               Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => PatientDetails(docId: docRef[index],patientId: patientRef[index]),
+                                builder: (context) => PatientDetails(appointmentId: patientID[index],docId: docRef[index],patientId: patientRef[index]),
                               ));
                             },
                             child: SizedBox(

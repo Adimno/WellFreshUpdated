@@ -512,35 +512,6 @@ class _DoctorSchedule extends State<DoctorSchedule> {
                           ],
                         ),
                       ),
-                      Container(
-                        alignment: FractionalOffset.bottomCenter,
-                        child: Column(
-                          children: [
-                            const SizedBox(height: 16),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-                              child: ElevatedButton(
-                                onPressed: () {},
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blue,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 70, vertical: 19),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30),
-                                  ),
-                                ),
-                                child: const Text(
-                                  "Save",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
                     ],
                   ),
                 ],

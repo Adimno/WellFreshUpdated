@@ -11,6 +11,7 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile'),
+        centerTitle: true,
       ),
       body: FutureBuilder<DocumentSnapshot>(
         future: usersCollection.doc(FirebaseAuth.instance.currentUser!.uid).get(),
@@ -22,33 +23,54 @@ class ProfileScreen extends StatelessWidget {
             String name = '$firstname $lastname';
             String email = FirebaseAuth.instance.currentUser!.email!;
             String phoneNumber = data.containsKey('phoneNumber') ? data['phoneNumber'] : '';
-            String imageUrl = data.containsKey('image_url') ? data['image_url'] : '';
+            String imageUrl = data.containsKey('imageUrl') ? data['imageUrl'] : ''; // changed key to 'imageUrl'
 
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   CircleAvatar(
-                    radius: 50,
-
+                    radius: 90,
+                    backgroundImage: imageUrl != '' ? NetworkImage(imageUrl) : null,
                   ),
                   SizedBox(height: 20),
-                  Text(
-                    name,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.person, size: 16),
+                      SizedBox(width: 8),
+                      Text(
+                        name,
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
                   SizedBox(height: 10),
-                  Text(
-                    email,
-                    style: TextStyle(fontSize: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.email, size: 16),
+                      SizedBox(width: 8),
+                      Text(
+                        email,
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ],
                   ),
                   SizedBox(height: 10),
-                  Text(
-                    '# $phoneNumber',
-                    style: TextStyle(fontSize: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.phone, size: 16),
+                      SizedBox(width: 8),
+                      Text(
+                        '$phoneNumber',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ],
                   ),
                   SizedBox(height: 10),
                   Card(
@@ -68,6 +90,11 @@ class ProfileScreen extends StatelessWidget {
                                 builder: (context) => EditProfile(),
                               ));
                             },
+                          ),
+                          ListTile(
+                            leading: Icon(Icons.calendar_month_outlined),
+                            title: Text('View Appointments'),
+                            onTap: () {},
                           ),
                           ListTile(
                             leading: Icon(Icons.shopping_cart),

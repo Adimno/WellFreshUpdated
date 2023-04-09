@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:wellfreshlogin/widgets/widgets.dart';
 import 'package:wellfreshlogin/services/firebase_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -26,8 +27,9 @@ class ProductCarousel extends StatelessWidget {
               );
             }
             else if (snapshot.data!.docs.isEmpty) {
-              return const Center(
-                child: Text('No products found'),
+              return const ItemIndicator(
+                icon: IconlyBroken.category,
+                text: 'No products found',
               );
             }
             else {
@@ -35,7 +37,7 @@ class ProductCarousel extends StatelessWidget {
               return ListView.builder(
                 shrinkWrap: true,
                 clipBehavior: Clip.none,
-                padding: const EdgeInsets.only(left: 20.0, top: 12, bottom: 20),
+                padding: const EdgeInsets.fromLTRB(20, 12, 0, 20),
                 scrollDirection: Axis.horizontal,
                 itemCount: data.length,
                 itemBuilder: (context, index) {

@@ -16,7 +16,7 @@ class ProductCard extends StatelessWidget {
     Key? key,
     required this.product,
     required this.widthFactor,
-    required this.enableHero,
+    this.enableHero = false,
   }) : super(key: key);
 
   @override
@@ -103,6 +103,7 @@ class ProductCard extends StatelessWidget {
         );
       },
       child: Container(
+        width: MediaQuery.of(context).size.width / widthFactor,
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
           color: cardColor,
@@ -113,7 +114,6 @@ class ProductCard extends StatelessWidget {
           children: [
             Expanded(
               child: SizedBox(
-                width: MediaQuery.of(context).size.width / widthFactor,
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: enableHero ? Hero(
@@ -128,23 +128,29 @@ class ProductCard extends StatelessWidget {
               ),
             ),
             Container(
-              width: MediaQuery.of(context).size.width / widthFactor,
               height: 70,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Row(
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        product['name'],
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      Text(
-                        'PHP ${product['price']}',
-                        style: Theme.of(context).textTheme.titleSmall!.copyWith(color: secondaryTextColor),
-                      ),
-                    ],
+                  Flexible(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          product['name'],
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            color: primaryTextColor,
+                          ),
+                        ),
+                        Text(
+                          'PHP ${product['price']}',
+                          style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                            color: secondaryTextColor
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

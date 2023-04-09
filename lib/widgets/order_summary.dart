@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:wellfreshlogin/controllers/cart_controller.dart';
 import 'package:wellfreshlogin/theme.dart';
 
@@ -9,6 +10,7 @@ class OrderSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var controller = Get.put(CartController());
+    var currency = NumberFormat('#,###.00');
 
     return Column(
       children: [
@@ -41,7 +43,7 @@ class OrderSummary extends StatelessWidget {
                     ),
                     Obx(() =>
                       Text(
-                        'PHP ${controller.total.value}',
+                        'PHP ${currency.format(controller.total.value)}',
                         style: Theme.of(context).textTheme.titleMedium!.copyWith(color: secondaryTextColor),
                       ),
                     ),
@@ -56,7 +58,7 @@ class OrderSummary extends StatelessWidget {
                       style: Theme.of(context).textTheme.titleSmall!.copyWith(color: secondaryTextColor),
                     ),
                     Text(
-                      'PHP 50',
+                      'PHP 50.00',
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(color: secondaryTextColor),
                     ),
                   ],
@@ -71,7 +73,7 @@ class OrderSummary extends StatelessWidget {
                     ),
                     Obx(() =>
                       Text(
-                        'PHP ${controller.total.value + controller.shippingFee}',
+                        'PHP ${currency.format(controller.total.value + controller.shippingFee)}',
                         style: Theme.of(context).textTheme.titleMedium!.copyWith(color: secondaryTextColor),
                       ),
                     ),

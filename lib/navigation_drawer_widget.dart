@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:wellfreshlogin/doctor.dart';
 import 'package:wellfreshlogin/profile_screen.dart';
 import 'package:wellfreshlogin/screens/screens.dart';
 import 'patient.dart';
 import 'user_page.dart';
 import 'about.dart';
+import 'doctor.dart';
 
 class NavigationDrawerWidget extends StatelessWidget {
   final padding = EdgeInsets.symmetric(horizontal: 20);
@@ -156,27 +158,60 @@ class NavigationDrawerWidget extends StatelessWidget {
     );
   }
 
-  void selectedItem(BuildContext context, int index) {
-    switch (index) {
-      case 0:
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProfileScreen()));
-        break;
-      case 1:
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => Patient(),
-        ));
-        break;
-      case 3:
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => const StoreScreen(),
-        ));
-        break;
-      case 4:
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => AboutPage(),
-        ));
-        break;
-
+  void selectedItem(BuildContext context, int index) async {
+    final user = FirebaseAuth.instance.currentUser;
+    final userData = await FirebaseFirestore.instance.collection('users').doc(user!.uid).get();
+    final role = userData.data()!['role'];
+    if (role == 'Patient') {
+      switch (index) {
+        case 0:
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => ProfileScreen()));
+          break;
+        case 1:
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => Patient(),
+          ));
+          break;
+        case 3:
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => const StoreScreen(),
+          ));
+          break;
+        case 4:
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => AboutPage(),
+          ));
+          break;
+        default:
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Only patients can access this page")));
+      }
+    } else if (role == 'Doctor') {
+      switch (index) {
+        case 0:
+          Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => ProfileScreen()));
+          break;
+        case 1:
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => Doctor(),
+          ));
+          break;
+        case 3:
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => const StoreScreen(),
+          ));
+          break;
+        case 4:
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => AboutPage(),
+          ));
+          break;
+        default:
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Only Doctors can access this page")));
+      }
     }
   }
 }

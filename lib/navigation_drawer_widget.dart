@@ -9,9 +9,21 @@ import 'user_page.dart';
 import 'about.dart';
 import 'doctor.dart';
 
+
+
+
 class NavigationDrawerWidget extends StatelessWidget {
   final padding = EdgeInsets.symmetric(horizontal: 20);
   final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
+
+  Future<bool> isPatient(String userId) async {
+    final docSnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .get();
+    final userRole = docSnapshot.data()?['role'] as String?;
+    return userRole == 'patient';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +40,7 @@ class NavigationDrawerWidget extends StatelessWidget {
               String name = '$firstname $lastname';
               String email = FirebaseAuth.instance.currentUser!.email!; // get email from FirebaseAuth
               String imageUrl = data.containsKey('imageUrl') ? data['imageUrl'] : 'assets/images/defaultuser.png'; // get imageUrl from Firestore, default image used if imageUrl is null
+              bool isPatient = data.containsKey('role') && data['role'] == 'Patient';
 
               return ListView(
                 children: <Widget>[
@@ -61,28 +74,34 @@ class NavigationDrawerWidget extends StatelessWidget {
                           onClicked: () => selectedItem(context, 1),
                         ),
                         const SizedBox(height: 16),
-                        buildMenuItem(
-                          text: 'Appointment',
-                          icon: Icons.calendar_month,
-                          onClicked: () => selectedItem(context, 2),
-                        ),
-                        const SizedBox(height: 16),
-                        buildMenuItem(
+                        if (isPatient)
+                          buildMenuItem(
+                            text: 'Appointment',
+                            icon: Icons.calendar_month,
+                            onClicked: () => selectedItem(context, 2),
+                          ),
+                        if (!isPatient)
+                          buildMenuItem(
+                            text: 'Doctor Appointments',
+                            icon: Icons.calendar_today,
+                            onClicked: () => selectedItem(context, 3),
+                          ),
+                        if (isPatient)buildMenuItem(
                           text: 'Dental Store',
                           icon: Icons.shopping_bag,
-                          onClicked: () => selectedItem(context, 3),
+                          onClicked: () => selectedItem(context, 4),
                         ),
                         const SizedBox(height: 16),
                         buildMenuItem(
                           text: 'About App',
                           icon: Icons.question_mark,
-                          onClicked: () => selectedItem(context, 4),
+                          onClicked: () => selectedItem(context, 5),
                         ),
                         const SizedBox(height: 16),
                         buildMenuItem(
                           text: 'Contact Us',
                           icon: Icons.dialer_sip_outlined,
-                          onClicked: () => selectedItem(context, 5),
+                          onClicked: () => selectedItem(context, 6),
                         ),
                       ],
                     ),
@@ -173,19 +192,32 @@ class NavigationDrawerWidget extends StatelessWidget {
             builder: (context) => Patient(),
           ));
           break;
-        case 3:
+      /* For Appointment
+        case 2:
           Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => const StoreScreen(),
+            builder: (context) => Contact(),
           ));
           break;
+
+       */
         case 4:
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => StoreScreen(),
+          ));
+          break;
+        case 5:
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => AboutPage(),
           ));
           break;
-        default:
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Only patients can access this page")));
+      /* For contact
+        case 6:
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => Contact(),
+          ));
+          break;
+
+       */
       }
     } else if (role == 'Doctor') {
       switch (index) {
@@ -198,19 +230,28 @@ class NavigationDrawerWidget extends StatelessWidget {
             builder: (context) => Doctor(),
           ));
           break;
+      /* For Doctor appointment
         case 3:
           Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => const StoreScreen(),
+            builder: (context) => Contact(),
           ));
           break;
-        case 4:
+
+       */
+        case 5:
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => AboutPage(),
           ));
           break;
-        default:
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Only Doctors can access this page")));
+
+      /* For contact
+        case 6:
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => Contact(),
+          ));
+          break;
+
+       */
       }
     }
   }

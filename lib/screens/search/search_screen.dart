@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:wellfreshlogin/theme.dart';
 import 'package:wellfreshlogin/widgets/widgets.dart';
 import 'package:wellfreshlogin/services/firebase_services.dart';
 
@@ -17,7 +18,7 @@ class SearchScreen extends StatelessWidget {
     var scaffoldKey = GlobalKey<ScaffoldState>();
 
     return Scaffold(
-      appBar: CustomAppBar(title: title.toString(), backButton: true, scaffoldKey: scaffoldKey),
+      appBar: CustomAppBar(title: title.toString(), backButton: true, color: surfaceColor, scaffoldKey: scaffoldKey),
       body: FutureBuilder(
         future: FirestoreServices.searchProducts(title),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -27,7 +28,10 @@ class SearchScreen extends StatelessWidget {
             );
           }
           else if (snapshot.data!.docs.isEmpty) {
-            return const ItemIndicator(icon: IconlyBroken.search, text: 'No products found');
+            return const ItemIndicator(
+              icon: IconlyBroken.search,
+              text: 'No products found',
+            );
           }
           else {
             var data = snapshot.data!.docs;
@@ -49,7 +53,6 @@ class SearchScreen extends StatelessWidget {
                       child: ProductCard(
                         product: filteredData[index],
                         widthFactor: 2,
-                        enableHero: false,
                       ),
                     );
                   },
@@ -57,7 +60,10 @@ class SearchScreen extends StatelessWidget {
               );
             }
             else {
-              return const ItemIndicator(icon: IconlyBroken.search, text: 'No products found');
+              return const ItemIndicator(
+                icon: IconlyBroken.search,
+                text: 'No products found',
+              );
             }
           }
         },

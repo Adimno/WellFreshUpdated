@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:wellfreshlogin/theme.dart';
 import 'package:wellfreshlogin/widgets/widgets.dart';
@@ -16,20 +17,25 @@ class PaymentMethods extends StatelessWidget {
 
     return Scaffold(
       key: null,
-      appBar: CustomAppBar(title: 'Payment Methods', backButton: true, scaffoldKey: scaffoldKey),
+      appBar: CustomAppBar(title: 'Payment Methods', backButton: true, color: surfaceColor, scaffoldKey: scaffoldKey),
       bottomNavigationBar: BottomAppBar(
-        color: const Color.fromARGB(0, 0, 0, 0),
-        elevation: 0.0,
+        color: Colors.transparent,
+        elevation: 0,
         child: Obx(() =>
           Container(
             height: 110,
             padding: const EdgeInsets.symmetric(horizontal: 64, vertical: 24),
             child: controller.placingOrder.value ? const Center(
               child: CircularProgressIndicator(),
-            ) : ElevatedButton(
-              onPressed: () async {
+            ) : ActionButton(
+              icon: IconlyBroken.bag2,
+              title: 'Place order',
+              color: accentColor,
+              action: () async {
                 if (paymentMethods[controller.paymentIndex.value]['name'] == 'PayPal') {
                   // TODO: Put dummy PayPal here
+                  // When making changes to this screen, make sure to go back to the
+                  // shipping screen, save, and go back, as it will crash the application!
 
                   FloatingSnackBar.show(context, 'You got PayPal!');
                   Get.offAll(const StoreScreen());
@@ -45,99 +51,89 @@ class PaymentMethods extends StatelessWidget {
                   Get.offAll(const StoreScreen());
                 }
               },
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(99.0),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.shopping_bag_outlined,
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    'Place Order',
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                ],
-              ),
             ),
           ),
         ),
       ),
       body: Container(
-        margin: const EdgeInsets.only(top: 8.0, bottom: 20.0, left: 20.0, right: 20.0),
+        margin: const EdgeInsets.only(top: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Payment Method',
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              'Choose your payment option',
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            SizedBox(
-              height: 180,
-              child: ListView.builder(
-                shrinkWrap: true,
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                scrollDirection: Axis.horizontal,
-                itemCount: paymentMethods.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      controller.changePaymentIndex(index);
-                    },
-                    child: Obx(() =>
-                      Container(
-                        width: 128,
-                        margin: const EdgeInsets.only(right: 8),
-                        decoration: BoxDecoration(
-                          color: controller.paymentIndex.value == index ? accentColor : cardColor,
-                          borderRadius: BorderRadius.circular(15.0),
-                          boxShadow: const [containerShadow],
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                          child: Column(
-                            children: [
-                              Image.asset(
-                                paymentMethods[index]['image'],
-                                width: 48,
-                                height: 48,
-                              ),
-                              const SizedBox(height: 12),
-                              Text(
-                                paymentMethods[index]['name'],
-                                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                  color: controller.paymentIndex.value == index ? Colors.white : Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                paymentMethods[index]['description'],
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                  color: controller.paymentIndex.value == index ? Colors.white : Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Payment Method',
+                    style: Theme.of(context).textTheme.displayMedium!.copyWith(
+                      color: primaryTextColor,
+                      fontWeight: FontWeight.bold,
                     ),
-                  );
-                },
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Choose your payment option',
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      color: tertiaryTextColor,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 180,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      scrollDirection: Axis.horizontal,
+                      itemCount: paymentMethods.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            controller.changePaymentIndex(index);
+                          },
+                          child: Obx(() =>
+                            Container(
+                              width: 128,
+                              margin: const EdgeInsets.only(right: 8),
+                              decoration: BoxDecoration(
+                                color: controller.paymentIndex.value == index ? accentColor : cardColor,
+                                borderRadius: BorderRadius.circular(15.0),
+                                boxShadow: const [containerShadow],
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                                child: Column(
+                                  children: [
+                                    Image.asset(
+                                      paymentMethods[index]['image'],
+                                      width: 48,
+                                      height: 48,
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Text(
+                                      paymentMethods[index]['name'],
+                                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                        color: controller.paymentIndex.value == index ? Colors.white : primaryTextColor,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      paymentMethods[index]['description'],
+                                      overflow: TextOverflow.ellipsis,
+                                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                        color: controller.paymentIndex.value == index ? Colors.white : tertiaryTextColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
             const OrderSummary(),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:wellfreshlogin/theme.dart';
 import 'package:wellfreshlogin/widgets/widgets.dart';
 import 'package:wellfreshlogin/screens/screens.dart';
 import 'package:wellfreshlogin/services/firebase_services.dart';
@@ -14,9 +15,11 @@ class CartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var controller = Get.put(CartController());
     var scaffoldKey = GlobalKey<ScaffoldState>();
+
     var appBar = CustomAppBar(
       title: 'Cart',
       backButton: true,
+      color: surfaceColor,
       scaffoldKey: scaffoldKey
     );
 
@@ -50,7 +53,7 @@ class CartScreen extends StatelessWidget {
             appBar: appBar,
             bottomNavigationBar: CustomNavBar(
               title: 'Proceed to Shipping',
-              icon: const Icon(IconlyBroken.paper),
+              icon: IconlyBroken.paper,
               action: () {
                 Get.to(() => const ShippingScreen());
               },
@@ -60,18 +63,25 @@ class CartScreen extends StatelessWidget {
               child: Column(
                 children: [
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: data.length,
-                      itemBuilder: (context, int index) {
-                        return CartProductCard(
-                          id: data[index].id,
-                          name: data[index]['name'],
-                          category: data[index]['category'],
-                          imageUrl: data[index]['imageUrl'],
-                          price: data[index]['price'],
-                          quantity: data[index]['quantity'],
-                        );
-                      }
+                    child: Container(
+                      margin: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+                      child: ListView.builder(
+                        clipBehavior: Clip.none,
+                        itemCount: data.length,
+                        itemBuilder: (context, int index) {
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 10),
+                            child: CartProductCard(
+                              id: data[index].id,
+                              name: data[index]['name'],
+                              category: data[index]['category'],
+                              imageUrl: data[index]['imageUrl'],
+                              price: data[index]['price'],
+                              quantity: data[index]['quantity'],
+                            ),
+                          );
+                        }
+                      ),
                     ),
                   ),
                   const SizedBox(height: 16),

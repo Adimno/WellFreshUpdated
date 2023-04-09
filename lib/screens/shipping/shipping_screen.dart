@@ -15,10 +15,10 @@ class ShippingScreen extends StatelessWidget {
     var scaffoldKey = GlobalKey<ScaffoldState>();
 
     return Scaffold(
-      appBar: CustomAppBar(title: 'Shipping Info', backButton: true, scaffoldKey: scaffoldKey),
+      appBar: CustomAppBar(title: 'Shipping Info', backButton: true, color: surfaceColor, scaffoldKey: scaffoldKey),
       bottomNavigationBar: CustomNavBar(
         title: 'Proceed to Payment',
-        icon: const Icon(IconlyBroken.wallet),
+        icon: IconlyBroken.wallet,
         action: () {
           if (
             controller.addressController.text.isNotEmpty &&
@@ -47,27 +47,27 @@ class ShippingScreen extends StatelessWidget {
               const SizedBox(height: 16),
               CustomTextField(
                 title: 'Address',
-                hint: 'Address',
-                icon: IconlyBroken.home,
-                controller: controller.addressController
+                hintText: 'Address',
+                prefixIcon: const Icon(IconlyBroken.home),
+                controller: controller.addressController,
               ),
               CustomTextField(
                 title: 'City',
-                hint: 'City',
-                icon: IconlyBroken.location,
-                controller: controller.cityController
+                hintText: 'City',
+                prefixIcon: const Icon(IconlyBroken.location),
+                controller: controller.cityController,
               ),
               CustomTextField(
                 title: 'State',
-                hint: 'State',
-                icon: IconlyBroken.location,
-                controller: controller.stateController
+                hintText: 'State',
+                prefixIcon: const Icon(IconlyBroken.location),
+                controller: controller.stateController,
               ),
               CustomTextField(
                 title: 'ZIP Code',
-                hint: 'ZIP Code',
-                icon: IconlyBroken.location,
-                controller: controller.zipCodeController
+                hintText: 'ZIP Code',
+                prefixIcon: const Icon(IconlyBroken.location),
+                controller: controller.zipCodeController,
               ),
             ]
           ),

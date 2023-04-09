@@ -23,10 +23,10 @@ class ProductScreen extends StatelessWidget {
     var scaffoldKey = GlobalKey<ScaffoldState>();
 
     return Scaffold(
-      appBar: CustomAppBar(title: 'Product Details', backButton: true, scaffoldKey: scaffoldKey),
+      appBar: CustomAppBar(title: 'Product Details', backButton: true, color: surfaceColor, scaffoldKey: scaffoldKey),
       bottomNavigationBar: CustomNavBar(
         title: 'Add to Cart',
-        icon: const Icon(IconlyBroken.buy),
+        icon: IconlyBroken.buy,
         action: () {
           controller.addToCart(
             name: data['name'],

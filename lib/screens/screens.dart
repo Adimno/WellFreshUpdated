@@ -4,3 +4,4 @@ export 'cart/cart_screen.dart';
 export 'product/product_screen.dart';
 export 'shipping/shipping_screen.dart';
 export 'payment/payment_method.dart';
+export 'widget_test/widget_test.dart';

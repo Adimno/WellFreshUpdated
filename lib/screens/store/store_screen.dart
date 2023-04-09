@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
-import 'package:wellfreshlogin/navigation_drawer_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:wellfreshlogin/navigation_drawer_widget.dart';
 import 'package:wellfreshlogin/theme.dart';
 import 'package:wellfreshlogin/widgets/widgets.dart';
 import 'package:wellfreshlogin/screens/screens.dart';
@@ -19,58 +19,36 @@ class StoreScreen extends StatelessWidget {
 
     return Scaffold(
       key: scaffoldKey,
-      appBar: CustomAppBar(title: 'Dental Store', backButton: false, scaffoldKey: scaffoldKey),
-      drawer: NavigationDrawerWidget(),
+      appBar: CustomAppBar(title: 'Dental Store', backButton: false, color: surfaceColor, scaffoldKey: scaffoldKey),
+      drawer: const NavigationDrawerWidget(),
       body: SingleChildScrollView(
         child: Column(
           children: [
             Container(
-              height: 48,
               margin: const EdgeInsets.all(20),
-              padding: const EdgeInsets.all(4),
-              clipBehavior: Clip.hardEdge,
-              decoration: BoxDecoration(
-                color: cardColor,
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: const [containerShadow],
-              ),
-              child: TextFormField(
-                controller: controller.searchController,
-                decoration: InputDecoration(
-                  hintStyle: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.normal,
-                    color: secondaryTextColor,
+              child: CustomTextField(
+                hintText: 'Search products',
+                prefixIcon: const Icon(
+                  IconlyBroken.search,
+                  color: secondaryTextColor,
+                ),
+                suffixIcon: Container(
+                  padding: EdgeInsets.zero,
+                  decoration: BoxDecoration(
+                    color: accentColor,
+                    borderRadius: BorderRadius.circular(28),
                   ),
-                  hintText: 'Search products',
-                  border: InputBorder.none,
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.transparent,
-                    ),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 11),
-                  prefixIcon: const Icon(IconlyBroken.search),
-                  suffixIcon: Container(
-                    padding: EdgeInsets.zero,
-                    decoration: BoxDecoration(
-                      color: accentColor,
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: IconButton(
-                      icon: const Icon(IconlyBroken.arrowRight2),
-                      color: Colors.white,
-                      onPressed: () {
-                        if (controller.searchController.text.isNotEmpty) {
-                          Get.to(() => SearchScreen(title: controller.searchController.text));
-                        }
-                      },
-                    ),
+                  child: IconButton(
+                    icon: const Icon(IconlyBroken.arrowRight2),
+                    color: Colors.white,
+                    onPressed: () {
+                      if (controller.searchController.text.isNotEmpty) {
+                        Get.to(() => SearchScreen(title: controller.searchController.text));
+                      }
+                    },
                   ),
                 ),
-                style: const TextStyle(
-                  fontSize: 14,
-                ),
+                controller: controller.searchController
               ),
             ),
             const SectionTitle(title: 'Dental Floss'),
@@ -107,7 +85,7 @@ class StoreScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       boxShadow: const [containerShadow],
                       borderRadius: BorderRadius.circular(16),
-                      color: Colors.red,
+                      color: errorColor,
                     ),
                     child: Center(
                       child: Text(

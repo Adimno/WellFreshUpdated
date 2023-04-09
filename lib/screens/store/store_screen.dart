@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:wellfreshlogin/navigation_drawer_widget.dart';
 import 'package:wellfreshlogin/theme.dart';
 import 'package:wellfreshlogin/widgets/widgets.dart';
 import 'package:wellfreshlogin/screens/screens.dart';
@@ -20,7 +19,7 @@ class StoreScreen extends StatelessWidget {
     return Scaffold(
       key: scaffoldKey,
       appBar: CustomAppBar(title: 'Dental Store', backButton: false, color: surfaceColor, scaffoldKey: scaffoldKey),
-      drawer: NavigationDrawerWidget(),
+      drawer: const NavigationDrawerWidget(),
       body: SingleChildScrollView(
         child: Column(
           children: [

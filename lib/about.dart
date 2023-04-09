@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'navigation_drawer_widget.dart';
+import 'package:wellfreshlogin/widgets/widgets.dart';
+
 class AboutPage extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override

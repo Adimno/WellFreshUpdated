@@ -21,20 +21,25 @@ class CustomListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      minVerticalPadding: minVerticalPadding,
-      leading: Icon(
-        icon,
-        color: color,
-      ),
-      dense: dense,
-      title: Text(
-        text,
-        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-          color: primaryTextColor,
+    return Material(
+      color: Colors.transparent,
+      clipBehavior: Clip.hardEdge,
+      borderRadius: BorderRadius.circular(12),
+      child: ListTile(
+        minVerticalPadding: minVerticalPadding,
+        leading: Icon(
+          icon,
+          color: color,
         ),
+        dense: dense,
+        title: Text(
+          text,
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+            color: primaryTextColor,
+          ),
+        ),
+        onTap: action,
       ),
-      onTap: action,
     );
   }
 }

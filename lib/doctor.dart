@@ -1,13 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:wellfreshlogin/doctorSchedule.dart';
 import 'package:wellfreshlogin/patient_details.dart';
+import 'package:wellfreshlogin/widgets/navigation_drawer.dart';
 import 'get_patient_details.dart';
-import 'navigation_drawer_widget.dart';
 import 'login.dart';
-import 'package:flutter/services.dart';
 
 class Doctor extends StatefulWidget {
   const Doctor({Key? key}) : super(key: key);
@@ -96,7 +94,7 @@ class _DoctorState extends State<Doctor> {
             )
           ],
         ),
-        drawer: NavigationDrawerWidget(),
+        drawer: const NavigationDrawerWidget(),
         body: Container(
           color: Colors.white70,
           child: Column(

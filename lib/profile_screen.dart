@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:wellfreshlogin/screens/screens.dart';
 import 'edit_profile.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -29,9 +30,24 @@ class ProfileScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircleAvatar(
-                    radius: 90,
-                    backgroundImage: imageUrl != '' ? NetworkImage(imageUrl) : null,
+                  InkWell(
+                    borderRadius: const BorderRadius.all(Radius.circular(99)),
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) {
+                        return ImageScreen(
+                          imageUrl: data['imageUrl'],
+                          altText: '${data['firstname']} ${data['lastname']}',
+                          hero: 'profile',
+                        );
+                      }));
+                    },
+                    child: Hero(
+                      tag: 'profile',
+                      child: CircleAvatar(
+                        radius: 90,
+                        backgroundImage: imageUrl != '' ? NetworkImage(imageUrl) : null,
+                      ),
+                    ),
                   ),
                   SizedBox(height: 20),
                   Row(

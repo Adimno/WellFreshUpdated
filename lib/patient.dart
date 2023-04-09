@@ -4,9 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:wellfreshlogin/appointment.dart';
 import 'package:wellfreshlogin/get_user_name.dart';
-import 'navigation_drawer_widget.dart';
+import 'package:wellfreshlogin/widgets/widgets.dart';
 import 'login.dart';
-import 'package:flutter/services.dart';
 
 class Patient extends StatefulWidget {
   const Patient({Key? key}) : super(key: key);
@@ -76,7 +75,7 @@ class _PatientState extends State<Patient> {
             )
           ],
         ),
-        drawer: NavigationDrawerWidget(),
+        drawer: const NavigationDrawerWidget(),
         body: Container(
           color: Colors.white70,
           child: Column(

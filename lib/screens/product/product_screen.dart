@@ -3,6 +3,7 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:wellfreshlogin/theme.dart';
 import 'package:wellfreshlogin/widgets/widgets.dart';
+import 'package:wellfreshlogin/screens/screens.dart';
 import 'package:wellfreshlogin/controllers/product_controller.dart';
 
 class ProductScreen extends StatelessWidget {
@@ -71,7 +72,7 @@ class ProductScreen extends StatelessWidget {
                               return ImageScreen(
                                 imageUrl: data['imageUrl'],
                                 altText: data['name'],
-                                hero: data.id,
+                                hero: 'productImage$hero',
                               );
                             }));
                           },
@@ -110,55 +111,6 @@ class ProductScreen extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class ImageScreen extends StatelessWidget {
-  final String imageUrl;
-  final String altText;
-  final dynamic hero;
-
-  const ImageScreen({
-    Key? key,
-    required this.imageUrl,
-    required this.altText,
-    required this.hero,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Hero(
-              tag: 'productImage$hero',
-              child: Image.network(imageUrl),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              altText,
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: Colors.grey[600],
-              ),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(top: 24),
-        child: FloatingActionButton.small(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          backgroundColor: Colors.grey[800],
-          child: const Icon(Icons.close),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
     );
   }
 }

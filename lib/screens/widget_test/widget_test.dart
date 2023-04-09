@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:wellfreshlogin/theme.dart';
 import 'package:wellfreshlogin/widgets/widgets.dart';
-import 'package:wellfreshlogin/navigation_drawer_widget.dart';
 
 class WidgetTest extends StatelessWidget {
   const WidgetTest({Key? key}) : super(key: key);
@@ -73,7 +72,7 @@ class WidgetTest extends StatelessWidget {
       child: Scaffold(
         key: scaffoldKey,
         appBar: CustomTabBar(title: 'Widget Test', backButton: false, color: surfaceColor, scaffoldKey: scaffoldKey),
-        drawer: NavigationDrawerWidget(),
+        drawer: const NavigationDrawerWidget(),
         body: TabBarView(
           children: [
             Widgets(

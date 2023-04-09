@@ -9,25 +9,54 @@ class EditProfile extends StatefulWidget {
   @override
   _EditProfileState createState() => _EditProfileState();
 }
+final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
+
 
 class _EditProfileState extends State<EditProfile> {
   final CollectionReference usersCollection =
   FirebaseFirestore.instance.collection('users');
+  String userRole = 'Doctor';
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _addressController = TextEditingController();
+  final _biographyController = TextEditingController();
+  final _specialtiesController = TextEditingController();
   String? _selectedGender;
   final _phoneNumberController = TextEditingController();
   String? _imageUrl;
   File? _imageFile;
 
+  List<String> _specialties = [];
+  String? _selectedSpecialty;
+
+
   @override
   void initState() {
     super.initState();
     getUserData();
+    getUserRole().then((role) {
+      setState(() {
+        userRole = role;
+      });
+    });
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((doc) {
+      if (doc.exists && doc.data()!['role'] == 'Doctor') {
+        List<dynamic> specialties = doc.data()!['specialties'];
+        _specialties.addAll(specialties.cast<String>());
+        setState(() {
+          _selectedSpecialty = _specialties[0];
+        });
+      }
+    });
+
   }
+
 
   void getUserData() async {
     DocumentSnapshot snapshot = await usersCollection
@@ -36,23 +65,30 @@ class _EditProfileState extends State<EditProfile> {
     if (snapshot.exists) {
       Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
       setState(() {
+
+        _imageUrl = data.containsKey('imageUrl') ? data['imageUrl'] : null;
         _firstNameController.text =
         data.containsKey('firstname') ? data['firstname'] : '';
         _lastNameController.text =
         data.containsKey('lastname') ? data['lastname'] : '';
         _emailController.text = FirebaseAuth.instance.currentUser!.email!;
+        _biographyController.text =
+        data.containsKey('biography') ? data['biography'] : '';
         _addressController.text =
         data.containsKey('address') ? data['address'] : '';
         _selectedGender =
         data.containsKey('gender') ? data['gender'] : null;
         _phoneNumberController.text =
         data.containsKey('phoneNumber') ? data['phoneNumber'] : '';
-        _imageUrl = data.containsKey('imageUrl') ? data['imageUrl'] : null;
+        _specialtiesController.text =
+        data.containsKey('specialties') ? data['specialties'] : '';
+
       });
     }
   }
 
   void updateUserData() async {
+
     if (_formKey.currentState!.validate()) {
       if (_imageFile != null) {
         String imageName = DateTime.now().millisecondsSinceEpoch.toString();
@@ -61,11 +97,13 @@ class _EditProfileState extends State<EditProfile> {
         UploadTask uploadTask = storageReference.putFile(_imageFile!);
         TaskSnapshot taskSnapshot = await uploadTask;
         String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+
         await usersCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
           'firstname': _firstNameController.text.trim(),
           'lastname': _lastNameController.text.trim(),
           'email': _emailController.text.trim(),
           'address': _addressController.text.trim(),
+          'biography': _biographyController.text.trim(),
           'gender': _selectedGender,
           'phoneNumber': _phoneNumberController.text.trim(),
           'imageUrl': downloadUrl,
@@ -77,6 +115,7 @@ class _EditProfileState extends State<EditProfile> {
           'lastname': _lastNameController.text.trim(),
           'email': _emailController.text.trim(),
           'address': _addressController.text.trim(),
+          'biography': _biographyController.text.trim(),
           'gender': _selectedGender,
           'phoneNumber': _phoneNumberController.text.trim(),
         });
@@ -92,8 +131,23 @@ class _EditProfileState extends State<EditProfile> {
     });
   }
 
+  Future<String> getUserRole() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      if (snapshot.exists) {
+        return snapshot['role'];
+      }
+    }
+    return 'unknown';
+  }
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Profile'),
@@ -180,6 +234,25 @@ class _EditProfileState extends State<EditProfile> {
                 ),
               ),
               SizedBox(height: 16),
+              if (userRole == 'Doctor')
+                TextFormField(
+                  controller: _biographyController,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter your address';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    labelText: 'Biography',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                ),
+              SizedBox(height: 16),
               TextFormField(
                 controller: _addressController,
                 validator: (value) {
@@ -245,7 +318,186 @@ class _EditProfileState extends State<EditProfile> {
                   fillColor: Colors.white,
                 ),
               ),
-
+              SizedBox(height: 16),
+              if (userRole == 'Doctor')
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  'Specialties:',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                Spacer(),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Text('Add New Specialty'),
+                                          content: TextFormField(
+                                            controller: _specialtiesController,
+                                            decoration: InputDecoration(
+                                              labelText: 'Specialty',
+                                              border: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(20),
+                                              ),
+                                              filled: true,
+                                              fillColor: Colors.white,
+                                            ),
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text('Cancel'),
+                                            ),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                String newSpecialty =
+                                                _specialtiesController.text.trim();
+                                                if (newSpecialty.isNotEmpty) {
+                                                  // Save new specialty to Firestore
+                                                  FirebaseFirestore.instance
+                                                      .collection('users')
+                                                      .doc(FirebaseAuth.instance.currentUser!.uid)
+                                                      .update({
+                                                    'specialties': FieldValue.arrayUnion([newSpecialty])
+                                                  })
+                                                      .then((value) {
+                                                    setState(() {
+                                                      _specialties.add(newSpecialty);
+                                                      _selectedSpecialty = newSpecialty;
+                                                    });
+                                                    Navigator.pop(context);
+                                                  });
+                                                }
+                                              },
+                                              child: Text('Save'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: Text('Add New Specialty'),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 8),
+                            if (_specialties.isEmpty)
+                              Text('No specialties added yet.'),
+                            if (_specialties.isNotEmpty)
+                              ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: _specialties.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final specialty = _specialties[index];
+                                  return Card(
+                                    child: ListTile(
+                                      title: Text(specialty),
+                                      trailing: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          IconButton(
+                                            icon: Icon(Icons.edit, color: Colors.blue),
+                                            onPressed: () {
+                                              showDialog(
+                                                context: context,
+                                                builder: (BuildContext context) {
+                                                  return AlertDialog(
+                                                    title: Text('Edit Specialty'),
+                                                    content: TextFormField(
+                                                      controller: _specialtiesController..text = specialty,
+                                                      decoration: InputDecoration(
+                                                        labelText: 'Specialty',
+                                                        border: OutlineInputBorder(
+                                                          borderRadius: BorderRadius.circular(20),
+                                                        ),
+                                                        filled: true,
+                                                        fillColor: Colors.white,
+                                                      ),
+                                                    ),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(context);
+                                                        },
+                                                        child: Text('Cancel'),
+                                                      ),
+                                                      ElevatedButton(
+                                                        onPressed: () {
+                                                          String updatedSpecialty = _specialtiesController.text;
+                                                          setState(() {
+                                                            _specialties[index] = updatedSpecialty;
+                                                            if (_selectedSpecialty == specialty) {
+                                                              _selectedSpecialty = updatedSpecialty;
+                                                            }
+                                                          });
+                                                          // update specialties in Firestore
+                                                          usersCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
+                                                            'specialties': _specialties,
+                                                          });
+                                                          Navigator.pop(context);
+                                                        },
+                                                        child: Text('Save'),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            },
+                                          ),
+                                          IconButton(
+                                            icon: Icon(Icons.delete, color: Colors.red),
+                                            onPressed: () async {
+                                              String specialty = _specialties[index];
+                                              await FirebaseFirestore.instance.collection('specialties')
+                                                  .doc(specialty)
+                                                  .delete();
+                                              setState(() {
+                                                _specialties.removeAt(index);
+                                                if (_selectedSpecialty == specialty) {
+                                                  _selectedSpecialty = _specialties.isEmpty
+                                                      ? null
+                                                      : _specialties[0];
+                                                }
+                                              });
+                                              // delete specialty in Firestore
+                                              usersCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
+                                                'specialties': _specialties,
+                                              });
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                      onTap: () {
+                                        setState(() {
+                                          _selectedSpecialty = specialty;
+                                        });
+                                      },
+                                    ),
+                                  );
+                                },
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               SizedBox(height: 16),
               Center(
                 child: SizedBox(
@@ -271,4 +523,5 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 }
+
 

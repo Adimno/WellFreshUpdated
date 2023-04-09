@@ -20,7 +20,7 @@ class StoreScreen extends StatelessWidget {
     return Scaffold(
       key: scaffoldKey,
       appBar: CustomAppBar(title: 'Dental Store', backButton: false, color: surfaceColor, scaffoldKey: scaffoldKey),
-      drawer: const NavigationDrawerWidget(),
+      drawer: NavigationDrawerWidget(),
       body: SingleChildScrollView(
         child: Column(
           children: [

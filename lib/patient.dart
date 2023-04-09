@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:wellfreshlogin/appointment.dart';
 import 'package:wellfreshlogin/get_user_name.dart';
 import 'package:wellfreshlogin/widgets/widgets.dart';
+import 'get_image.dart';
 import 'login.dart';
 
 class Patient extends StatefulWidget {
@@ -216,9 +217,9 @@ class _PatientState extends State<Patient> {
                               height: 120.0,
                               child: Row(
                                 children: [
-                                  const Image(
-                                    image: AssetImage('assets/photo.jpg'),
-                                  ),
+                                  Expanded(
+                                      child: GetUserImage(
+                                          documentId: docIDs[index])),
                                   Expanded(
                                       child: SizedBox(
                                     width: 150.0,

@@ -180,6 +180,7 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                 data.containsKey('lastname') ? data['lastname'] : '';
             String biography =
                 data.containsKey('biography') ? data['biography'] : '';
+            String imageUrl = data.containsKey('imageUrl') ? data['imageUrl'] : '';
             return Scaffold(
               key: _scaffoldKey, // Add a Scaffold key
               backgroundColor: const Color(0xFFF8FAFF),
@@ -237,8 +238,12 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(20.0),
-                                child: const Image(
-                                  image: AssetImage('assets/photo.png'),
+                                child: Image.network(
+                                  imageUrl,
+                                  errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                                    // If the URL is null or returns an error, return a default image.
+                                    return Image.asset('assets/photo.png');
+                                  },
                                 ),
                               ),
                               Expanded(

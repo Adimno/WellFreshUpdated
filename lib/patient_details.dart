@@ -58,7 +58,7 @@ class _AppointmentScreen extends State<PatientDetails> {
                 data.containsKey('lastname') ? data['lastname'] : '';
             String phoneNumber =
                 data.containsKey('phoneNumber') ? data['phoneNumber'] : '';
-
+            String imageUrl = data.containsKey('imageUrl') ? data['imageUrl'] : '';
             String email = data.containsKey('email') ? data['email'] : '';
             return Scaffold(
               key: _scaffoldKey, // Add a Scaffold key
@@ -117,8 +117,12 @@ class _AppointmentScreen extends State<PatientDetails> {
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(20.0),
-                                child: const Image(
-                                  image: AssetImage('assets/photo.png'),
+                                child: Image.network(
+                                  imageUrl,
+                                  errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                                    // If the URL is null or returns an error, return a default image.
+                                    return Image.asset('assets/photo.jpg');
+                                  },
                                 ),
                               ),
                               Expanded(

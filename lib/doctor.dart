@@ -29,6 +29,7 @@ class _DoctorState extends State<Doctor> {
   List<String> docRef = [];
 
 
+
   Future<void> getAppointment() async {
     if (patientID.isEmpty) {
       final querySnapshot = await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid);
@@ -46,13 +47,6 @@ class _DoctorState extends State<Doctor> {
       }
     }
   }
-
-
-
-
-
-
-
 
 
   @override

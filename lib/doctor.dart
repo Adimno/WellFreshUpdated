@@ -131,101 +131,109 @@ class _DoctorState extends State<Doctor> {
                       String lastname =
                           data.containsKey('lastname') ? data['lastname'] : '';
 
-                      return Column(
-                        children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(25.0, 30.0, 12.0, 20),
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Hi, Dr. $firstname $lastname',
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.white,
+                      return Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    25.0, 30.0, 12.0, 20),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    'Hi, Dr. $firstname $lastname',
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.white,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    0.0, 0.0, 0.0, 20),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        const CircularProgressIndicator();
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                DoctorSchedule(
+                                              docId: docID,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 35, vertical: 15),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: const [
+                                          Icon(Icons.calendar_month_outlined,
+                                              color: Colors.black),
+                                          SizedBox(width: 10),
+                                          Text(
+                                            "Schedules",
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        const CircularProgressIndicator();
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                list_of_patients(),
+                                          ),
+                                        );
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 40, vertical: 15),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: const [
+                                          Icon(Icons.people_alt_rounded,
+                                              color: Colors.black),
+                                          SizedBox(width: 10),
+                                          Text(
+                                            "Patients",
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
                           ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    const CircularProgressIndicator();
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => DoctorSchedule(
-                                          docId: docID,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 35, vertical: 15),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    children: const [
-                                      Icon(Icons.calendar_month_outlined,
-                                          color: Colors.black),
-                                      SizedBox(width: 10),
-                                      Text(
-                                        "Schedules",
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    const CircularProgressIndicator();
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            list_of_patients(),
-                                      ),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 40, vertical: 15),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    children: const [
-                                      Icon(Icons.people_alt_rounded,
-                                          color: Colors.black),
-                                      SizedBox(width: 10),
-                                      Text(
-                                        "Patients",
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
+                        ),
                       );
                     } else if (snapshot.hasError) {
                       return const Center(
@@ -259,7 +267,7 @@ class _DoctorState extends State<Doctor> {
                 ],
               ),
               Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: EdgeInsets.only(bottom: 11.0),
                 child: Expanded(
                   child: FutureBuilder(
                     future: getAppointment(),
@@ -293,55 +301,56 @@ class _DoctorState extends State<Doctor> {
                                             documentId: patientRef[index])),
                                     Expanded(
                                         child: SizedBox(
-                                      width: 150.0,
-                                      child: Column(
-                                        mainAxisAlignment:
+                                          width: 150.0,
+                                          child: Column(
+                                            mainAxisAlignment:
                                             MainAxisAlignment.center,
-                                        crossAxisAlignment:
+                                            crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                0, 0, 0, 0),
-                                            child: GetPatientDetails(
-                                                documentId: patientRef[index]),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                0, 0, 0, 10),
-                                            child: Text(
-                                              '${month[index]} ${day[index]} 2023',
-                                              style: const TextStyle(
-                                                fontSize: 15.0,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ),
-                                          Row(
                                             children: [
                                               Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        5, 0, 0, 0),
+                                                padding: const EdgeInsets.fromLTRB(
+                                                    0, 0, 0, 0),
+                                                child: GetPatientDetails(
+                                                    documentId: patientRef[index]),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.fromLTRB(
+                                                    0, 0, 0, 10),
                                                 child: Text(
-                                                  time[index],
+                                                  '${month[index]} ${day[index]} 2023',
                                                   style: const TextStyle(
                                                     fontSize: 15.0,
                                                     color: Colors.black,
                                                   ),
                                                 ),
                                               ),
+                                              Row(
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        5, 0, 0, 0),
+                                                    child: Text(
+                                                      time[index],
+                                                      style: const TextStyle(
+                                                        fontSize: 15.0,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
                                             ],
-                                          )
-                                        ],
-                                      ),
-                                    )),
+                                          ),
+                                        )),
                                   ],
                                 ),
                               ),
                             ),
                           );
                         },
+                        padding: EdgeInsets.only(bottom: 16.0),
                       );
                     },
                   ),

@@ -487,14 +487,10 @@ class _AppointmentScreen extends State<PatientDetails> {
                       ),
                       Container(
                           alignment: FractionalOffset.bottomCenter,
-                          child: Expanded(
                             child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                const SizedBox(height: 16),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 30, 0, 0),
-                                  child: ElevatedButton(
+                                 ElevatedButton(
                                     onPressed: () {
                                       showDialog(
                                         context: context,
@@ -571,10 +567,10 @@ class _AppointmentScreen extends State<PatientDetails> {
                                       ),
                                     ),
                                   ),
-                                ),
+
                               ],
                             ),
-                          ))
+                          )
                     ],
                   ),
                 ],

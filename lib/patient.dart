@@ -23,11 +23,13 @@ class _PatientState extends State<Patient> {
   List<String> docIDs = [];
   Future<void> getDocId() async {
     if (docIDs.isEmpty) {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('users').get();
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('users').get();
       for (int i = 0; i < querySnapshot.size; i++) {
         DocumentSnapshot documentSnapshot = querySnapshot.docs[i];
         String docId = documentSnapshot.reference.id;
-        Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
+        Map<String, dynamic> data =
+            documentSnapshot.data() as Map<String, dynamic>;
         if (data['role'] == 'Doctor' && !docIDs.contains(docId)) {
           docIDs.add(docId);
           if (kDebugMode) {
@@ -192,147 +194,97 @@ class _PatientState extends State<Patient> {
                   ),
                 ),
               ),
-              Expanded(
-                child: FutureBuilder(
-                  future: getDocId(),
-                  builder: (context, snapshot) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: docIDs.length,
-                      itemBuilder: (context, index) {
-                        return Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
+              Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Expanded(
+                  child: FutureBuilder(
+                    future: getDocId(),
+                    builder: (context, snapshot) {
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: docIDs.length,
+                        itemBuilder: (context, index) {
+                          return Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
                             ),
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => AppointmentScreen(docId: docIDs[index]),
-                              ));
-                            },
-                            child: SizedBox(
-                              height: 120.0,
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                      child: GetUserImage(
-                                          documentId: docIDs[index])),
-                                  Expanded(
-                                      child: SizedBox(
-                                    width: 150.0,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 0, 0, 0),
-                                          child: GetUserName(
-                                              documentId: docIDs[index]),
-                                        ),
-                                        const Padding(
-                                          padding:
-                                              EdgeInsets.fromLTRB(0, 0, 0, 10),
-                                          child: Text(
-                                            'Dental Surgeon',
-                                            style: TextStyle(
-                                              fontSize: 15.0,
-                                              color: Colors.black,
-                                            ),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      AppointmentScreen(docId: docIDs[index]),
+                                ));
+                              },
+                              child: SizedBox(
+                                height: 120.0,
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                        child: GetUserImage(
+                                            documentId: docIDs[index])),
+                                    Expanded(
+                                        child: SizedBox(
+                                      width: 150.0,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                0, 0, 0, 0),
+                                            child: GetUserName(
+                                                documentId: docIDs[index]),
                                           ),
-                                        ),
-                                        Row(
-                                          children: const [
-                                            Icon(
-                                              Icons.star,
-                                              color: Colors.yellow,
-                                              size: 18.0,
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.fromLTRB(
-                                                  5, 0, 0, 0),
-                                              child: Text(
-                                                '4.8',
-                                                style: TextStyle(
-                                                  fontSize: 15.0,
-                                                  color: Colors.black,
-                                                ),
+                                          const Padding(
+                                            padding: EdgeInsets.fromLTRB(
+                                                0, 0, 0, 10),
+                                            child: Text(
+                                              'Dental Surgeon',
+                                              style: TextStyle(
+                                                fontSize: 15.0,
+                                                color: Colors.black,
                                               ),
                                             ),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  )),
-                                ],
+                                          ),
+                                          Row(
+                                            children: const [
+                                              Icon(
+                                                Icons.star,
+                                                color: Colors.yellow,
+                                                size: 18.0,
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    5, 0, 0, 0),
+                                                child: Text(
+                                                  '4.8',
+                                                  style: TextStyle(
+                                                    fontSize: 15.0,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    )),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                    );
-                  },
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
               ),
-              // Center(
-              //   child: Card(
-              //     shape: RoundedRectangleBorder(
-              //       borderRadius: BorderRadius.circular(10.0),
-              //     ),
-              //     child: SizedBox(
-              //       width: 350,
-              //       height: 100,
-              //       child: Row(
-              //         children: [
-              //           const Image(
-              //             image: AssetImage('assets/photo.jpg'),
-              //           ),
-              //           Column(
-              //             mainAxisAlignment: MainAxisAlignment.center,
-              //             crossAxisAlignment: CrossAxisAlignment.start,
-              //             children: [
-              //               const Padding(
-              //                 padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
-              //                 child: Text(
-              //                   'Dr. Jenny Wilson',
-              //                   style: TextStyle(fontSize: 18.0),
-              //                 ),
-              //               ),
-              //               const Padding(
-              //                 padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-              //                 child: Text(
-              //                   'Dental Surgeon',
-              //                   style: TextStyle(fontSize: 13.0),
-              //                 ),
-              //               ),
-              //               Row(
-              //                 children: const [
-              //                   Icon(
-              //                     Icons.star,
-              //                     color: Colors.yellow,
-              //                     size: 18.0,
-              //                   ),
-              //                   Padding(
-              //                     padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-              //                     child: Text(
-              //                       '4.8',
-              //                       style: TextStyle(fontSize: 13.0),
-              //                     ),
-              //                   ),
-              //                 ],
-              //               )
-              //             ],
-              //           )
-              //         ],
-              //       ),
-              //     ),
-              //   ),
-              // ),
             ],
           ),
         ));

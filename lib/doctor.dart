@@ -6,6 +6,7 @@ import 'package:wellfreshlogin/patient_details.dart';
 import 'package:wellfreshlogin/widgets/navigation_drawer.dart';
 import 'get_image.dart';
 import 'get_patient_details.dart';
+import 'list_of_appointments.dart';
 import 'login.dart';
 
 class Doctor extends StatefulWidget {
@@ -36,7 +37,7 @@ class _DoctorState extends State<Doctor> {
       final querySnapshot2 = await finalQuerysnapshot.get();
       for (var patient in querySnapshot2.docs) {
         if (!patientID.contains(patient.id)) {
-          if(patient['status'] == 'ongoing') {
+          if (patient['status'] == 'ongoing') {
             patientID.add(patient.id);
             patientRef.add(patient['patientReference']);
             docRef.add(patient['docReference']);
@@ -44,7 +45,6 @@ class _DoctorState extends State<Doctor> {
             time.add(patient['time']);
             day.add(patient['day'].toString());
           }
-
         }
       }
     }
@@ -57,11 +57,8 @@ class _DoctorState extends State<Doctor> {
   }
 
   void updateState() {
-    setState(() {
-
-    });
+    setState(() {});
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -197,7 +194,8 @@ class _DoctorState extends State<Doctor> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => LoginPage(),
+                                        builder: (context) =>
+                                            list_of_patients(),
                                       ),
                                     );
                                   },
@@ -242,8 +240,8 @@ class _DoctorState extends State<Doctor> {
                 ),
               ),
               Row(
-                children: [
-                  const Padding(
+                children: const [
+                  Padding(
                     padding: EdgeInsets.fromLTRB(25.0, 20.0, 12.0,
                         20.0), // add padding to top, left, and right
                     child: Align(
@@ -258,117 +256,95 @@ class _DoctorState extends State<Doctor> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(25.0, 20.0, 0.0,
-                        20.0), // add padding to top, left, and right
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 25, vertical: 15),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                        ),
-                        child: const Text(
-                          'View All',
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
-              Expanded(
-                child: FutureBuilder(
-                  future: getAppointment(),
-                  builder: (context, snapshot) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: patientID.length,
-                      itemBuilder: (context, index) {
-                        return Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
+              Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Expanded(
+                  child: FutureBuilder(
+                    future: getAppointment(),
+                    builder: (context, snapshot) {
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: patientID.length,
+                        itemBuilder: (context, index) {
+                          return Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
                             ),
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => PatientDetails(
-                                    appointmentId: patientID[index],
-                                    docId: docRef[index],
-                                    patientId: patientRef[index]),
-                              ));
-                            },
-                            child: SizedBox(
-                              height: 120.0,
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                      child: GetUserImage(
-                                          documentId: patientRef[index])),
-                                  Expanded(
-                                      child: SizedBox(
-                                    width: 150.0,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 0, 0, 0),
-                                          child: GetPatientDetails(
-                                              documentId: patientRef[index]),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 0, 0, 10),
-                                          child: Text(
-                                            '${month[index]} ${day[index]} 2023',
-                                            style: const TextStyle(
-                                              fontSize: 15.0,
-                                              color: Colors.black,
-                                            ),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => PatientDetails(
+                                      appointmentId: patientID[index],
+                                      docId: docRef[index],
+                                      patientId: patientRef[index]),
+                                ));
+                              },
+                              child: SizedBox(
+                                height: 120.0,
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                        child: GetUserImage(
+                                            documentId: patientRef[index])),
+                                    Expanded(
+                                        child: SizedBox(
+                                      width: 150.0,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                0, 0, 0, 0),
+                                            child: GetPatientDetails(
+                                                documentId: patientRef[index]),
                                           ),
-                                        ),
-                                        Row(
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      5, 0, 0, 0),
-                                              child: Text(
-                                                time[index],
-                                                style: const TextStyle(
-                                                  fontSize: 15.0,
-                                                  color: Colors.black,
-                                                ),
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                0, 0, 0, 10),
+                                            child: Text(
+                                              '${month[index]} ${day[index]} 2023',
+                                              style: const TextStyle(
+                                                fontSize: 15.0,
+                                                color: Colors.black,
                                               ),
                                             ),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  )),
-                                ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        5, 0, 0, 0),
+                                                child: Text(
+                                                  time[index],
+                                                  style: const TextStyle(
+                                                    fontSize: 15.0,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    )),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                    );
-                  },
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
               ),
             ],

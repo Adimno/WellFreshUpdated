@@ -47,8 +47,8 @@ class PaymentMethods extends StatelessWidget {
                   );
                   await controller.clearCart();
                   // ignore: use_build_context_synchronously
-                  FloatingSnackBar.show(context, 'You got PayPal!');
-                  Get.offAll(const StoreScreen());
+                  FloatingSnackBar.show(context, 'Your order has been placed successfully!');
+                  Get.offAll(() => const StoreScreen());
                 }
               },
             ),

@@ -72,7 +72,7 @@ class StoreScreen extends StatelessWidget {
             ),
             StreamBuilder(
               // TODO: Change 1 to the logged user's ID
-              stream: FirestoreServices.getCart(1),
+              stream: FirestoreServices.getCart(),
               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                   return Container();

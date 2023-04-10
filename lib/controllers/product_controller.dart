@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:wellfreshlogin/consts/consts.dart';
 import 'package:wellfreshlogin/services/firebase_services.dart';
@@ -10,12 +11,11 @@ class ProductController extends GetxController {
     category,
     imageUrl,
     price,
-    userId,
     context,
   }) async {
     bool itemFound = false;
+    String userId = FirebaseAuth.instance.currentUser!.uid;
 
-    // Check if item exists
     QuerySnapshot checkItem = await firestore.collection(cartCollection).where('userId', isEqualTo: userId).get();
     if (checkItem.docs.isNotEmpty) {
       for (int i = 0; i < checkItem.docs.length; i++) {

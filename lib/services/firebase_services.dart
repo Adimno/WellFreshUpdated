@@ -1,15 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:wellfreshlogin/consts/firebase_consts.dart';
 
 class FirestoreServices {
   // Home: Retrieve products based on category
   static getProducts(category) {
-    return firestore.collection(productsCollection).where('category', isEqualTo: category).snapshots();
+    return firestore.collection(productsCollection)
+    .where('category', isEqualTo: category)
+    .snapshots();
   }
 
   // Cart: Retreive cart items based on user ID
-  static getCart(uid) {
-    return firestore.collection(cartCollection).where('userId', isEqualTo: uid).snapshots();
+  static getCart() {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    return firestore.collection(cartCollection)
+    .where('userId', isEqualTo: userId)
+    .snapshots();
   }
 
   // Cart: Add quantity

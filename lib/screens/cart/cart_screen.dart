@@ -24,8 +24,7 @@ class CartScreen extends StatelessWidget {
     );
 
     return StreamBuilder(
-      // TODO: Change 1 to the logged user's ID
-      stream: FirestoreServices.getCart(1),
+      stream: FirestoreServices.getCart(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (!snapshot.hasData) {
           return Scaffold(
@@ -40,7 +39,10 @@ class CartScreen extends StatelessWidget {
           return Scaffold(
             key: scaffoldKey,
             appBar: appBar,
-            body: const ItemIndicator(icon: IconlyBroken.buy, text: 'Cart is empty'),
+            body: const ItemIndicator(
+              icon: IconlyBroken.buy,
+              text: 'Cart is empty',
+            ),
           );
         }
         else {

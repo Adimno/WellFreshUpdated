@@ -67,8 +67,6 @@ class ProductCard extends StatelessWidget {
                           category: product['category'],
                           imageUrl: product['imageUrl'],
                           price: product['price'],
-                          // TODO: Change 1 to the logged user's ID
-                          userId: 1,
                           context: context,
                         );
                         Navigator.pop(context);

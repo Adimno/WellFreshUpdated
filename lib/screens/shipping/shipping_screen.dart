@@ -34,7 +34,7 @@ class ShippingScreen extends StatelessWidget {
         },
       ),
       body: SingleChildScrollView(
-        child: Padding(
+        child: Container(
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [

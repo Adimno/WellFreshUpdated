@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:wellfreshlogin/consts/firebase_consts.dart';
 
@@ -37,11 +38,10 @@ class CartController extends GetxController {
     placingOrder(true);
     await getProductDetails();
 
+    String userId = FirebaseAuth.instance.currentUser!.uid;
     await firestore.collection(ordersCollection).doc().set({
-      'order_id': '123456789',
       'order_date': FieldValue.serverTimestamp(),
-      // TODO: Change 1 to the logged user's ID
-      'userId': 1,
+      'userId': userId,
       'address': addressController.text,
       'state': stateController.text,
       'city': cityController.text,
@@ -49,9 +49,7 @@ class CartController extends GetxController {
       'payment_method': orderPaymentMethod,
       'total': total,
       'products': FieldValue.arrayUnion(products),
-      'order_confirmed': false,
-      'order_shipped': false,
-      'order_delivered': false,
+      'order_status': 'pending',
     });
     placingOrder(false);
   }

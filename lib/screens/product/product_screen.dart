@@ -34,8 +34,6 @@ class ProductScreen extends StatelessWidget {
             category: data['category'],
             imageUrl: data['imageUrl'],
             price: data['price'],
-            // TODO: Change 1 to the logged user's ID
-            userId: 1,
             context: context,
           );
           FloatingSnackBar.show(context, 'Item added successfully!');

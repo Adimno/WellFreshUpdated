@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:wellfreshlogin/theme.dart';
+import 'package:wellfreshlogin/widgets/custom_appbar.dart';
 
 import 'doctor.dart';
 
@@ -25,7 +27,7 @@ class _AppointmentScreen extends State<PatientDetails> {
   int day = 0;
   String month = '';
   String time = '';
-  List<String> notes = [];
+  List notes = [];
   final _notesController = TextEditingController();
   String? _selectedNote;
 
@@ -91,48 +93,7 @@ class _AppointmentScreen extends State<PatientDetails> {
             return Scaffold(
               key: _scaffoldKey, // Add a Scaffold key
               backgroundColor: const Color(0xFFF8FAFF),
-              appBar: AppBar(
-                leading: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      color: Colors.white,
-                      border: Border.all(
-                        color: Colors.white, // set the border color here
-                        width: 2.0, // set the border width here
-                      ),
-                      borderRadius: BorderRadius.circular(10.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black
-                              .withOpacity(0.5), // set the shadow color here
-                          spreadRadius: 1.0, // set the spread radius here
-                          blurRadius: 5.0, // set the blur radius here
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                      child: IconButton(
-                        icon: const Icon(Icons.arrow_back_ios),
-                        onPressed: () => Navigator.of(context).pop(),
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ),
-                elevation: 0,
-                title: const Text(
-                  "Patient's Detail",
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                ),
-                centerTitle: true,
-                backgroundColor: const Color(0xFFF8FAFF),
-                // set app bar background color
-              ),
+              appBar: CustomAppBar(title: 'Patient Details', backButton: true, color: surfaceColor, scaffoldKey: _scaffoldKey),
               body: Column(
                 children: [
                   Column(

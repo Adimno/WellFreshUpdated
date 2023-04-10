@@ -80,9 +80,6 @@ class _EditProfileState extends State<EditProfile> {
         data.containsKey('gender') ? data['gender'] : null;
         _phoneNumberController.text =
         data.containsKey('phoneNumber') ? data['phoneNumber'] : '';
-        _specialtiesController.text =
-        data.containsKey('specialties') ? data['specialties'] : '';
-
       });
     }
   }
@@ -172,7 +169,7 @@ class _EditProfileState extends State<EditProfile> {
                         ? FileImage(_imageFile!)
                         : _imageUrl != null
                         ? NetworkImage(_imageUrl!)
-                        : AssetImage('assets/images/defaultuser.png')
+                        : AssetImage('assets/photo.jpg')
                     as ImageProvider,
 
                   ),

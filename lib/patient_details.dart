@@ -40,7 +40,7 @@ class _AppointmentScreen extends State<PatientDetails> {
       day = appointmentData['day'];
       month = appointmentData['month'];
       time = appointmentData['time'];
-      notes.addAll(appointmentData['notes']);
+      notes.add(appointmentData['notes']);
       print(notes);
       print('${day} ${month} ${time}');
       // do something with patientName and appointmentTime

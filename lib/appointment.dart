@@ -112,6 +112,7 @@ class _AppointmentScreen extends State<AppointmentScreen> {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
     DocumentReference listSpecialties = users.doc(widget.docId);
     DocumentReference listDate = users.doc(widget.docId);
+    String appointmentId ='';
 
     listSpecialties.get().then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
@@ -169,6 +170,7 @@ class _AppointmentScreen extends State<AppointmentScreen> {
     }
 
     return FutureBuilder<DocumentSnapshot>(
+
         future: users.doc(widget.docId).get(),
         builder: ((context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
@@ -684,57 +686,42 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                                                 child: const Text('Confirm'),
                                                 onPressed: () {
                                                   setState(() {
-                                                    final String userId = FirebaseAuth.instance.currentUser!.uid;
-                                                    final appointmentPatientRef = FirebaseFirestore.instance
-                                                        .collection('users').doc(userId);
 
-                                                    appointmentPatientRef.collection('appointments').add({
-                                                      'docReference': widget.docId,
-                                                      'patientReference': FirebaseAuth.instance
-                                                          .currentUser!.uid,
-                                                      'time': newTime[TimeButtonIndex],
-                                                      'day': numbersInMonth[
-                                                      DateButtonIndex],
-                                                      'month': _months[_selectedMonth],
 
-                                                    }).then((value) => print('Schedule added successfully'))
-                                                        .catchError((error) => print('Failed to add schedule: $error'));
-
-                                                    final appointmentDoctorRef = FirebaseFirestore.instance
-                                                        .collection('users').doc(widget.docId);
-
-                                                    // String timeString = newTime[TimeButtonIndex];
-                                                    // DateFormat inputFormat = DateFormat('hh:mm a');
-                                                    // DateTime dateTime = inputFormat.parse(timeString);
-                                                    // String formattedTime = DateFormat('HH:mm').format(dateTime);
-                                                    // print(formattedTime);
-                                                    //
-                                                    // List<String> parts = formattedTime.split(':');
-                                                    // int hours = int.parse(parts[0]);
-                                                    // int minutes = int.parse(parts[1]);
-                                                    //
-                                                    // final DateTime date = DateTime(2023, _selectedMonth+1, numbersInMonth[DateButtonIndex]); // use your own date here
-                                                    // final TimeOfDay time = TimeOfDay(hour: hours, minute: minutes); // use your own time here
-                                                    // final Timestamp timestamp = Timestamp.fromDate(DateTime(
-                                                    //   date.year, // year
-                                                    //   date.month, // month
-                                                    //   date.day, // day
-                                                    //   time.hour, // hour
-                                                    //   time.minute, // minute
-                                                    // ));
+                                                    String appointmentId;
+                                                    DocumentReference<Map<String, dynamic>> appointmentDoctorRef = FirebaseFirestore.instance.collection('users').doc(widget.docId);
 
                                                     appointmentDoctorRef.collection('appointments').add({
                                                       'docReference': widget.docId,
-                                                      'patientReference': FirebaseAuth.instance
-                                                          .currentUser!.uid,
+                                                      'patientReference': FirebaseAuth.instance.currentUser!.uid,
                                                       'time': newTime[TimeButtonIndex],
-                                                      'day': numbersInMonth[
-                                                      DateButtonIndex],
+                                                      'day': numbersInMonth[DateButtonIndex],
                                                       'month': _months[_selectedMonth],
                                                       'status': 'ongoing'
-                                                    }).then((value) => print('Schedule added successfully'))
-                                                        .catchError((error) => print('Failed to add schedule: $error'));
+                                                    }).then((value) {
+                                                      appointmentId = value.id;
+                                                      print('Schedule added successfully $appointmentId');
+
+                                                      final String userId = FirebaseAuth.instance.currentUser!.uid;
+                                                      final appointmentPatientRef = FirebaseFirestore.instance.collection('users').doc(userId);
+
+                                                      appointmentPatientRef.collection('appointments').add({
+                                                        'docReference': widget.docId,
+                                                        'patientReference': FirebaseAuth.instance.currentUser!.uid,
+                                                        'time': newTime[TimeButtonIndex],
+                                                        'day': numbersInMonth[DateButtonIndex],
+                                                        'month': _months[_selectedMonth],
+                                                        'appointmentReference': appointmentId,
+                                                      }).then((value) => print('Schedule added successfully')).catchError((error) => print('Failed to add schedule: $error'));
+
+                                                    }).catchError((error) => print('Failed to add schedule: $error'));
+
+
+
+
                                                   });
+
+
                                                   Navigator.of(context).pop();
                                                   showDialog(
                                                     context: context,

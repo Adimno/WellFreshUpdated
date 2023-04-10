@@ -210,6 +210,14 @@ class _WidgetsState extends State<Widgets> {
                   controller: widget.text,
                   keyboardType: TextInputType.visiblePassword,
                 ),
+                CustomTextField(
+                  title: 'Multiline text form field',
+                  hintText: 'Multiline text form field',
+                  prefixIcon: const Icon(IconlyBroken.message),
+                  lines: 4,
+                  controller: widget.text,
+                  keyboardType: TextInputType.text,
+                ),
               ],
             ),
             WidgetContainer(
@@ -248,6 +256,33 @@ class _WidgetsState extends State<Widgets> {
                 ItemIndicator(
                   icon: IconlyBroken.activity,
                   text: 'No activty found!',
+                ),
+              ]
+            ),
+            WidgetContainer(
+              title: 'Person card',
+              widgets: [
+                PersonCard(
+                  name: 'Miguel Santos',
+                  description: 'Professional Dentist',
+                  imageUrl: 'https://pngimg.com/uploads/doctor/doctor_PNG16028.png',
+                  rating: 5.0,
+                  action: () => FloatingSnackBar.show(context, 'I am handsome'),
+                ),
+                const SizedBox(height: 12),
+                PersonCard(
+                  name: 'John Doe',
+                  description: 'Denterist',
+                  imageUrl: 'https://pngimg.com/uploads/doctor/doctor_PNG15959.png',
+                  rating: 4.5,
+                  action: () => FloatingSnackBar.show(context, 'I am generic'),
+                ),
+                const SizedBox(height: 12),
+                const PersonCard(
+                  name: 'Jayjay Naval',
+                  description: 'May 30, 2023',
+                  subtext: '3:30pm',
+                  imageUrl: 'https://pngimg.com/uploads/doctor/doctor_PNG16041.png',
                 ),
               ]
             ),

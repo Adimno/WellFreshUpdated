@@ -331,7 +331,7 @@ class _EditProfileState extends State<EditProfile> {
                           children: [
                             Row(
                               children: [
-                                Text(
+                                const Text(
                                   'Specialties:',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
@@ -464,21 +464,40 @@ class _EditProfileState extends State<EditProfile> {
                                             icon: Icon(Icons.delete, color: Colors.red),
                                             onPressed: () async {
                                               String specialty = _specialties[index];
-                                              await FirebaseFirestore.instance.collection('specialties')
-                                                  .doc(specialty)
-                                                  .delete();
-                                              setState(() {
-                                                _specialties.removeAt(index);
-                                                if (_selectedSpecialty == specialty) {
-                                                  _selectedSpecialty = _specialties.isEmpty
-                                                      ? null
-                                                      : _specialties[0];
-                                                }
-                                              });
-                                              // delete specialty in Firestore
-                                              usersCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
-                                                'specialties': _specialties,
-                                              });
+                                              bool confirmed = await showDialog(
+                                                context: context,
+                                                builder: (context) => AlertDialog(
+                                                  title: Text('Delete Specialty'),
+                                                  content: Text('Are you sure you want to delete this specialty?'),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () => Navigator.pop(context, false),
+                                                      child: Text('Cancel'),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () => Navigator.pop(context, true),
+                                                      child: Text('Confirm'),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                              if (confirmed) {
+                                                await FirebaseFirestore.instance.collection('specialties')
+                                                    .doc(specialty)
+                                                    .delete();
+                                                setState(() {
+                                                  _specialties.removeAt(index);
+                                                  if (_selectedSpecialty == specialty) {
+                                                    _selectedSpecialty = _specialties.isEmpty
+                                                        ? null
+                                                        : _specialties[0];
+                                                  }
+                                                });
+                                                // delete specialty in Firestore
+                                                usersCollection.doc(FirebaseAuth.instance.currentUser!.uid).update({
+                                                  'specialties': _specialties,
+                                                });
+                                              }
                                             },
                                           ),
                                         ],

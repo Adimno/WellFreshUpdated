@@ -731,6 +731,7 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                                                       'day': numbersInMonth[
                                                       DateButtonIndex],
                                                       'month': _months[_selectedMonth],
+                                                      'status': 'ongoing'
                                                     }).then((value) => print('Schedule added successfully'))
                                                         .catchError((error) => print('Failed to add schedule: $error'));
                                                   });

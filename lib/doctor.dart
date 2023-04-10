@@ -36,12 +36,15 @@ class _DoctorState extends State<Doctor> {
       final querySnapshot2 = await finalQuerysnapshot.get();
       for (var patient in querySnapshot2.docs) {
         if (!patientID.contains(patient.id)) {
-          patientID.add(patient.id);
-          patientRef.add(patient['patientReference']);
-          docRef.add(patient['docReference']);
-          month.add(patient['month']);
-          time.add(patient['time']);
-          day.add(patient['day'].toString());
+          if(patient['status'] == 'ongoing') {
+            patientID.add(patient.id);
+            patientRef.add(patient['patientReference']);
+            docRef.add(patient['docReference']);
+            month.add(patient['month']);
+            time.add(patient['time']);
+            day.add(patient['day'].toString());
+          }
+
         }
       }
     }
@@ -52,6 +55,13 @@ class _DoctorState extends State<Doctor> {
     super.initState();
     getAppointment();
   }
+
+  void updateState() {
+    setState(() {
+
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {

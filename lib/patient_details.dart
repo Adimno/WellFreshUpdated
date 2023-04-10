@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'doctor.dart';
 
 class PatientDetails extends StatefulWidget {
   String patientId;
@@ -22,6 +25,10 @@ class _AppointmentScreen extends State<PatientDetails> {
   int day = 0;
   String month = '';
   String time = '';
+  List<String> notes = [];
+  final _notesController = TextEditingController();
+  String? _selectedNote;
+
 
   Future<void> getAppointmentDetails() async {
     final doctor =
@@ -33,6 +40,8 @@ class _AppointmentScreen extends State<PatientDetails> {
       day = appointmentData['day'];
       month = appointmentData['month'];
       time = appointmentData['time'];
+      notes.addAll(appointmentData['notes']);
+      print(notes);
       print('${day} ${month} ${time}');
       // do something with patientName and appointmentTime
     }
@@ -46,6 +55,24 @@ class _AppointmentScreen extends State<PatientDetails> {
 
   @override
   Widget build(BuildContext context) {
+
+    final doctorDocRef =
+        FirebaseFirestore.instance.collection('users').doc(widget.docId);
+    final appointmentQuerysnapshot =
+        doctorDocRef.collection('appointments').doc(widget.appointmentId);
+
+    appointmentQuerysnapshot.get().then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        Map<String, dynamic> data =
+            documentSnapshot.data() as Map<String, dynamic>;
+        notes = List<String>.from(data['notes']);
+        print('List retrieved successfully!');
+      } else {
+        print('Document does not exist on the database');
+        print(notes);
+      }
+    }).catchError((error) => print('Failed to retrieve list: $error'));
+
     return FutureBuilder<DocumentSnapshot>(
         future: users.doc(widget.patientId).get(),
         builder: ((context, snapshot) {
@@ -58,7 +85,8 @@ class _AppointmentScreen extends State<PatientDetails> {
                 data.containsKey('lastname') ? data['lastname'] : '';
             String phoneNumber =
                 data.containsKey('phoneNumber') ? data['phoneNumber'] : '';
-            String imageUrl = data.containsKey('imageUrl') ? data['imageUrl'] : '';
+            String imageUrl =
+                data.containsKey('imageUrl') ? data['imageUrl'] : '';
             String email = data.containsKey('email') ? data['email'] : '';
             return Scaffold(
               key: _scaffoldKey, // Add a Scaffold key
@@ -119,7 +147,9 @@ class _AppointmentScreen extends State<PatientDetails> {
                                 borderRadius: BorderRadius.circular(20.0),
                                 child: Image.network(
                                   imageUrl,
-                                  errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                                  errorBuilder: (BuildContext context,
+                                      Object exception,
+                                      StackTrace? stackTrace) {
                                     // If the URL is null or returns an error, return a default image.
                                     return Image.asset('assets/photo.jpg');
                                   },
@@ -273,65 +303,278 @@ class _AppointmentScreen extends State<PatientDetails> {
                                 ],
                               ),
                             ),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      print('add a note');
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                      ), backgroundColor: Colors.blue,
-                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                                    ),
-                                    child: const Text(
-                                      'Add a note',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 15,
+                            ElevatedButton(
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('Add a New Note'),
+                                      content: TextFormField(
+                                        controller: _notesController,
+                                        decoration: InputDecoration(
+                                          labelText: 'Note',
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(100),
+                                          ),
+                                          filled: true,
+                                          fillColor: Colors.white,
+                                        ),
                                       ),
-                                    ),
-                                  )
-                                ],
-                              ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text('Cancel'),
+                                        ),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            String newNotes =
+                                            _notesController.text.trim();
+                                            if (newNotes.isNotEmpty) {
+                                              // Save new specialty to Firestore
+                                              appointmentQuerysnapshot
+                                                  .update({
+                                                'notes': FieldValue.arrayUnion([newNotes])
+                                              })
+                                                  .then((value) {
+                                                setState(() {
+                                                  notes.add(newNotes);
+                                                  _selectedNote= newNotes;
+                                                });
+                                                Navigator.pop(context);
+                                              });
+                                            }
+                                          },
+                                          child: Text('Save'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              child: Text('Add a Note'),
                             ),
                           ],
                         ),
                       ),
-                      Container(
-                        alignment: FractionalOffset.bottomCenter,
-                        child: Column(
-                          children: [
-                            const SizedBox(height: 16),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 330, 0, 0),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  print('Mark as Done');
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blue,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 35, vertical: 19),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 10, 25, 0),
+                        child: Container(
+                            margin: const EdgeInsets.symmetric(vertical: 0.0),
+                            height: 350.0,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: notes.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                final doctorNotes = notes[index];
+                                return Card(
+                                  child: ListTile(
+                                    title: Text(doctorNotes),
+                                    trailing: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(Icons.edit, color: Colors.blue),
+                                          onPressed: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: const Text('Edit Note'),
+                                                  content: TextFormField(
+                                                    controller: _notesController..text = doctorNotes,
+                                                    decoration: InputDecoration(
+                                                      labelText: 'Note',
+                                                      border: OutlineInputBorder(
+                                                        borderRadius: BorderRadius.circular(20),
+                                                      ),
+                                                      filled: true,
+                                                      fillColor: Colors.white,
+                                                    ),
+                                                  ),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text('Cancel'),
+                                                    ),
+                                                    ElevatedButton(
+                                                      onPressed: () {
+                                                        String updatedNote = _notesController.text;
+                                                        setState(() {
+                                                          notes[index] = updatedNote;
+                                                          if (_selectedNote == doctorNotes) {
+                                                            _selectedNote = updatedNote;
+                                                          }
+                                                        });
+                                                        // update specialties in Firestore
+                                                        appointmentQuerysnapshot
+                                                            .update({
+                                                          'notes': FieldValue
+                                                              .arrayUnion(
+                                                              [updatedNote]),
+                                                        })
+                                                            .then((value) => print(
+                                                            'Note is added successfully'))
+                                                            .catchError((error) =>
+                                                            print(
+                                                                'Failed to add a note: $error'));
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text('Save'),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          },
+                                        ),
+                                        IconButton(
+                                          icon: Icon(Icons.delete, color: Colors.red),
+                                          onPressed: () async {
+                                            String specialty = notes[index];
+                                            bool confirmed = await showDialog(
+                                              context: context,
+                                              builder: (context) => AlertDialog(
+                                                title: Text('Delete a Note'),
+                                                content: Text('Are you sure you want to delete this note?'),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () => Navigator.pop(context, false),
+                                                    child: Text('Cancel'),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () => Navigator.pop(context, true),
+                                                    child: Text('Confirm'),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                            if (confirmed) {
+                                              await FirebaseFirestore.instance.collection('specialties')
+                                                  .doc(specialty)
+                                                  .delete();
+                                              setState(() {
+                                                notes.removeAt(index);
+                                                if (_selectedNote == specialty) {
+                                                  _selectedNote = notes.isEmpty
+                                                      ? null
+                                                      : notes[0];
+                                                }
+                                              });
+                                              // delete specialty in Firestore
+                                              appointmentQuerysnapshot.update({
+                                                'notes': notes,
+                                              });
+                                            }
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                    onTap: () {
+                                      setState(() {
+                                        _selectedNote = doctorNotes;
+                                      });
+                                    },
                                   ),
-                                ),
-                                child: const Text(
-                                  "Mark as Done",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
+                                );
+                              },
                             ),
-                          ],
                         ),
-                      )
+                      ),
+                      Container(
+                          alignment: FractionalOffset.bottomCenter,
+                          child: Expanded(
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 16),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text("Confirmation"),
+                                            content: Text("Are you sure you want to mark this appointment as done?"),
+                                            actions: [
+
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context); // Close the dialog
+                                                },
+                                                child: const Text(
+                                                  "Cancel",
+                                                  style: TextStyle(
+                                                    fontSize: 10,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  setState(() async {
+                                                    appointmentQuerysnapshot.update({
+                                                      'status': 'done',
+                                                    })
+                                                        .then((value) => {
+                                                      print('status is changed to done'),
+                                                      Navigator.pop(context), // Close the dialog
+                                                    })
+                                                        .catchError((error) => {
+                                                      print('Failed to change the status: $error'),
+
+                                                      // Close the dialog
+                                                    });
+                                                    Navigator.of(context).pop();
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) => const Doctor(),
+                                                      ),
+                                                    );
+
+                                                  });
+
+
+                                                },
+                                                child: const Text(
+                                                  "Confirm",
+                                                  style: TextStyle(
+                                                    fontSize: 10,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue,
+                                      padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 19),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      "Mark as Done",
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ))
                     ],
                   ),
                 ],

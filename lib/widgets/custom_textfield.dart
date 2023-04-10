@@ -7,6 +7,7 @@ class CustomTextField extends StatelessWidget {
   final bool obscureText;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
+  final int lines;
   final TextEditingController? controller;
   final String? Function(String?)? validator;
   final dynamic keyboardType;
@@ -18,6 +19,7 @@ class CustomTextField extends StatelessWidget {
     this.obscureText = false,
     this.prefixIcon,
     this.suffixIcon,
+    this.lines = 1,
     this.controller,
     this.validator,
     this.keyboardType,
@@ -29,7 +31,7 @@ class CustomTextField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          height: 56,
+          height: 56 * lines.toDouble(),
           padding: prefixIcon == null ? const EdgeInsets.fromLTRB(24, 0, 5, 0) : const EdgeInsets.fromLTRB(5, 0, 5, 0),
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(
@@ -59,6 +61,8 @@ class CustomTextField extends StatelessWidget {
               prefixIcon: prefixIcon,
               suffixIcon: suffixIcon,
             ),
+            minLines: lines,
+            maxLines: lines,
             validator: validator,
             keyboardType: keyboardType,
           ),

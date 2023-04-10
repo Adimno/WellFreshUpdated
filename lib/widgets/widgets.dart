@@ -5,6 +5,7 @@ export 'custom_textfield.dart';
 export 'custom_button.dart';
 export 'custom_list_tile.dart';
 export 'custom_pill.dart';
+export 'person_card.dart';
 export 'section_title.dart';
 export 'item_indicator.dart';
 export 'floating_snackbar.dart';

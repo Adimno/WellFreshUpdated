@@ -98,7 +98,7 @@ class NavigationDrawerWidget extends StatelessWidget {
                               backgroundColor: tertiaryColor,
                               radius: 24,
                               backgroundImage: NetworkImage(
-                                data['imageUrl'] ?? 'https://www.seekpng.com/png/full/356-3562377_personal-user.png'
+                                data['imageUrl'] ?? 'https://firebasestorage.googleapis.com/v0/b/wellfresh-f971a.appspot.com/o/userImages%2F1681064987.png?alt=media&token=45887028-8b4b-471f-b987-8454ab20d55c'
                               ),
                             ),
                             const SizedBox(width: 16),

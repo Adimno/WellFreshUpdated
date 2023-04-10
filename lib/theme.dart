@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 const surfaceColor = Color.fromRGBO(248, 250, 255, 1);
 const tertiaryColor = Color.fromRGBO(20, 55, 106, .45);
 const accentColor = Color.fromRGBO(81, 168, 255, 1);
+const warningColor = Color.fromRGBO(255, 187, 14, 1);
 const errorColor = Color.fromRGBO(255, 69, 69, 1);
 
 const primaryTextColor = Color.fromRGBO(8, 12, 47, 1);
@@ -12,6 +13,7 @@ const tertiaryTextColor = Color.fromRGBO(8, 12, 47, .65);
 const invertTextColor = Color.fromRGBO(255, 255, 255, 1);
 const titleTextColor = Color.fromRGBO(8, 12, 47, 1);
 const accentTextColor = Color.fromRGBO(81, 168, 255, 1);
+const warningTextColor = Color.fromRGBO(255, 187, 14, 1);
 const errorTextColor = Color.fromRGBO(255, 69, 69, 1);
 
 const cardColor = Color.fromRGBO(255, 255, 255, 1);

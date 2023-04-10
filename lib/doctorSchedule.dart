@@ -118,6 +118,89 @@ class _DoctorSchedule extends State<DoctorSchedule> {
     DocumentReference listDate = users.doc(widget.docId);
 
 
+    void showEditDialog(BuildContext context, int index) {
+      String editedTime = newTime[index];
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Edit Time'),
+            content: TextField(
+              autofocus: true,
+              controller: TextEditingController(text: editedTime),
+              onChanged: (value) {
+                editedTime = value;
+              },
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('CANCEL'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: const Text('SAVE'),
+                onPressed: () async {
+                  String updatedTime = editedTime;
+
+                  // Update time in Firestore
+
+                  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+                  final CollectionReference appointmentCollection =
+                  firestore.collection('users').doc(widget.docId).collection('appointments');
+                  final DocumentReference appointmentDoc = appointmentCollection.doc(date[DateButtonIndex]);
+
+                  await appointmentDoc.update({
+                    'time': FieldValue.arrayRemove([time[TimeButtonIndex]]),
+                    'time': FieldValue.arrayUnion([updatedTime]),
+                  });
+
+                  // Update time in appointment object
+                  setState(() {
+                    newTime[index] = updatedTime;
+                  });
+
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+
+
+
+    void showDeleteDialog(BuildContext context, int index) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Delete Time'),
+            content: const Text('Are you sure you want to delete this time?'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('CANCEL'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: const Text('DELETE'),
+                onPressed: () {
+                  setState(() {
+                    newTime.removeAt(index);
+                  });
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
 
     listDate.get().then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
@@ -438,73 +521,82 @@ class _DoctorSchedule extends State<DoctorSchedule> {
                                   ],),
 
                                   Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                                     child: Container(
-                                        margin: const EdgeInsets.symmetric(
-                                            vertical: 0.0),
-                                        height: 50.0,
-                                        child: ListView.builder(
-                                          itemCount: newTime.length,
-                                          scrollDirection: Axis.horizontal,
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            return Row(
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.fromLTRB(
-                                                          4, 5, 0, 5),
-                                                  child: ElevatedButton(
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        TimeButtonIndex =
-                                                            index; // keep track of selected button index
-                                                      });
-                                                    },
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                      foregroundColor:
-                                                          TimeButtonIndex ==
-                                                                  index
-                                                              ? Colors.white
-                                                              : Colors.black,
-                                                      backgroundColor:
-                                                          TimeButtonIndex ==
-                                                                  index
-                                                              ? Colors.blue
-                                                              : Colors.white,
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(20.0),
-                                                      ),
-                                                      elevation: 2.0,
+                                      margin: const EdgeInsets.symmetric(vertical: 0.0),
+                                      height: 50.0,
+                                      child: ListView.builder(
+                                        itemCount: newTime.length,
+                                        scrollDirection: Axis.horizontal,
+                                        itemBuilder: (BuildContext context, int index) {
+                                          return Row(
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.fromLTRB(4, 5, 0, 5),
+                                                child: ElevatedButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      TimeButtonIndex = index; // keep track of selected button index
+                                                    });
+
+                                                    // Handle edit and delete operations
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext context) {
+                                                        return AlertDialog(
+                                                          title: const Text('Edit or Delete Time'),
+                                                          content: SingleChildScrollView(
+                                                            child: ListBody(
+                                                              children: <Widget>[
+                                                                ElevatedButton(
+                                                                  onPressed: () {
+                                                                    Navigator.of(context).pop();
+                                                                    showEditDialog(context, index);
+                                                                  },
+                                                                  child: const Text('Edit Time'),
+                                                                ),
+                                                                const SizedBox(height: 10),
+                                                                ElevatedButton(
+                                                                  onPressed: () {
+                                                                    Navigator.of(context).pop();
+                                                                    showDeleteDialog(context, index);
+                                                                  },
+                                                                  child: const Text('Delete Time'),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        );
+                                                      },
+                                                    );
+                                                  },
+                                                  style: ElevatedButton.styleFrom(
+                                                    foregroundColor: TimeButtonIndex == index ? Colors.white : Colors.black,
+                                                    backgroundColor: TimeButtonIndex == index ? Colors.blue : Colors.white,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(20.0),
                                                     ),
-                                                    child: Padding(
-                                                      padding: const EdgeInsets
-                                                          .fromLTRB(0, 2, 0, 0),
-                                                      child: Text(
-                                                        newTime[index],
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: const TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w300,
-                                                          fontSize: 15.0,
-                                                        ),
+                                                    elevation: 2.0,
+                                                  ),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.fromLTRB(0, 2, 0, 0),
+                                                    child: Text(
+                                                      newTime[index],
+                                                      textAlign: TextAlign.center,
+                                                      style: const TextStyle(
+                                                        fontWeight: FontWeight.w300,
+                                                        fontSize: 15.0,
                                                       ),
                                                     ),
                                                   ),
                                                 ),
-                                                const SizedBox(
-                                                    width:
-                                                        20.0), // Add space between containers
-                                              ],
-                                            );
-                                          },
-                                        )),
+                                              ),
+                                              const SizedBox(width: 20.0), // Add space between containers
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),

@@ -3,11 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:wellfreshlogin/doctorSchedule.dart';
 import 'package:wellfreshlogin/patient_details.dart';
+import 'package:wellfreshlogin/screens/screens.dart';
 import 'package:wellfreshlogin/widgets/navigation_drawer.dart';
-import 'get_image.dart';
-import 'get_patient_details.dart';
-import 'list_of_appointments.dart';
-import 'login.dart';
+import '../get_image.dart';
+import '../get_patient_details.dart';
+import '../list_of_appointments.dart';
 
 class Doctor extends StatefulWidget {
   const Doctor({Key? key}) : super(key: key);
@@ -372,7 +372,7 @@ class _DoctorState extends State<Doctor> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => LoginPage(),
+        builder: (context) => LoginScreen(),
       ),
     );
   }

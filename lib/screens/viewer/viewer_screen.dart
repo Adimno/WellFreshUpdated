@@ -20,9 +20,22 @@ class ImageScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 24),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: FloatingActionButton.small(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  backgroundColor: Colors.grey[800],
+                  child: const Icon(Icons.close),
+                ),
+              ),
+            ),
             Hero(
               tag: hero,
-              child: Image.network(imageUrl),
+              child: Image.network(imageUrl, height: MediaQuery.of(context).size.height - 300),
             ),
             const SizedBox(height: 24),
             Text(
@@ -32,16 +45,6 @@ class ImageScreen extends StatelessWidget {
               ),
             ),
           ],
-        ),
-      ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(top: 24),
-        child: FloatingActionButton.small(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          backgroundColor: Colors.grey[800],
-          child: const Icon(Icons.close),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endTop,

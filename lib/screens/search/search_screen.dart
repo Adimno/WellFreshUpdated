@@ -20,7 +20,7 @@ class SearchScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(title: title.toString(), backButton: true, color: surfaceColor, scaffoldKey: scaffoldKey),
       body: FutureBuilder(
-        future: FirestoreServices.searchProducts(title),
+        future: FirestoreServices.searchProducts(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return const Center(

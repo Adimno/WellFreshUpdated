@@ -15,15 +15,17 @@ class DecorationPill extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 44,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
         color: cardColor,
         borderRadius: BorderRadius.circular(borderRadius),
         boxShadow: const [containerShadow],
       ),
-      child: Text(
-        text,
-        style: Theme.of(context).textTheme.bodyMedium,
+      child: Center(
+        child: Text(
+          text,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
       ),
     );
   }
@@ -41,17 +43,18 @@ class PillCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      clipBehavior: Clip.none,
-      height: 92,
+    return SizedBox(
+      height: 56,
       child: ListView.builder(
         shrinkWrap: true,
+        clipBehavior: Clip.none,
         scrollDirection: Axis.horizontal,
         itemCount: data.length,
         itemBuilder: (context, index) {
           return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
-            child: DecorationPill(text: data[index]['role'], borderRadius: borderRadius)
+            margin: const EdgeInsets.only(top: 12),
+            padding: const EdgeInsets.only(right: 16),
+            child: DecorationPill(text: data[index], borderRadius: borderRadius)
           );
         },
       ),

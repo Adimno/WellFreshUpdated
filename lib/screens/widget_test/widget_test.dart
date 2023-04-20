@@ -228,7 +228,7 @@ class _WidgetsState extends State<Widgets> {
                   child: ActionButton(
                     icon: IconlyBroken.bookmark,
                     title: 'Action button',
-                    color: accentColor,
+                    backgroundColor: accentColor,
                     action: () {},
                   ),
                 ),
@@ -238,7 +238,7 @@ class _WidgetsState extends State<Widgets> {
                   child: ActionButton(
                     icon: IconlyBroken.bookmark,
                     title: 'Colored button',
-                    color: errorColor,
+                    backgroundColor: errorColor,
                     action: () {},
                   ),
                 ),
@@ -319,7 +319,7 @@ class _WidgetsState extends State<Widgets> {
                   child: ActionButton(
                     icon: IconlyBroken.bookmark,
                     title: 'Show floating snackbar',
-                    color: accentColor,
+                    backgroundColor: accentColor,
                     action: () {
                       FloatingSnackBar.show(context, 'This is a floating snackbar');
                     },

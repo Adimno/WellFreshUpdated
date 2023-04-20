@@ -4,14 +4,18 @@ import 'package:wellfreshlogin/theme.dart';
 class ActionButton extends StatelessWidget {
   final String title;
   final IconData? icon;
-  final Color? color;
+  final Color? backgroundColor;
+  final Color? foregroundColor;
+  final double fontSize;
   final VoidCallback? action;
 
   const ActionButton({
     super.key,
     required this.title,
     this.icon,
-    this.color,
+    this.backgroundColor = accentColor,
+    this.foregroundColor = invertTextColor,
+    this.fontSize = 16,
     this.action,
   });
 
@@ -20,24 +24,24 @@ class ActionButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: action,
       style: ElevatedButton.styleFrom(
-        backgroundColor: color,
+        backgroundColor: backgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(99),
         ),
         shadowColor: boxShadowColor,
-        elevation: 10,
+        elevation: backgroundColor == Colors.transparent ? 0 : 10,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          if (icon != null) Icon(icon),
+          if (icon != null) Icon(icon, color: foregroundColor),
           if (icon != null) const SizedBox(width: 12),
           Text(
             title,
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.normal,
+            style: TextStyle(
+              fontSize: fontSize,
+              color: foregroundColor,
             ),
           ),
         ],

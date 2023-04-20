@@ -5,8 +5,10 @@ class CustomTextField extends StatelessWidget {
   final String? title;
   final String? hintText;
   final bool obscureText;
+  final bool enabled;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
+  final Color color;
   final int lines;
   final TextEditingController? controller;
   final String? Function(String?)? validator;
@@ -17,8 +19,10 @@ class CustomTextField extends StatelessWidget {
     this.title,
     this.hintText,
     this.obscureText = false,
+    this.enabled = true,
     this.prefixIcon,
     this.suffixIcon,
+    this.color = cardColor,
     this.lines = 1,
     this.controller,
     this.validator,
@@ -31,17 +35,13 @@ class CustomTextField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          height: 56 * lines.toDouble(),
-          padding: prefixIcon == null ? const EdgeInsets.fromLTRB(24, 0, 5, 0) : const EdgeInsets.fromLTRB(5, 0, 5, 0),
-          clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(
-            color: cardColor,
-            borderRadius: BorderRadius.circular(28),
-            boxShadow: const [containerShadow],
+          decoration: const BoxDecoration(
+            boxShadow: [containerShadow],
           ),
           child: TextFormField(
             controller: controller,
             obscureText: obscureText,
+            enabled: enabled,
             decoration: InputDecoration(
               hintStyle: const TextStyle(
                 fontSize: 14,
@@ -49,17 +49,15 @@ class CustomTextField extends StatelessWidget {
                 color: secondaryTextColor,
               ),
               hintText: hintText,
-              fillColor: Colors.transparent,
+              fillColor: color,
               filled: true,
-              border: InputBorder.none,
-              focusedBorder: const OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.transparent,
-                ),
+              border: UnderlineInputBorder(
+                borderRadius:BorderRadius.circular(28),
+                borderSide: BorderSide.none,
               ),
-              contentPadding: const EdgeInsets.symmetric(vertical: 16),
-              prefixIcon: prefixIcon,
-              suffixIcon: suffixIcon,
+              contentPadding: prefixIcon == null ? const EdgeInsets.fromLTRB(0, 16, 0, 16) : const EdgeInsets.all(16),
+              prefixIcon: prefixIcon != null ? Padding(padding: const EdgeInsets.only(left: 5), child: prefixIcon) : null,
+              suffixIcon: suffixIcon != null ? Padding(padding: const EdgeInsets.only(right: 5), child: suffixIcon) : null,
             ),
             minLines: lines,
             maxLines: lines,

@@ -70,6 +70,7 @@ flutter:
   assets:
     - assets/
     - assets/fonts/
+    - assets/avatar/
     - assets/logo/
     - assets/payments/
 
@@ -88,7 +89,7 @@ flutter:
     - family: Poppins
       fonts:
         - asset: assets/fonts/Poppins-Medium.ttf
-        - asset: assets/fonts/Poppins-Semibold.ttf
+        - asset: assets/fonts/Poppins-SemiBold.ttf
           weight: 700
   #
   # For details regarding fonts from package dependencies,

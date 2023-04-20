@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:wellfreshlogin/get_doctor_name.dart';
 import 'package:wellfreshlogin/theme.dart';
+import 'package:wellfreshlogin/view_notes.dart';
 import 'package:wellfreshlogin/widgets/custom_appbar.dart';
 
 import 'get_user_name.dart';
@@ -255,7 +256,13 @@ class _AppointmentScreen extends State<PatientAppointmentHistory> {
                                                           0, 0, 20, 0),
                                                   child: ElevatedButton(
                                                     onPressed: () {
-
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext context) {
+                                                          return ViewNotes(docID: docReference[
+                                                          index], appointmentId: appointmentReference[index],);
+                                                        },
+                                                      );
 
                                                       },
                                                     style: ElevatedButton

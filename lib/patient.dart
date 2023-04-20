@@ -194,7 +194,7 @@ class _PatientState extends State<Patient> {
                   ),
                 ),
               ),
-              Padding(
+              Expanded(child: Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Expanded(
                   child: FutureBuilder(
@@ -227,53 +227,53 @@ class _PatientState extends State<Patient> {
                                             documentId: docIDs[index])),
                                     Expanded(
                                         child: SizedBox(
-                                      width: 150.0,
-                                      child: Column(
-                                        mainAxisAlignment:
+                                          width: 150.0,
+                                          child: Column(
+                                            mainAxisAlignment:
                                             MainAxisAlignment.center,
-                                        crossAxisAlignment:
+                                            crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                0, 0, 0, 0),
-                                            child: GetUserName(
-                                                documentId: docIDs[index]),
-                                          ),
-                                          const Padding(
-                                            padding: EdgeInsets.fromLTRB(
-                                                0, 0, 0, 10),
-                                            child: Text(
-                                              'Dental Surgeon',
-                                              style: TextStyle(
-                                                fontSize: 15.0,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ),
-                                          Row(
-                                            children: const [
-                                              Icon(
-                                                Icons.star,
-                                                color: Colors.yellow,
-                                                size: 18.0,
-                                              ),
+                                            children: [
                                               Padding(
+                                                padding: const EdgeInsets.fromLTRB(
+                                                    0, 0, 0, 0),
+                                                child: GetUserName(
+                                                    documentId: docIDs[index]),
+                                              ),
+                                              const Padding(
                                                 padding: EdgeInsets.fromLTRB(
-                                                    5, 0, 0, 0),
+                                                    0, 0, 0, 10),
                                                 child: Text(
-                                                  '4.8',
+                                                  'Dental Surgeon',
                                                   style: TextStyle(
                                                     fontSize: 15.0,
                                                     color: Colors.black,
                                                   ),
                                                 ),
                                               ),
+                                              Row(
+                                                children: const [
+                                                  Icon(
+                                                    Icons.star,
+                                                    color: Colors.yellow,
+                                                    size: 18.0,
+                                                  ),
+                                                  Padding(
+                                                    padding: EdgeInsets.fromLTRB(
+                                                        5, 0, 0, 0),
+                                                    child: Text(
+                                                      '4.8',
+                                                      style: TextStyle(
+                                                        fontSize: 15.0,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
                                             ],
-                                          )
-                                        ],
-                                      ),
-                                    )),
+                                          ),
+                                        )),
                                   ],
                                 ),
                               ),
@@ -284,7 +284,7 @@ class _PatientState extends State<Patient> {
                     },
                   ),
                 ),
-              ),
+              ),)
             ],
           ),
         ));

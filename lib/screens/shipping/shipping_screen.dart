@@ -1,18 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:wellfreshlogin/theme.dart';
 import 'package:wellfreshlogin/widgets/widgets.dart';
 import 'package:wellfreshlogin/screens/screens.dart';
+import 'package:wellfreshlogin/consts/firebase_consts.dart';
 import 'package:wellfreshlogin/controllers/cart_controller.dart';
 
-class ShippingScreen extends StatelessWidget {
+class ShippingScreen extends StatefulWidget {
   const ShippingScreen({Key? key}) : super(key: key);
 
   @override
+  State<ShippingScreen> createState() => _ShippingScreenState();
+}
+
+class _ShippingScreenState extends State<ShippingScreen> {
+  var controller = Get.find<CartController>();
+  var scaffoldKey = GlobalKey<ScaffoldState>();
+  var user = FirebaseFirestore.instance.collection(usersCollection);
+
+  void getDeliveryDetails() async {
+    DocumentSnapshot snapshot = await user.doc(FirebaseAuth.instance.currentUser!.uid).get();
+
+    if (snapshot.exists) {
+      Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+
+      setState(() {
+        if (data['delivery_details'][0]) {
+          controller.addressController.text = data['delivery_details'][1];
+          controller.cityController.text = data['delivery_details'][2];
+          controller.stateController.text = data['delivery_details'][3];
+          controller.zipCodeController.text = data['delivery_details'][4];
+        }
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    getDeliveryDetails();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var controller = Get.find<CartController>();
-    var scaffoldKey = GlobalKey<ScaffoldState>();
 
     return Scaffold(
       appBar: CustomAppBar(title: 'Shipping Info', backButton: true, color: surfaceColor, scaffoldKey: scaffoldKey),
@@ -48,25 +81,25 @@ class ShippingScreen extends StatelessWidget {
               CustomTextField(
                 title: 'Address',
                 hintText: 'Address',
-                prefixIcon: const Icon(IconlyBroken.home),
+                prefixIcon: const Icon(IconlyBroken.home, color: tertiaryTextColor),
                 controller: controller.addressController,
               ),
               CustomTextField(
                 title: 'City',
                 hintText: 'City',
-                prefixIcon: const Icon(IconlyBroken.location),
+                prefixIcon: const Icon(IconlyBroken.location, color: tertiaryTextColor),
                 controller: controller.cityController,
               ),
               CustomTextField(
                 title: 'State',
                 hintText: 'State',
-                prefixIcon: const Icon(IconlyBroken.location),
+                prefixIcon: const Icon(IconlyBroken.location, color: tertiaryTextColor),
                 controller: controller.stateController,
               ),
               CustomTextField(
                 title: 'ZIP Code',
                 hintText: 'ZIP Code',
-                prefixIcon: const Icon(IconlyBroken.location),
+                prefixIcon: const Icon(IconlyBroken.location, color: tertiaryTextColor),
                 controller: controller.zipCodeController,
               ),
             ]

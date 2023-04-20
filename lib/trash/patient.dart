@@ -4,9 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:wellfreshlogin/appointment.dart';
 import 'package:wellfreshlogin/get_user_name.dart';
+import 'package:wellfreshlogin/screens/screens.dart';
 import 'package:wellfreshlogin/widgets/widgets.dart';
-import 'get_image.dart';
-import 'login.dart';
+import '../get_image.dart';
 
 class Patient extends StatefulWidget {
   const Patient({Key? key}) : super(key: key);
@@ -296,7 +296,7 @@ class _PatientState extends State<Patient> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => LoginPage(),
+        builder: (context) => LoginScreen(),
       ),
     );
   }

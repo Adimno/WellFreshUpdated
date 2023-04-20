@@ -5,7 +5,7 @@ import 'package:wellfreshlogin/theme.dart';
 import 'package:wellfreshlogin/widgets/custom_appbar.dart';
 
 import 'appointment_history_patient.dart';
-import 'doctor.dart';
+import 'trash/doctor.dart';
 
 class PatientDetails extends StatefulWidget {
   String patientId;

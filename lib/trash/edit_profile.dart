@@ -6,8 +6,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditProfile extends StatefulWidget {
+  const EditProfile({super.key});
+
   @override
-  _EditProfileState createState() => _EditProfileState();
+  State<EditProfile> createState() => _EditProfileState();
 }
 final CollectionReference usersCollection = FirebaseFirestore.instance.collection('users');
 
@@ -28,6 +30,7 @@ class _EditProfileState extends State<EditProfile> {
   String? _imageUrl;
   File? _imageFile;
 
+  // ignore: prefer_final_fields
   List<String> _specialties = [];
   String? _selectedSpecialty;
 
@@ -147,19 +150,19 @@ class _EditProfileState extends State<EditProfile> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Profile'),
+        title: const Text('Edit Profile'),
         centerTitle: true,
       ),
       backgroundColor: Colors.grey[100],
       body: SingleChildScrollView(child: Form(
         key: _formKey,
         child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 16),
-              SizedBox(height: 8),
+              const SizedBox(height: 16),
+              const SizedBox(height: 8),
               Center(
                 child: GestureDetector(
                   onTap: pickImage,
@@ -169,13 +172,13 @@ class _EditProfileState extends State<EditProfile> {
                         ? FileImage(_imageFile!)
                         : _imageUrl != null
                         ? NetworkImage(_imageUrl!)
-                        : AssetImage('assets/photo.jpg')
+                        : const AssetImage('assets/photo.jpg')
                     as ImageProvider,
 
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _firstNameController,
                 validator: (value) {
@@ -194,7 +197,7 @@ class _EditProfileState extends State<EditProfile> {
                   fillColor: Colors.white,
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _lastNameController,
                 validator: (value) {
@@ -212,7 +215,7 @@ class _EditProfileState extends State<EditProfile> {
                   fillColor: Colors.white,
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _emailController,
                 validator: (value) {
@@ -230,7 +233,7 @@ class _EditProfileState extends State<EditProfile> {
                   fillColor: Colors.white,
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               if (userRole == 'Doctor')
                 TextFormField(
                   controller: _biographyController,
@@ -249,7 +252,7 @@ class _EditProfileState extends State<EditProfile> {
                     fillColor: Colors.white,
                   ),
                 ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _addressController,
                 validator: (value) {
@@ -267,7 +270,7 @@ class _EditProfileState extends State<EditProfile> {
                   fillColor: Colors.white,
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               DropdownButtonFormField<String>(
                 value: _selectedGender,
                 onChanged: (value) {
@@ -297,7 +300,7 @@ class _EditProfileState extends State<EditProfile> {
                   fillColor: Colors.white,
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               TextFormField(
                 controller: _phoneNumberController,
                 validator: (value) {
@@ -315,7 +318,7 @@ class _EditProfileState extends State<EditProfile> {
                   fillColor: Colors.white,
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               if (userRole == 'Doctor')
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -335,14 +338,14 @@ class _EditProfileState extends State<EditProfile> {
                                     fontSize: 18,
                                   ),
                                 ),
-                                Spacer(),
+                                const Spacer(),
                                 ElevatedButton(
                                   onPressed: () {
                                     showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
                                         return AlertDialog(
-                                          title: Text('Add New Specialty'),
+                                          title: const Text('Add New Specialty'),
                                           content: TextFormField(
                                             controller: _specialtiesController,
                                             decoration: InputDecoration(
@@ -359,7 +362,7 @@ class _EditProfileState extends State<EditProfile> {
                                               onPressed: () {
                                                 Navigator.pop(context);
                                               },
-                                              child: Text('Cancel'),
+                                              child: const Text('Cancel'),
                                             ),
                                             ElevatedButton(
                                               onPressed: () {
@@ -382,20 +385,20 @@ class _EditProfileState extends State<EditProfile> {
                                                   });
                                                 }
                                               },
-                                              child: Text('Save'),
+                                              child: const Text('Save'),
                                             ),
                                           ],
                                         );
                                       },
                                     );
                                   },
-                                  child: Text('Add New Specialty'),
+                                  child: const Text('Add New Specialty'),
                                 ),
                               ],
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             if (_specialties.isEmpty)
-                              Text('No specialties added yet.'),
+                              const Text('No specialties added yet.'),
                             if (_specialties.isNotEmpty)
                               ListView.builder(
                                 shrinkWrap: true,
@@ -409,13 +412,13 @@ class _EditProfileState extends State<EditProfile> {
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           IconButton(
-                                            icon: Icon(Icons.edit, color: Colors.blue),
+                                            icon: const Icon(Icons.edit, color: Colors.blue),
                                             onPressed: () {
                                               showDialog(
                                                 context: context,
                                                 builder: (BuildContext context) {
                                                   return AlertDialog(
-                                                    title: Text('Edit Specialty'),
+                                                    title: const Text('Edit Specialty'),
                                                     content: TextFormField(
                                                       controller: _specialtiesController..text = specialty,
                                                       decoration: InputDecoration(
@@ -432,7 +435,7 @@ class _EditProfileState extends State<EditProfile> {
                                                         onPressed: () {
                                                           Navigator.pop(context);
                                                         },
-                                                        child: Text('Cancel'),
+                                                        child: const Text('Cancel'),
                                                       ),
                                                       ElevatedButton(
                                                         onPressed: () {
@@ -449,7 +452,7 @@ class _EditProfileState extends State<EditProfile> {
                                                           });
                                                           Navigator.pop(context);
                                                         },
-                                                        child: Text('Save'),
+                                                        child: const Text('Save'),
                                                       ),
                                                     ],
                                                   );
@@ -458,22 +461,22 @@ class _EditProfileState extends State<EditProfile> {
                                             },
                                           ),
                                           IconButton(
-                                            icon: Icon(Icons.delete, color: Colors.red),
+                                            icon: const Icon(Icons.delete, color: Colors.red),
                                             onPressed: () async {
                                               String specialty = _specialties[index];
                                               bool confirmed = await showDialog(
                                                 context: context,
                                                 builder: (context) => AlertDialog(
-                                                  title: Text('Delete Specialty'),
-                                                  content: Text('Are you sure you want to delete this specialty?'),
+                                                  title: const Text('Delete Specialty'),
+                                                  content: const Text('Are you sure you want to delete this specialty?'),
                                                   actions: [
                                                     TextButton(
                                                       onPressed: () => Navigator.pop(context, false),
-                                                      child: Text('Cancel'),
+                                                      child: const Text('Cancel'),
                                                     ),
                                                     TextButton(
                                                       onPressed: () => Navigator.pop(context, true),
-                                                      child: Text('Confirm'),
+                                                      child: const Text('Confirm'),
                                                     ),
                                                   ],
                                                 ),
@@ -514,19 +517,19 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                   ],
                 ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Center(
                 child: SizedBox(
                   height: 50,
                   width: 200,
                   child: ElevatedButton(
                     onPressed: updateUserData,
-                    child: Text('Save Changes'),
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
+                    child: const Text('Save Changes'),
                   ),
                 ),
               ),

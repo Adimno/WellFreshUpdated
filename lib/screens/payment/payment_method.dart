@@ -30,7 +30,7 @@ class PaymentMethods extends StatelessWidget {
             ) : ActionButton(
               icon: IconlyBroken.bag2,
               title: 'Place order',
-              color: accentColor,
+              backgroundColor: accentColor,
               action: () async {
                 if (paymentMethods[controller.paymentIndex.value]['name'] == 'PayPal') {
                   // TODO: Put dummy PayPal here

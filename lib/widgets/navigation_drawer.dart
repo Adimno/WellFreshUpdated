@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:wellfreshlogin/consts/firebase_consts.dart';
+import 'package:wellfreshlogin/doctorSchedule.dart';
 import 'package:wellfreshlogin/theme.dart';
 import 'package:wellfreshlogin/widgets/widgets.dart';
 import 'package:wellfreshlogin/screens/screens.dart';
+import 'package:wellfreshlogin/consts/consts.dart';
 
 class NavigationDrawerWidget extends StatelessWidget {
   const NavigationDrawerWidget({super.key});
@@ -18,7 +19,8 @@ class NavigationDrawerWidget extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         color: surfaceColor,
         child: FutureBuilder(
-          future: FirebaseFirestore.instance.collection(usersCollection).doc(FirebaseAuth.instance.currentUser!.uid).get(),
+          future: FirebaseFirestore.instance.collection(usersCollection)
+          .doc(FirebaseAuth.instance.currentUser!.uid).get(),
           builder:(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
             if (snapshot.hasData && snapshot.data!.exists) {
               var data = snapshot.data!.data() as Map<String, dynamic>;
@@ -28,13 +30,16 @@ class NavigationDrawerWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 64),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 12),
-                    child: Image(
-                      image: AssetImage('assets/logo/logowork.png'),
-                      width: 72,
-                      height: 72,
-                      alignment: Alignment.centerLeft,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12),
+                    child: GestureDetector(
+                      onTap: () => openScreen(context, const WidgetTest()),
+                      child: const Image(
+                        image: AssetImage('assets/logo/logowork.png'),
+                        width: 72,
+                        height: 72,
+                        alignment: Alignment.centerLeft,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 48),
@@ -45,9 +50,7 @@ class NavigationDrawerWidget extends StatelessWidget {
                           CustomListTile(
                             icon: IconlyBroken.home,
                             text: 'Home',
-                            action: () => openScreen(context,
-                              role == 'patient' ? const Patient() : const Doctor()
-                            ),
+                            action: () => openScreen(context, const HomeScreen()),
                           ),
                           const SizedBox(height: 10),
                           CustomListTile(
@@ -65,18 +68,25 @@ class NavigationDrawerWidget extends StatelessWidget {
                               action: () => openScreen(context, const StoreScreen()),
                             ),
                             const SizedBox(height: 10),
+                          ] else ... [
+                            CustomListTile(
+                              icon: IconlyBroken.timeCircle,
+                              text: 'My Schedules',
+                              action: () => openScreen(context, DoctorSchedule(docId: FirebaseAuth.instance.currentUser!.uid)),
+                            ),
+                            const SizedBox(height: 10),
                           ],
-                          CustomListTile(
-                            icon: IconlyBroken.infoSquare,
-                            text: 'About the App',
-                            action: () => openScreen(context, AboutPage()),
-                          ),
-                          const SizedBox(height: 10),
                           CustomListTile(
                             icon: IconlyBroken.call,
                             text: 'Contact us',
                             // TODO: For contact us page
                             action: () => openScreen(context, null),
+                          ),
+                          const SizedBox(height: 10),
+                          CustomListTile(
+                            icon: IconlyBroken.infoSquare,
+                            text: 'About',
+                            action: () => openScreen(context, AboutScreen()),
                           ),
                         ],
                       ),
@@ -88,7 +98,7 @@ class NavigationDrawerWidget extends StatelessWidget {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(12),
                       onTap: () {
-                        openScreen(context, ProfileScreen());
+                        openScreen(context, const ProfileScreen());
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(12),
@@ -98,7 +108,7 @@ class NavigationDrawerWidget extends StatelessWidget {
                               backgroundColor: tertiaryColor,
                               radius: 24,
                               backgroundImage: NetworkImage(
-                                data['imageUrl'] ?? 'https://firebasestorage.googleapis.com/v0/b/wellfresh-f971a.appspot.com/o/userImages%2F1681064987.png?alt=media&token=45887028-8b4b-471f-b987-8454ab20d55c'
+                                data['imageUrl'] ?? defAvatar
                               ),
                             ),
                             const SizedBox(width: 16),
@@ -122,13 +132,13 @@ class NavigationDrawerWidget extends StatelessWidget {
                                       const Icon(
                                         IconlyBold.profile,
                                         size: 16,
-                                        color: secondaryTextColor,
+                                        color: tertiaryTextColor,
                                       ),
                                       const SizedBox(width: 5),
                                       Text(
                                         data['role'],
                                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                          color: secondaryTextColor,
+                                          color: tertiaryTextColor,
                                         ),
                                       ),
                                     ],
@@ -138,7 +148,7 @@ class NavigationDrawerWidget extends StatelessWidget {
                             ),
                             const Align(
                               alignment: Alignment.centerRight,
-                              child: Icon(IconlyLight.arrowRight2)
+                              child: Icon(IconlyLight.arrowRight2, color: tertiaryTextColor)
                             ),
                           ],
                         ),
@@ -156,7 +166,7 @@ class NavigationDrawerWidget extends StatelessWidget {
               return SizedBox(
                 height: MediaQuery.of(context).size.height,
                 child: const Center(
-                  child: CircularProgressIndicator()
+                  child: CircularProgressIndicator(),
                 ),
               );
             }

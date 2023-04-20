@@ -6,7 +6,9 @@ class CustomListTile extends StatelessWidget {
   final String text;
   final Color? color;
   final bool dense;
+  final bool selected;
   final double minVerticalPadding;
+  final Widget? trailingIcon;
   final VoidCallback? action;
 
   const CustomListTile({
@@ -15,7 +17,9 @@ class CustomListTile extends StatelessWidget {
     required this.text,
     this.color = secondaryTextColor,
     this.dense = false,
+    this.selected = false,
     this.minVerticalPadding = 0,
+    this.trailingIcon,
     this.action,
   }) : super(key: key);
 
@@ -24,18 +28,21 @@ class CustomListTile extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       clipBehavior: Clip.hardEdge,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(20),
       child: ListTile(
         minVerticalPadding: minVerticalPadding,
         leading: Icon(
           icon,
-          color: color,
+          color: selected ? accentColor : tertiaryTextColor,
         ),
+        trailing: trailingIcon,
         dense: dense,
+        contentPadding: dense ? const EdgeInsets.symmetric(horizontal: 16) : null,
+        visualDensity: dense ? const VisualDensity(horizontal: 0, vertical: -1) : null,
         title: Text(
           text,
           style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-            color: primaryTextColor,
+            color: selected ? accentColor : primaryTextColor,
           ),
         ),
         onTap: action,

@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:wellfreshlogin/theme.dart';
-import 'login.dart';
+import 'package:wellfreshlogin/screens/screens.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,10 +32,19 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
+    Widget firstScreen;
+
+    if (FirebaseAuth.instance.currentUser != null) {
+      firstScreen = const HomeScreen();
+    }
+    else {
+      firstScreen = const LoginScreen();
+    }
+
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       theme: theme(),
-      home: LoginPage(),
+      home: firstScreen,
     );
   }
 }

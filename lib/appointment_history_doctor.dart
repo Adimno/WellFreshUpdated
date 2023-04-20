@@ -2,10 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:wellfreshlogin/patient_details.dart';
+import 'package:wellfreshlogin/screens/screens.dart';
 import 'package:wellfreshlogin/widgets/navigation_drawer.dart';
 import 'get_image.dart';
 import 'get_patient_details.dart';
-import 'login.dart';
 
 class appointment_history_doctor extends StatefulWidget {
   const appointment_history_doctor({Key? key}) : super(key: key);
@@ -244,7 +244,7 @@ class _appointment_history_doctorState
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => LoginPage(),
+        builder: (context) => LoginScreen(),
       ),
     );
   }

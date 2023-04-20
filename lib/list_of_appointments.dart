@@ -125,12 +125,14 @@ class _list_of_patientsState extends State<list_of_patients> {
                   padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                   child: IconButton(
                     icon: const Icon(Icons.history),
-                    onPressed: () {Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => appointment_history_doctor(),
-                      ),
-                    );},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => appointment_history_doctor(),
+                        ),
+                      );
+                    },
                     color: Colors.black,
                   ),
                 ),
@@ -141,101 +143,105 @@ class _list_of_patientsState extends State<list_of_patients> {
         ),
         drawer: const NavigationDrawerWidget(),
         body: Container(
-          color: Colors.white70,
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Expanded(
-                  child: FutureBuilder(
-                    future: getAppointment(),
-                    builder: (context, snapshot) {
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: patientID.length,
-                        itemBuilder: (context, index) {
-                          return Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => PatientDetails(
-                                      appointmentId: patientID[index],
-                                      docId: docRef[index],
-                                      patientId: patientRef[index]),
-                                ));
-                              },
-                              child: SizedBox(
-                                height: 120.0,
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                        child: GetUserImage(
-                                            documentId: patientRef[index])),
-                                    Expanded(
-                                        child: SizedBox(
-                                      width: 150.0,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                0, 0, 0, 0),
-                                            child: GetPatientDetails(
-                                                documentId: patientRef[index]),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                0, 0, 0, 10),
-                                            child: Text(
-                                              '${month[index]} ${day[index]} 2023',
-                                              style: const TextStyle(
-                                                fontSize: 15.0,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          ),
-                                          Row(
+            color: Colors.white70,
+            child: Column(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Expanded(
+                      child: FutureBuilder(
+                        future: getAppointment(),
+                        builder: (context, snapshot) {
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: patientID.length,
+                            itemBuilder: (context, index) {
+                              return Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                ),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                      builder: (context) => PatientDetails(
+                                          appointmentId: patientID[index],
+                                          docId: docRef[index],
+                                          patientId: patientRef[index]),
+                                    ));
+                                  },
+                                  child: SizedBox(
+                                    height: 120.0,
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                            child: GetUserImage(
+                                                documentId: patientRef[index])),
+                                        Expanded(
+                                            child: SizedBox(
+                                          width: 150.0,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Padding(
                                                 padding:
                                                     const EdgeInsets.fromLTRB(
-                                                        5, 0, 0, 0),
+                                                        0, 0, 0, 0),
+                                                child: GetPatientDetails(
+                                                    documentId:
+                                                        patientRef[index]),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        0, 0, 0, 10),
                                                 child: Text(
-                                                  time[index],
+                                                  '${month[index]} ${day[index]} 2023',
                                                   style: const TextStyle(
                                                     fontSize: 15.0,
                                                     color: Colors.black,
                                                   ),
                                                 ),
                                               ),
+                                              Row(
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .fromLTRB(5, 0, 0, 0),
+                                                    child: Text(
+                                                      time[index],
+                                                      style: const TextStyle(
+                                                        fontSize: 15.0,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
                                             ],
-                                          )
-                                        ],
-                                      ),
-                                    )),
-                                  ],
+                                          ),
+                                        )),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
+                              );
+                            },
                           );
                         },
-                      );
-                    },
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ));
+              ],
+            )));
   }
 
   Future<void> logout(BuildContext context) async {

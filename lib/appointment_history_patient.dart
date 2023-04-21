@@ -265,31 +265,48 @@ class _AppointmentScreen extends State<PatientAppointmentHistory> {
                                                       // );
                                                       showDialog(
                                                         context: context,
-                                                        builder: (BuildContext context) {
+                                                        builder: (BuildContext
+                                                            context) {
                                                           return AlertDialog(
-                                                            title: Text('Doctor\'s Note'),
+                                                            title: Row(
+                                                              children: [
+                                                                GetDoctorName(
+                                                                  documentId:
+                                                                      docReference[
+                                                                          index],
+                                                                ),
+                                                                Text("'s note", style: TextStyle(
+                                                                  fontSize: 15.0,
+                                                                  color: Colors.black54,
+                                                                ),)
+                                                              ],
+                                                            ),
                                                             content: SizedBox(
                                                               height: 300,
                                                               width: 800,
                                                               child: ViewNotes(
-                                                                docID: docReference[index],
-                                                                appointmentId: appointmentReference[index],
+                                                                docID:
+                                                                    docReference[
+                                                                        index],
+                                                                appointmentId:
+                                                                    appointmentReference[
+                                                                        index],
                                                               ),
                                                             ),
                                                             actions: [
                                                               TextButton(
                                                                 onPressed: () {
-                                                                  Navigator.pop(context);
+                                                                  Navigator.pop(
+                                                                      context);
                                                                 },
-                                                                child: Text('OK'),
+                                                                child:
+                                                                    Text('OK'),
                                                               ),
                                                             ],
                                                           );
                                                         },
                                                       );
-
-
-                                                      },
+                                                    },
                                                     style: ElevatedButton
                                                         .styleFrom(
                                                       shape:
@@ -306,7 +323,8 @@ class _AppointmentScreen extends State<PatientAppointmentHistory> {
                                                           vertical: 16),
                                                       elevation: 5,
                                                     ),
-                                                    child: const Text('View Notes'),
+                                                    child: const Text(
+                                                        'View Notes'),
                                                   ),
                                                 )
                                               ],

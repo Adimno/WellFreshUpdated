@@ -6,6 +6,7 @@ class ViewNotes extends StatelessWidget {
   final String appointmentId;
   const ViewNotes(
       {super.key, required this.docID, required this.appointmentId});
+
   @override
   Widget build(BuildContext context) {
     CollectionReference appointmentsRef = FirebaseFirestore.instance
@@ -13,31 +14,37 @@ class ViewNotes extends StatelessWidget {
         .doc(docID)
         .collection('appointments');
 
-    List<String> notes = [];
-    String docReference = '';
     return FutureBuilder<DocumentSnapshot>(
-        future: appointmentsRef.doc(appointmentId).get(),
-        builder: ((context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            Map<String, dynamic> data =
-                snapshot.data!.data() as Map<String, dynamic>;
-            docReference = data['docReference'];
-            // notes.add(data['notes']);
-            return AlertDialog(
-              title: Text(docReference),
-              content: const Text('Content'),
-              actions: [
-                ElevatedButton(
-                  child: const Text('OK'),
-                  onPressed: () {
-                    // do something
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
+      future: appointmentsRef.doc(appointmentId).get(),
+      builder: ((context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          Map<String, dynamic> data =
+          snapshot.data!.data() as Map<String, dynamic>;
+          List<String> notes = [];
+          if (data != null && data['notes'] is Iterable?) {
+            for (var note in data['notes'] ?? []) {
+              notes.add(note);
+            }
           }
-          return const Text('Loading...');
-        }));
+
+          return ListView.builder(
+              shrinkWrap: true,
+              itemCount: notes.length,
+              itemBuilder: (BuildContext context, int index) {
+                final doctorNotes = notes[index];
+                return Card(
+                  child: ListTile(
+                    title: Text(doctorNotes),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                    ),
+                  ),
+                );
+              },
+            );
+        }
+        return const Text('Loading...');
+      }),
+    );
   }
 }

@@ -256,13 +256,38 @@ class _AppointmentScreen extends State<PatientAppointmentHistory> {
                                                           0, 0, 20, 0),
                                                   child: ElevatedButton(
                                                     onPressed: () {
+                                                      // showDialog(
+                                                      //   context: context,
+                                                      //   builder: (BuildContext context) {
+                                                      //     return ViewNotes(docID: docReference[
+                                                      //     index], appointmentId: appointmentReference[index],);
+                                                      //   },
+                                                      // );
                                                       showDialog(
                                                         context: context,
                                                         builder: (BuildContext context) {
-                                                          return ViewNotes(docID: docReference[
-                                                          index], appointmentId: appointmentReference[index],);
+                                                          return AlertDialog(
+                                                            title: Text('Doctor\'s Note'),
+                                                            content: SizedBox(
+                                                              height: 300,
+                                                              width: 800,
+                                                              child: ViewNotes(
+                                                                docID: docReference[index],
+                                                                appointmentId: appointmentReference[index],
+                                                              ),
+                                                            ),
+                                                            actions: [
+                                                              TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.pop(context);
+                                                                },
+                                                                child: Text('OK'),
+                                                              ),
+                                                            ],
+                                                          );
                                                         },
                                                       );
+
 
                                                       },
                                                     style: ElevatedButton

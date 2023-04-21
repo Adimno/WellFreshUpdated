@@ -330,7 +330,9 @@ class _AppointmentScreen extends State<PatientDetails> {
                       ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(20, 10, 25, 0),
-                        child: Container(
+                        child: notes.isEmpty
+                            ? Text('There are no added notes.')
+                            : Container(
                           margin: const EdgeInsets.symmetric(vertical: 0.0),
                           height: 350.0,
                           child: ListView.builder(
@@ -338,7 +340,9 @@ class _AppointmentScreen extends State<PatientDetails> {
                             itemCount: notes.length,
                             itemBuilder: (BuildContext context, int index) {
                               final doctorNotes = notes[index];
-                              return Card(
+                              return doctorNotes == null
+                                  ? Container()
+                                  :  Card(
                                 child: ListTile(
                                   title: Text(doctorNotes),
                                   trailing: Row(
@@ -461,7 +465,9 @@ class _AppointmentScreen extends State<PatientDetails> {
                                   ),
                                   onTap: () {
                                     setState(() {
-                                      _selectedNote = doctorNotes;
+                                      if (doctorNotes != null) {
+                                        _selectedNote = doctorNotes;
+                                      }
                                     });
                                   },
                                 ),

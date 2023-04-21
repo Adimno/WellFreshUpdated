@@ -9,10 +9,8 @@ import 'get_user_name.dart';
 
 class PatientAppointmentHistory extends StatefulWidget {
   String patientId;
-
   PatientAppointmentHistory({Key? key, required this.patientId})
       : super(key: key);
-
   @override
   State<PatientAppointmentHistory> createState() => _AppointmentScreen();
 }
@@ -62,22 +60,22 @@ class _AppointmentScreen extends State<PatientAppointmentHistory> {
   @override
   Widget build(BuildContext context) {
     final user =
-        FirebaseFirestore.instance.collection('users').doc(widget.patientId);
+    FirebaseFirestore.instance.collection('users').doc(widget.patientId);
 
     return FutureBuilder<DocumentSnapshot>(
         future: user.get(),
         builder: ((context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             Map<String, dynamic> data =
-                snapshot.data!.data() as Map<String, dynamic>;
+            snapshot.data!.data() as Map<String, dynamic>;
             String firstname =
-                data.containsKey('firstname') ? data['firstname'] : '';
+            data.containsKey('firstname') ? data['firstname'] : '';
             String lastname =
-                data.containsKey('lastname') ? data['lastname'] : '';
+            data.containsKey('lastname') ? data['lastname'] : '';
             String phoneNumber =
-                data.containsKey('phoneNumber') ? data['phoneNumber'] : '';
+            data.containsKey('phoneNumber') ? data['phoneNumber'] : '';
             String imageUrl =
-                data.containsKey('imageUrl') ? data['imageUrl'] : '';
+            data.containsKey('imageUrl') ? data['imageUrl'] : '';
             String email = data.containsKey('email') ? data['email'] : '';
             return Scaffold(
               key: _scaffoldKey, // Add a Scaffold key
@@ -111,47 +109,47 @@ class _AppointmentScreen extends State<PatientAppointmentHistory> {
                               ),
                               Expanded(
                                   child: SizedBox(
-                                width: 150.0,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          10, 0, 0, 0),
-                                      child: Text(
-                                        '$firstname $lastname',
-                                        style: const TextStyle(
-                                          fontSize: 20.0,
-                                          color: Colors.black,
+                                    width: 150.0,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              10, 0, 0, 0),
+                                          child: Text(
+                                            '$firstname $lastname',
+                                            style: const TextStyle(
+                                              fontSize: 20.0,
+                                              color: Colors.black,
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          10, 0, 0, 5),
-                                      child: Text(
-                                        phoneNumber,
-                                        style: const TextStyle(
-                                          fontSize: 12.0,
-                                          color: Colors.black,
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              10, 0, 0, 5),
+                                          child: Text(
+                                            phoneNumber,
+                                            style: const TextStyle(
+                                              fontSize: 12.0,
+                                              color: Colors.black,
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          10, 0, 0, 10),
-                                      child: Text(
-                                        email,
-                                        style: const TextStyle(
-                                          fontSize: 12.0,
-                                          color: Colors.black,
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              10, 0, 0, 10),
+                                          child: Text(
+                                            email,
+                                            style: const TextStyle(
+                                              fontSize: 12.0,
+                                              color: Colors.black,
+                                            ),
+                                          ),
                                         ),
-                                      ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              )),
+                                  )),
                             ],
                           ),
                         ),
@@ -180,187 +178,165 @@ class _AppointmentScreen extends State<PatientAppointmentHistory> {
                       FutureBuilder(
                         future: getAppointmentDetails(),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          }  else if (appointments.isEmpty) {
-                            return Center(
-                                child: Text('No history of appointments yet.'));
-                          } else
-                            return ListView.builder(
-                              itemCount: appointments.length,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(25, 0, 25, 0),
-                                  child: Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20.0),
-                                    ),
-                                    child: SizedBox(
-                                        height: 120.0,
-                                        child: Column(
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      0, 15, 0, 0),
-                                              child: Row(
-                                                children: [
-                                                  Expanded(
-                                                      child: SizedBox(
-                                                    width: 150.0,
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .fromLTRB(
-                                                                  20, 0, 0, 5),
-                                                          child: Text(
-                                                            '${month[index]} ${day[index]}, 2023',
-                                                            style:
-                                                                const TextStyle(
-                                                              fontSize: 20.0,
-                                                              color:
-                                                                  Colors.black,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .fromLTRB(
-                                                                  20, 0, 0, 0),
-                                                          child: Text(
-                                                            time[index],
-                                                            style:
-                                                                const TextStyle(
-                                                              fontSize: 15.0,
-                                                              color:
-                                                                  Colors.blue,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .fromLTRB(
-                                                                    20,
-                                                                    0,
-                                                                    0,
-                                                                    0),
-                                                            child:
-                                                                GetDoctorName(
-                                                              documentId:
-                                                                  docReference[
-                                                                      index],
-                                                            )),
-                                                      ],
-                                                    ),
-                                                  )),
-                                                  Padding(
-                                                    padding: const EdgeInsets
-                                                        .fromLTRB(0, 0, 20, 0),
-                                                    child: ElevatedButton(
-                                                      onPressed: () {
-                                                        // showDialog(
-                                                        //   context: context,
-                                                        //   builder: (BuildContext context) {
-                                                        //     return ViewNotes(docID: docReference[
-                                                        //     index], appointmentId: appointmentReference[index],);
-                                                        //   },
-                                                        // );
-                                                        showDialog(
-                                                          context: context,
-                                                          builder: (BuildContext
-                                                              context) {
-                                                            return AlertDialog(
-                                                              title: Row(
-                                                                children: [
-                                                                  GetDoctorName(
-                                                                    documentId:
-                                                                        docReference[
-                                                                            index],
-                                                                  ),
-                                                                  Text(
-                                                                    "'s note",
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          15.0,
-                                                                      color: Colors
-                                                                          .black54,
-                                                                    ),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                              content: SizedBox(
-                                                                height: 300,
-                                                                width: 800,
-                                                                child:
-                                                                    ViewNotes(
-                                                                  docID:
-                                                                      docReference[
-                                                                          index],
-                                                                  appointmentId:
-                                                                      appointmentReference[
-                                                                          index],
-                                                                ),
-                                                              ),
-                                                              actions: [
-                                                                TextButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    Navigator.pop(
-                                                                        context);
-                                                                  },
-                                                                  child: Text(
-                                                                      'OK'),
-                                                                ),
-                                                              ],
-                                                            );
-                                                          },
-                                                        );
-                                                      },
-                                                      style: ElevatedButton
-                                                          .styleFrom(
-                                                        shape:
-                                                            RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(20),
-                                                        ),
-                                                        backgroundColor:
-                                                            Colors.blue,
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal: 30,
-                                                                vertical: 16),
-                                                        elevation: 5,
-                                                      ),
-                                                      child: const Text(
-                                                          'View Notes'),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        )),
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: appointments.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding:
+                                const EdgeInsets.fromLTRB(25, 0, 25, 0),
+                                child: Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
                                   ),
-                                );
-                              },
-                              padding: EdgeInsets.only(bottom: 16.0),
-                            );
+                                  child: SizedBox(
+                                      height: 120.0,
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                0, 15, 0, 0),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                    child: SizedBox(
+                                                      width: 150.0,
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                        crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                            const EdgeInsets
+                                                                .fromLTRB(
+                                                                20, 0, 0, 5),
+                                                            child: Text(
+                                                              '${month[index]} ${day[index]}, 2023',
+                                                              style:
+                                                              const TextStyle(
+                                                                fontSize: 20.0,
+                                                                color: Colors.black,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Padding(
+                                                            padding:
+                                                            const EdgeInsets
+                                                                .fromLTRB(
+                                                                20, 0, 0, 0),
+                                                            child: Text(
+                                                              time[index],
+                                                              style:
+                                                              const TextStyle(
+                                                                fontSize: 15.0,
+                                                                color: Colors.blue,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Padding(
+                                                              padding:
+                                                              const EdgeInsets
+                                                                  .fromLTRB(
+                                                                  20, 0, 0, 0),
+                                                              child: GetDoctorName(
+                                                                documentId:
+                                                                docReference[
+                                                                index],
+                                                              )),
+                                                        ],
+                                                      ),
+                                                    )),
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      0, 0, 20, 0),
+                                                  child: ElevatedButton(
+                                                    onPressed: () {
+                                                      // showDialog(
+                                                      //   context: context,
+                                                      //   builder: (BuildContext context) {
+                                                      //     return ViewNotes(docID: docReference[
+                                                      //     index], appointmentId: appointmentReference[index],);
+                                                      //   },
+                                                      // );
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                        context) {
+                                                          return AlertDialog(
+                                                            title: Row(
+                                                              children: [
+                                                                GetDoctorName(
+                                                                  documentId:
+                                                                  docReference[
+                                                                  index],
+                                                                ),
+                                                                Text("'s note", style: TextStyle(
+                                                                  fontSize: 15.0,
+                                                                  color: Colors.black54,
+                                                                ),)
+                                                              ],
+                                                            ),
+                                                            content: SizedBox(
+                                                              height: 300,
+                                                              width: 800,
+                                                              child: ViewNotes(
+                                                                docID:
+                                                                docReference[
+                                                                index],
+                                                                appointmentId:
+                                                                appointmentReference[
+                                                                index],
+                                                              ),
+                                                            ),
+                                                            actions: [
+                                                              TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                },
+                                                                child:
+                                                                Text('OK'),
+                                                              ),
+                                                            ],
+                                                          );
+                                                        },
+                                                      );
+                                                    },
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      shape:
+                                                      RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius
+                                                            .circular(20),
+                                                      ),
+                                                      backgroundColor:
+                                                      Colors.blue,
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: 30,
+                                                          vertical: 16),
+                                                      elevation: 5,
+                                                    ),
+                                                    child: const Text(
+                                                        'View Notes'),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      )),
+                                ),
+                              );
+                            },
+                            padding: EdgeInsets.only(bottom: 16.0),
+                          );
                         },
                       ),
                     ],

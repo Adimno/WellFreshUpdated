@@ -11,12 +11,14 @@ class PatientDetails extends StatefulWidget {
   String patientId;
   String docId;
   String appointmentId;
+
   PatientDetails(
       {Key? key,
       required this.appointmentId,
       required this.docId,
       required this.patientId})
       : super(key: key);
+
   @override
   State<PatientDetails> createState() => _AppointmentScreen();
 }
@@ -331,150 +333,183 @@ class _AppointmentScreen extends State<PatientDetails> {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(20, 10, 25, 0),
                         child: notes.isEmpty
-                            ? Text('There are no added notes.')
+                            ? Text('')
                             : Container(
-                          margin: const EdgeInsets.symmetric(vertical: 0.0),
-                          height: 350.0,
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: notes.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              final doctorNotes = notes[index];
-                              return doctorNotes == null
-                                  ? Container()
-                                  :  Card(
-                                child: ListTile(
-                                  title: Text(doctorNotes),
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        icon: Icon(Icons.edit,
-                                            color: Colors.blue),
-                                        onPressed: () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                title: const Text('Edit Note'),
-                                                content: TextFormField(
-                                                  controller: _notesController
-                                                    ..text = doctorNotes,
-                                                  decoration: InputDecoration(
-                                                    labelText: 'Note',
-                                                    border: OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20),
-                                                    ),
-                                                    filled: true,
-                                                    fillColor: Colors.white,
-                                                  ),
-                                                ),
-                                                actions: [
-                                                  TextButton(
+                                margin:
+                                    const EdgeInsets.symmetric(vertical: 0.0),
+                                height: 350.0,
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: notes.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    final doctorNotes = notes[index];
+                                    return doctorNotes == null
+                                        ? Container()
+                                        : Card(
+                                            child: ListTile(
+                                              title: Text(doctorNotes),
+                                              trailing: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  IconButton(
+                                                    icon: Icon(Icons.edit,
+                                                        color: Colors.blue),
                                                     onPressed: () {
-                                                      Navigator.pop(context);
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return AlertDialog(
+                                                            title: const Text(
+                                                                'Edit Note'),
+                                                            content:
+                                                                TextFormField(
+                                                              controller:
+                                                                  _notesController
+                                                                    ..text =
+                                                                        doctorNotes,
+                                                              decoration:
+                                                                  InputDecoration(
+                                                                labelText:
+                                                                    'Note',
+                                                                border:
+                                                                    OutlineInputBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              20),
+                                                                ),
+                                                                filled: true,
+                                                                fillColor:
+                                                                    Colors
+                                                                        .white,
+                                                              ),
+                                                            ),
+                                                            actions: [
+                                                              TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                },
+                                                                child: Text(
+                                                                    'Cancel'),
+                                                              ),
+                                                              ElevatedButton(
+                                                                onPressed: () {
+                                                                  String
+                                                                      updatedNote =
+                                                                      _notesController
+                                                                          .text;
+                                                                  setState(() {
+                                                                    notes[index] =
+                                                                        updatedNote;
+                                                                    if (_selectedNote ==
+                                                                        doctorNotes) {
+                                                                      _selectedNote =
+                                                                          updatedNote;
+                                                                    }
+                                                                  });
+                                                                  // update specialties in Firestore
+                                                                  appointmentQuerysnapshot
+                                                                      .update({
+                                                                        'notes':
+                                                                            FieldValue.arrayUnion([
+                                                                          updatedNote
+                                                                        ]),
+                                                                      })
+                                                                      .then((value) =>
+                                                                          print(
+                                                                              'Note is added successfully'))
+                                                                      .catchError(
+                                                                          (error) =>
+                                                                              print('Failed to add a note: $error'));
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                },
+                                                                child: Text(
+                                                                    'Save'),
+                                                              ),
+                                                            ],
+                                                          );
+                                                        },
+                                                      );
                                                     },
-                                                    child: Text('Cancel'),
                                                   ),
-                                                  ElevatedButton(
-                                                    onPressed: () {
-                                                      String updatedNote =
-                                                          _notesController.text;
-                                                      setState(() {
-                                                        notes[index] =
-                                                            updatedNote;
-                                                        if (_selectedNote ==
-                                                            doctorNotes) {
-                                                          _selectedNote =
-                                                              updatedNote;
-                                                        }
-                                                      });
-                                                      // update specialties in Firestore
-                                                      appointmentQuerysnapshot
-                                                          .update({
-                                                            'notes': FieldValue
-                                                                .arrayUnion([
-                                                              updatedNote
-                                                            ]),
-                                                          })
-                                                          .then((value) => print(
-                                                              'Note is added successfully'))
-                                                          .catchError((error) =>
-                                                              print(
-                                                                  'Failed to add a note: $error'));
-                                                      Navigator.pop(context);
+                                                  IconButton(
+                                                    icon: Icon(Icons.delete,
+                                                        color: Colors.red),
+                                                    onPressed: () async {
+                                                      String specialty =
+                                                          notes[index];
+                                                      bool confirmed =
+                                                          await showDialog(
+                                                        context: context,
+                                                        builder: (context) =>
+                                                            AlertDialog(
+                                                          title: Text(
+                                                              'Delete a Note'),
+                                                          content: Text(
+                                                              'Are you sure you want to delete this note?'),
+                                                          actions: [
+                                                            TextButton(
+                                                              onPressed: () =>
+                                                                  Navigator.pop(
+                                                                      context,
+                                                                      false),
+                                                              child: Text(
+                                                                  'Cancel'),
+                                                            ),
+                                                            TextButton(
+                                                              onPressed: () =>
+                                                                  Navigator.pop(
+                                                                      context,
+                                                                      true),
+                                                              child: Text(
+                                                                  'Confirm'),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                      if (confirmed) {
+                                                        await FirebaseFirestore
+                                                            .instance
+                                                            .collection(
+                                                                'specialties')
+                                                            .doc(specialty)
+                                                            .delete();
+                                                        setState(() {
+                                                          notes.removeAt(index);
+                                                          if (_selectedNote ==
+                                                              specialty) {
+                                                            _selectedNote =
+                                                                notes.isEmpty
+                                                                    ? null
+                                                                    : notes[0];
+                                                          }
+                                                        });
+                                                        // delete specialty in Firestore
+                                                        appointmentQuerysnapshot
+                                                            .update({
+                                                          'notes': notes,
+                                                        });
+                                                      }
                                                     },
-                                                    child: Text('Save'),
                                                   ),
                                                 ],
-                                              );
-                                            },
-                                          );
-                                        },
-                                      ),
-                                      IconButton(
-                                        icon: Icon(Icons.delete,
-                                            color: Colors.red),
-                                        onPressed: () async {
-                                          String specialty = notes[index];
-                                          bool confirmed = await showDialog(
-                                            context: context,
-                                            builder: (context) => AlertDialog(
-                                              title: Text('Delete a Note'),
-                                              content: Text(
-                                                  'Are you sure you want to delete this note?'),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.pop(
-                                                          context, false),
-                                                  child: Text('Cancel'),
-                                                ),
-                                                TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.pop(
-                                                          context, true),
-                                                  child: Text('Confirm'),
-                                                ),
-                                              ],
+                                              ),
+                                              onTap: () {
+                                                setState(() {
+                                                  if (doctorNotes != null) {
+                                                    _selectedNote = doctorNotes;
+                                                  }
+                                                });
+                                              },
                                             ),
                                           );
-                                          if (confirmed) {
-                                            await FirebaseFirestore.instance
-                                                .collection('specialties')
-                                                .doc(specialty)
-                                                .delete();
-                                            setState(() {
-                                              notes.removeAt(index);
-                                              if (_selectedNote == specialty) {
-                                                _selectedNote = notes.isEmpty
-                                                    ? null
-                                                    : notes[0];
-                                              }
-                                            });
-                                            // delete specialty in Firestore
-                                            appointmentQuerysnapshot.update({
-                                              'notes': notes,
-                                            });
-                                          }
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                  onTap: () {
-                                    setState(() {
-                                      if (doctorNotes != null) {
-                                        _selectedNote = doctorNotes;
-                                      }
-                                    });
                                   },
                                 ),
-                              );
-                            },
-                          ),
-                        ),
+                              ),
                       ),
                       Container(
                         alignment: FractionalOffset.bottomCenter,
@@ -499,8 +534,17 @@ class _AppointmentScreen extends State<PatientDetails> {
                                           child: const Text(
                                             "Cancel",
                                             style: TextStyle(
-                                              fontSize: 10,
+                                              fontSize: 16,
                                               color: Colors.white,
+                                            ),
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                            primary: Colors.grey,
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 25, vertical: 12),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
                                             ),
                                           ),
                                         ),
@@ -514,8 +558,8 @@ class _AppointmentScreen extends State<PatientDetails> {
                                                   .then((value) => {
                                                         print(
                                                             'status is changed to done'),
-                                                        Navigator.pop(
-                                                            context), // Close the dialog
+                                                        Navigator.pop(context),
+                                                        // Close the dialog
                                                       })
                                                   .catchError((error) => {
                                                         print(
@@ -536,8 +580,17 @@ class _AppointmentScreen extends State<PatientDetails> {
                                           child: const Text(
                                             "Confirm",
                                             style: TextStyle(
-                                              fontSize: 10,
+                                              fontSize: 16,
                                               color: Colors.white,
+                                            ),
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                            primary: Colors.blue,
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 25, vertical: 12),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
                                             ),
                                           ),
                                         ),
@@ -546,19 +599,22 @@ class _AppointmentScreen extends State<PatientDetails> {
                                   },
                                 );
                               },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blue,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 35, vertical: 19),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                              ),
                               child: const Text(
                                 "Mark as Done",
                                 style: TextStyle(
                                   fontSize: 20,
                                   color: Colors.white,
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.blue,
+                                padding: MediaQuery.of(context).size.width > 600
+                                    ? const EdgeInsets.symmetric(
+                                        horizontal: 35, vertical: 19)
+                                    : const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 14),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
                                 ),
                               ),
                             ),

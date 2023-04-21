@@ -26,19 +26,31 @@ class _AppointmentScreen extends State<PatientAppointmentHistory> {
   List<String> docReference = [];
 
   Future<void> getAppointmentDetails() async {
-    if (appointments.isEmpty) {
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(widget.patientId);
-      final finalQuerysnapshot = querySnapshot.collection('appointments');
-      final querySnapshot2 = await finalQuerysnapshot.get();
-      for (var patient in querySnapshot2.docs) {
-        if (!appointments.contains(patient.id)) {
-          appointments.add(patient.id);
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.patientId);
+    final finalQuerysnapshot = querySnapshot.collection('appointments');
+    final querySnapshot2 = await finalQuerysnapshot.get();
+    if (querySnapshot2.docs.isEmpty) {
+      // if there are no appointments, return early
+      return;
+    }
+    for (var patient in querySnapshot2.docs) {
+      if (!appointments.contains(patient.id)) {
+        appointments.add(patient.id);
+        if (patient.data().containsKey('month')) {
           month.add(patient['month']);
+        }
+        if (patient.data().containsKey('day')) {
           day.add(patient['day'].toString());
+        }
+        if (patient.data().containsKey('time')) {
           time.add(patient['time']);
+        }
+        if (patient.data().containsKey('appointmentReference')) {
           appointmentReference.add(patient['appointmentReference']);
+        }
+        if (patient.data().containsKey('docReference')) {
           docReference.add(patient['docReference']);
         }
       }
@@ -51,11 +63,10 @@ class _AppointmentScreen extends State<PatientAppointmentHistory> {
     print(docReference);
   }
 
-  @override
-  void initState() {
-    super.initState();
-    getAppointmentDetails();
-  }
+    @override
+    void initState() {
+      super.initState();
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -178,10 +189,20 @@ class _AppointmentScreen extends State<PatientAppointmentHistory> {
                       FutureBuilder(
                         future: getAppointmentDetails(),
                         builder: (context, snapshot) {
-                          return ListView.builder(
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else if (appointments.isEmpty) {
+                            return Center(child: Text('No appointments found.'));
+                          } else {
+
+                            return ListView.builder(
+
                             shrinkWrap: true,
-                            itemCount: appointments.length,
+                            itemCount: appointments.isNotEmpty ? appointments.length : 0,
                             itemBuilder: (context, index) {
+
                               return Padding(
                                 padding:
                                 const EdgeInsets.fromLTRB(25, 0, 25, 0),
@@ -337,8 +358,9 @@ class _AppointmentScreen extends State<PatientAppointmentHistory> {
                             },
                             padding: EdgeInsets.only(bottom: 16.0),
                           );
+    }
                         },
-                      ),
+                      )
                     ],
                   ),
                 ],

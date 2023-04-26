@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:wellfreshlogin/screens/screens.dart';
+import 'package:wellfreshlogin/services/firebase_services.dart';
 import 'package:wellfreshlogin/theme.dart';
 
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
@@ -8,6 +11,8 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   final bool backButton;
   final Color color;
   final bool fadeTitle;
+  final IconData? endIcon;
+  final VoidCallback? endAction;
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   const CustomAppBar({
@@ -16,6 +21,8 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
     required this.backButton,
     required this.color,
     this.fadeTitle = false,
+    this.endIcon,
+    this.endAction,
     required this.scaffoldKey,
   }) : super(key: key);
 
@@ -75,6 +82,23 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
           },
         ),
       ),
+      actions: endIcon != null ? [
+        Container(
+          width: 56,
+          margin: const EdgeInsets.fromLTRB(0, 15, 15, 15),
+          clipBehavior: Clip.none,
+          decoration: BoxDecoration(
+            color: cardColor,
+            borderRadius: BorderRadius.circular(15),
+            boxShadow: const [containerShadow],
+          ),
+          child: IconButton(
+            icon: Icon(endIcon, color: secondaryTextColor),
+            constraints: const BoxConstraints(),
+            onPressed: endAction,
+          ),
+        ),
+      ] : null,
       elevation: 0,
     );
   }
@@ -142,17 +166,56 @@ class OverlayAppBar extends StatelessWidget with PreferredSizeWidget {
                 ),
               ),
             ),
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 12),
-              clipBehavior: Clip.none,
-              decoration: BoxDecoration(
-                color: Colors.white10,
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: IconButton(
-                icon: const Icon(IconlyBroken.notification),
-                constraints: const BoxConstraints(),
-                onPressed: () {},
+            FittedBox(
+              child: Stack(
+                alignment: const Alignment(1.75, -0.9),
+                children: [
+                  StreamBuilder(
+                    stream: FirestoreServices.getUnreadNotifications(),
+                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                        return Container();
+                      }
+                      else {
+                        return Container(
+                          padding: const EdgeInsets.all(4),
+                          constraints: const BoxConstraints(minHeight: 24, minWidth: 24),
+                          decoration: BoxDecoration(
+                            boxShadow: const [containerShadow],
+                            borderRadius: BorderRadius.circular(16),
+                            color: errorColor,
+                          ),
+                          child: Center(
+                            child: Text(
+                              snapshot.data!.docs.length.toString(),
+                              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                color: invertTextColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                    }
+                  ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 12),
+                    clipBehavior: Clip.none,
+                    decoration: BoxDecoration(
+                      color: Colors.white10,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(IconlyBroken.notification),
+                      constraints: const BoxConstraints(),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const NotificationsScreen(),
+                        ));
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

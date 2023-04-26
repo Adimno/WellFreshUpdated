@@ -20,13 +20,13 @@ class ItemIndicator extends StatelessWidget {
         children: [
           Icon(
             icon,
-            size: 48.0,
+            size: 36.0,
             color: tertiaryTextColor,
           ),
           const SizedBox(height: 16),
           Text(
             text,
-            style: const TextStyle(
+            style: Theme.of(context).textTheme.titleSmall!.copyWith(
               color: tertiaryTextColor,
             ),
           ),

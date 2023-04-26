@@ -19,6 +19,7 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formkey = GlobalKey<FormState>();
+  final _specialtyKey = GlobalKey<FormState>();
   var scaffoldKey = GlobalKey<ScaffoldState>();
   var user = FirebaseFirestore.instance.collection(usersCollection);
   String? selectedGender;
@@ -32,6 +33,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   var biographyController = TextEditingController();
   var specialtyController = TextEditingController();
 
+  bool updating = false;
   List<String> specialties = [];
   File? imageFile;
 
@@ -46,10 +48,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: 'Edit Profile', backButton: true, color: surfaceColor, scaffoldKey: scaffoldKey),
-      bottomNavigationBar: CustomNavBar(
+      bottomNavigationBar: !updating ? CustomNavBar(
         title: 'Save Changes',
         icon: IconlyBroken.editSquare,
         action: () async {
@@ -90,6 +97,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             });
           }
         },
+      ) : const SizedBox(
+        height: 150,
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -127,11 +139,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         alignment: Alignment.center,
                         child: GestureDetector(
                           onTap: pickImage,
-                          child: CircleAvatar(
-                            backgroundColor: tertiaryColor,
-                            backgroundImage: imageFile != null ? FileImage(imageFile!)
-                            : NetworkImage(data['imageUrl'] ?? defAvatar) as ImageProvider,
-                            radius: 90,
+                          child: Container(
+                            width: 150,
+                            height: 150,
+                            clipBehavior: Clip.antiAlias,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(99),
+                            ),
+                            child: imageFile != null ? Image.file(File(imageFile!.path), fit: BoxFit.cover)
+                            : data.containsKey('imageUrl') ? Image.network(data['imageUrl'], fit: BoxFit.cover)
+                            : Image.asset(defAvatar, fit: BoxFit.cover),
                           ),
                         ),
                       ),
@@ -204,6 +221,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 IconlyBroken.profile,
                                 color: tertiaryTextColor,
                               ),
+                            ),
+                            style: const TextStyle(
+                              color: primaryTextColor,
                             ),
                           );
                         }
@@ -312,7 +332,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     if (index < specialties.length) ...[
                                       Text(
                                         specialties[index],
-                                        style: Theme.of(context).textTheme.titleSmall,
+                                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                                          color: primaryTextColor,
+                                        ),
                                       ),
                                       Row(
                                         children: [
@@ -399,70 +421,84 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           fontWeight: FontWeight.bold,
         ),
       ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          action != 'delete' ? CustomTextField(
-            title: 'Specialty',
-            hintText: 'Specialty',
-            prefixIcon: const Icon(IconlyBroken.paper, color: tertiaryTextColor),
-            controller: specialtyController,
-          ) : Text(
-            'Are you sure you want to delete this specialty?',
-            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-              color: primaryTextColor,
+      content: Form(
+        key: _specialtyKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            action != 'delete' ? CustomTextField(
+              title: 'Specialty',
+              hintText: 'Specialty',
+              prefixIcon: const Icon(IconlyBroken.paper, color: tertiaryTextColor),
+              controller: specialtyController,
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'This field cannot be empty';
+                }
+                return null;
+              },
+            ) : Text(
+              'Are you sure you want to delete this specialty?',
+              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                color: primaryTextColor,
+              ),
             ),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              ActionButton(
-                title: 'Cancel',
-                backgroundColor: Colors.transparent,
-                foregroundColor: accentTextColor,
-                fontSize: 14,
-                action: () => Navigator.pop(context),
-              ),
-              ActionButton(
-                title: action == 'add' ? 'Add'
-                : action == 'edit' ? 'Update'
-                : 'Delete',
-                backgroundColor: action != 'delete' ? accentColor
-                : errorColor,
-                fontSize: 14,
-                action: action == 'add' ? () {
-                  user.doc(FirebaseAuth.instance.currentUser!.uid)
-                  .update({
-                    'specialties': FieldValue.arrayUnion([specialtyController.text])
-                  }).then((value) {
-                    setState(() {
-                      specialties.add(specialtyController.text);
-                    });
-                  });
-                  Navigator.pop(context);
-                } : action == 'edit' ? () {
-                  setState(() {
-                    specialties[index] = specialtyController.text;
-                  });
-                  user.doc(FirebaseAuth.instance.currentUser!.uid).update({
-                    'specialties': specialties,
-                  });
-                  Navigator.pop(context);
-                } : () {
-                  setState(() {
-                    specialties.removeAt(index);
-                  });
-                  user.doc(FirebaseAuth.instance.currentUser!.uid).update({
-                    'specialties': specialties,
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-        ],
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                ActionButton(
+                  title: 'Cancel',
+                  backgroundColor: Colors.transparent,
+                  foregroundColor: accentTextColor,
+                  fontSize: 14,
+                  action: () => Navigator.pop(context),
+                ),
+                ActionButton(
+                  title: action == 'add' ? 'Add'
+                  : action == 'edit' ? 'Update'
+                  : 'Delete',
+                  backgroundColor: action != 'delete' ? accentColor
+                  : errorColor,
+                  fontSize: 14,
+                  action: action == 'add' ? () async {
+                    if (_formkey.currentState!.validate() && _specialtyKey.currentState!.validate()) {
+                      Navigator.pop(context);
+                      await user.doc(FirebaseAuth.instance.currentUser!.uid).update({
+                        'specialties': FieldValue.arrayUnion([specialtyController.text])
+                      }).then((value) {
+                        setState(() {
+                          specialties.add(specialtyController.text);
+                        });
+                      });
+                    }
+                  } : action == 'edit' ? () async {
+                    if (_formkey.currentState!.validate() && _specialtyKey.currentState!.validate()) {
+                      setState(() {
+                        specialties[index] = specialtyController.text;
+                      });
+                      Navigator.pop(context);
+                      await user.doc(FirebaseAuth.instance.currentUser!.uid).update({
+                        'specialties': specialties,
+                      });
+                    }
+                  } : () async {
+                    if (_formkey.currentState!.validate()) {
+                      setState(() {
+                        specialties.removeAt(index);
+                      });
+                      Navigator.pop(context);
+                      await user.doc(FirebaseAuth.instance.currentUser!.uid).update({
+                        'specialties': specialties,
+                      });
+                    }
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
 

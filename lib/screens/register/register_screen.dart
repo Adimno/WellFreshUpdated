@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:wellfreshlogin/theme.dart';
 import 'package:wellfreshlogin/widgets/widgets.dart';
-import 'package:wellfreshlogin/consts/consts.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -251,7 +250,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       'lastname': lastname,
       'password': password,
       'role': 'Patient',
-      'imageUrl': defAvatar,
       'created': FieldValue.serverTimestamp(),
     });
     Navigator.pop(context);

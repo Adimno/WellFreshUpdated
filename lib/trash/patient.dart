@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:wellfreshlogin/appointment.dart';
 import 'package:wellfreshlogin/get_user_name.dart';
 import 'package:wellfreshlogin/screens/screens.dart';
 import 'package:wellfreshlogin/widgets/widgets.dart';
@@ -53,7 +52,7 @@ class _PatientState extends State<Patient> {
         appBar: AppBar(
           elevation: 0,
           leading: IconButton(
-            icon: Icon(Icons.menu),
+            icon: const Icon(Icons.menu),
             onPressed: () {
               _scaffoldKey.currentState!
                   .openDrawer(); // Use Scaffold key to open drawer
@@ -72,7 +71,7 @@ class _PatientState extends State<Patient> {
               onPressed: () {
                 logout(context);
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.logout,
               ),
             )
@@ -123,16 +122,16 @@ class _PatientState extends State<Patient> {
                               alignment: Alignment.centerLeft,
                               child: Text(
                                 'Hi, $firstname $lastname',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 15,
                                   color: Colors.white,
                                 ),
                               ),
                             ),
                           ),
-                          Padding(
+                          const Padding(
                             padding:
-                                const EdgeInsets.fromLTRB(25.0, 0, 12.0, 20.0),
+                                EdgeInsets.fromLTRB(25.0, 0, 12.0, 20.0),
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
@@ -168,11 +167,11 @@ class _PatientState extends State<Patient> {
                         ],
                       );
                     } else if (snapshot.hasError) {
-                      return Center(
+                      return const Center(
                         child: Text('Error fetching data'),
                       );
                     } else {
-                      return Center(
+                      return const Center(
                         child: CircularProgressIndicator(),
                       );
                     }
@@ -195,7 +194,7 @@ class _PatientState extends State<Patient> {
                 ),
               ),
               Expanded(child: Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Expanded(
                   child: FutureBuilder(
                     future: getDocId(),
@@ -296,7 +295,7 @@ class _PatientState extends State<Patient> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => LoginScreen(),
+        builder: (context) => const LoginScreen(),
       ),
     );
   }

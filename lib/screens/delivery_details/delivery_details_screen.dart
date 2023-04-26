@@ -33,17 +33,19 @@ class _DeliveryDetailsScreenState extends State<DeliveryDetailsScreen> {
     if (snapshot.exists) {
       Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
 
-      setState(() {
-        enableAutofill = data['delivery_details'][0];
-        addressController.text = data['delivery_details'][1];
-        cityController.text = data['delivery_details'][2];
-        stateController.text = data['delivery_details'][3];
-        zipCodeController.text = data['delivery_details'][4];
+      if (data.containsKey('delivery_details')) {
+        setState(() {
+          enableAutofill = data['delivery_details'][0];
+          addressController.text = data['delivery_details'][1];
+          cityController.text = data['delivery_details'][2];
+          stateController.text = data['delivery_details'][3];
+          zipCodeController.text = data['delivery_details'][4];
 
-        if (enableAutofill) {
-          autofillOpacity = 1.0;
-        }
-      });
+          if (enableAutofill) {
+            autofillOpacity = 1.0;
+          }
+        });
+      }
     }
   }
 

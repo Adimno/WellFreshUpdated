@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:wellfreshlogin/services/firebase_services.dart';
 import 'package:wellfreshlogin/theme.dart';
+import 'package:wellfreshlogin/widgets/widgets.dart';
 
 class CartProductCard extends StatefulWidget {
   const CartProductCard({
@@ -192,32 +193,19 @@ showDeleteDialog(BuildContext context, id, quantity) {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: cardColor,
-                foregroundColor: accentTextColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(99),
-                ),
-                shadowColor: boxShadowColor,
-                elevation: 10,
-              ),
-              child: const Text('Cancel'),
-              onPressed: () {
+            ActionButton(
+              title: 'Cancel',
+              backgroundColor: cardColor,
+              foregroundColor: accentTextColor,
+              action: () {
                 Navigator.pop(context);
               },
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: errorColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(99),
-                ),
-                shadowColor: boxShadowColor,
-                elevation: 10,
-              ),
-              child: const Text('Remove item'),
-              onPressed: () {
+            ActionButton(
+              title: 'Remove item',
+              backgroundColor: errorColor,
+              foregroundColor: primaryTextColor,
+              action: () {
                 FirestoreServices.removeItemQuantity(id, quantity);
                 Navigator.pop(context);
               },

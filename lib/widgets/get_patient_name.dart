@@ -20,7 +20,7 @@ class GetPatientName extends StatelessWidget {
 
           return Text(
             '${data['firstname']} ${data['lastname']}',
-            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+            style: Theme.of(context).textTheme.titleSmall!.copyWith(
               color: primaryTextColor,
               fontWeight: FontWeight.bold,
             ),

@@ -24,7 +24,9 @@ class DecorationPill extends StatelessWidget {
       child: Center(
         child: Text(
           text,
-          style: Theme.of(context).textTheme.bodyMedium,
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+            color: primaryTextColor,
+          ),
         ),
       ),
     );

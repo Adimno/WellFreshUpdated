@@ -127,7 +127,7 @@ class ProductCard extends StatelessWidget {
                 ),
               ),
               Container(
-                height: 70,
+                height: 64,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 child: Row(
                   children: [
@@ -138,13 +138,13 @@ class ProductCard extends StatelessWidget {
                           Text(
                             product['name'],
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            style: Theme.of(context).textTheme.titleSmall!.copyWith(
                               color: primaryTextColor,
                             ),
                           ),
                           Text(
                             'PHP ${product['price']}',
-                            style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                               color: secondaryTextColor
                             ),
                           ),

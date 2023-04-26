@@ -158,7 +158,7 @@ class OrderDetailsScreen extends StatelessWidget {
                             ),
                           );
                         },
-                        separatorBuilder: (context, index) => const Divider(),
+                        separatorBuilder: (context, index) => const Divider(color: borderColor),
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -185,7 +185,7 @@ class OrderDetailsScreen extends StatelessWidget {
                           TextTableRow(startText: 'Order status', endText: data['order_status']),
                           const Padding(
                             padding: EdgeInsets.symmetric(vertical: 8),
-                            child: Divider(),
+                            child: Divider(color: borderColor),
                           ),
                           Text(
                             'Delivery Information',
@@ -314,32 +314,17 @@ showCancelDialog(BuildContext context, orderId) {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: cardColor,
-                foregroundColor: accentTextColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(99),
-                ),
-                shadowColor: boxShadowColor,
-                elevation: 10,
-              ),
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
+            ActionButton(
+              title: 'Cancel',
+              backgroundColor: cardColor,
+              foregroundColor: accentTextColor,
+              action: () => Navigator.pop(context),
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: errorColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(99),
-                ),
-                shadowColor: boxShadowColor,
-                elevation: 10,
-              ),
-              child: const Text('Cancel order'),
-              onPressed: () {
+            ActionButton(
+              title: 'Cancel order',
+              backgroundColor: errorColor,
+              foregroundColor: invertTextColor,
+              action: () {
                 FirestoreServices.cancelOrder(orderId);
                 Navigator.pop(context);
                 Navigator.pop(context);
@@ -352,7 +337,63 @@ showCancelDialog(BuildContext context, orderId) {
     ),
   );
 
-  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
+showAppointmentDialog(BuildContext context) {
+  AlertDialog alert = AlertDialog(
+    backgroundColor: surfaceColor,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(24))
+    ),
+    contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+    title: Text(
+      'Important Reminder',
+      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+        color: secondaryTextColor,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+    content: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          'Failure to go to your appointment will incur a charge of 500 pesos. This is due to the high volume of patients who want to settle an appointment. This fee shall be collected on your next visit in our clinic.',
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+            color: secondaryTextColor,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            ActionButton(
+              title: 'Cancel',
+              backgroundColor: cardColor,
+              foregroundColor: accentTextColor,
+              action: () => Navigator.pop(context),
+            ),
+            ActionButton(
+              title: 'Confirm',
+              backgroundColor: accentColor,
+              foregroundColor: invertTextColor,
+              action: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+
   showDialog(
     context: context,
     builder: (BuildContext context) {

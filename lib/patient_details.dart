@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:wellfreshlogin/theme.dart';
 import 'package:wellfreshlogin/widgets/custom_appbar.dart';
@@ -8,16 +7,16 @@ import 'appointment_history_patient.dart';
 import 'trash/doctor.dart';
 
 class PatientDetails extends StatefulWidget {
-  String patientId;
-  String docId;
-  String appointmentId;
+  final String patientId;
+  final String docId;
+  final String appointmentId;
 
-  PatientDetails(
-      {Key? key,
-      required this.appointmentId,
-      required this.docId,
-      required this.patientId})
-      : super(key: key);
+  const PatientDetails({
+    Key? key,
+    required this.appointmentId,
+    required this.docId,
+    required this.patientId
+  }) : super(key: key);
 
   @override
   State<PatientDetails> createState() => _AppointmentScreen();
@@ -46,7 +45,7 @@ class _AppointmentScreen extends State<PatientDetails> {
       time = appointmentData['time'];
       notes.add(appointmentData['notes']);
       print(notes);
-      print('${day} ${month} ${time}');
+      print('$day $month $time');
       // do something with patientName and appointmentTime
     }
   }
@@ -74,7 +73,7 @@ class _AppointmentScreen extends State<PatientDetails> {
         print('Document does not exist on the database');
         print(notes);
       }
-    }).catchError((error) => print('Failed to retrieve list: $error'));
+    }).catchError((error) => error);
 
     return FutureBuilder<DocumentSnapshot>(
         future: users.doc(widget.patientId).get(),
@@ -205,7 +204,7 @@ class _AppointmentScreen extends State<PatientDetails> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                                     child: Container(
                                       padding: const EdgeInsets.all(10),
                                       decoration: BoxDecoration(
@@ -235,7 +234,7 @@ class _AppointmentScreen extends State<PatientDetails> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                                     child: Container(
                                       padding: const EdgeInsets.all(10),
                                       decoration: BoxDecoration(
@@ -280,7 +279,7 @@ class _AppointmentScreen extends State<PatientDetails> {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: Text('Add a New Note'),
+                                      title: const Text('Add a New Note'),
                                       content: TextFormField(
                                         controller: _notesController,
                                         decoration: InputDecoration(
@@ -298,7 +297,7 @@ class _AppointmentScreen extends State<PatientDetails> {
                                           onPressed: () {
                                             Navigator.pop(context);
                                           },
-                                          child: Text('Cancel'),
+                                          child: const Text('Cancel'),
                                         ),
                                         ElevatedButton(
                                           onPressed: () {
@@ -318,14 +317,14 @@ class _AppointmentScreen extends State<PatientDetails> {
                                               });
                                             }
                                           },
-                                          child: Text('Save'),
+                                          child: const Text('Save'),
                                         ),
                                       ],
                                     );
                                   },
                                 );
                               },
-                              child: Text('Add a Note'),
+                              child: const Text('Add a Note'),
                             ),
                           ],
                         ),
@@ -333,7 +332,7 @@ class _AppointmentScreen extends State<PatientDetails> {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(20, 10, 25, 0),
                         child: notes.isEmpty
-                            ? Text('')
+                            ? const Text('')
                             : Container(
                                 margin:
                                     const EdgeInsets.symmetric(vertical: 0.0),
@@ -353,7 +352,7 @@ class _AppointmentScreen extends State<PatientDetails> {
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
                                                   IconButton(
-                                                    icon: Icon(Icons.edit,
+                                                    icon: const Icon(Icons.edit,
                                                         color: Colors.blue),
                                                     onPressed: () {
                                                       showDialog(
@@ -392,7 +391,7 @@ class _AppointmentScreen extends State<PatientDetails> {
                                                                   Navigator.pop(
                                                                       context);
                                                                 },
-                                                                child: Text(
+                                                                child: const Text(
                                                                     'Cancel'),
                                                               ),
                                                               ElevatedButton(
@@ -427,7 +426,7 @@ class _AppointmentScreen extends State<PatientDetails> {
                                                                   Navigator.pop(
                                                                       context);
                                                                 },
-                                                                child: Text(
+                                                                child: const Text(
                                                                     'Save'),
                                                               ),
                                                             ],
@@ -437,7 +436,7 @@ class _AppointmentScreen extends State<PatientDetails> {
                                                     },
                                                   ),
                                                   IconButton(
-                                                    icon: Icon(Icons.delete,
+                                                    icon: const Icon(Icons.delete,
                                                         color: Colors.red),
                                                     onPressed: () async {
                                                       String specialty =
@@ -447,9 +446,9 @@ class _AppointmentScreen extends State<PatientDetails> {
                                                         context: context,
                                                         builder: (context) =>
                                                             AlertDialog(
-                                                          title: Text(
+                                                          title: const Text(
                                                               'Delete a Note'),
-                                                          content: Text(
+                                                          content: const Text(
                                                               'Are you sure you want to delete this note?'),
                                                           actions: [
                                                             TextButton(
@@ -457,7 +456,7 @@ class _AppointmentScreen extends State<PatientDetails> {
                                                                   Navigator.pop(
                                                                       context,
                                                                       false),
-                                                              child: Text(
+                                                              child: const Text(
                                                                   'Cancel'),
                                                             ),
                                                             TextButton(
@@ -465,7 +464,7 @@ class _AppointmentScreen extends State<PatientDetails> {
                                                                   Navigator.pop(
                                                                       context,
                                                                       true),
-                                                              child: Text(
+                                                              child: const Text(
                                                                   'Confirm'),
                                                             ),
                                                           ],
@@ -522,8 +521,8 @@ class _AppointmentScreen extends State<PatientDetails> {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: Text("Confirmation"),
-                                      content: Text(
+                                      title: const Text("Confirmation"),
+                                      content: const Text(
                                           "Are you sure you want to mark this appointment as done?"),
                                       actions: [
                                         ElevatedButton(
@@ -531,20 +530,20 @@ class _AppointmentScreen extends State<PatientDetails> {
                                             Navigator.pop(
                                                 context); // Close the dialog
                                           },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.grey,
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 25, vertical: 12),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
+                                            ),
+                                          ),
                                           child: const Text(
                                             "Cancel",
                                             style: TextStyle(
                                               fontSize: 16,
                                               color: Colors.white,
-                                            ),
-                                          ),
-                                          style: ElevatedButton.styleFrom(
-                                            primary: Colors.grey,
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 25, vertical: 12),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(30),
                                             ),
                                           ),
                                         ),
@@ -577,20 +576,20 @@ class _AppointmentScreen extends State<PatientDetails> {
                                               );
                                             });
                                           },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.blue,
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 25, vertical: 12),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
+                                            ),
+                                          ),
                                           child: const Text(
                                             "Confirm",
                                             style: TextStyle(
                                               fontSize: 16,
                                               color: Colors.white,
-                                            ),
-                                          ),
-                                          style: ElevatedButton.styleFrom(
-                                            primary: Colors.blue,
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 25, vertical: 12),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(30),
                                             ),
                                           ),
                                         ),
@@ -599,15 +598,8 @@ class _AppointmentScreen extends State<PatientDetails> {
                                   },
                                 );
                               },
-                              child: const Text(
-                                "Mark as Done",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white,
-                                ),
-                              ),
                               style: ElevatedButton.styleFrom(
-                                primary: Colors.blue,
+                                backgroundColor: Colors.blue,
                                 padding: MediaQuery.of(context).size.width > 600
                                     ? const EdgeInsets.symmetric(
                                         horizontal: 35, vertical: 19)
@@ -615,6 +607,13 @@ class _AppointmentScreen extends State<PatientDetails> {
                                         horizontal: 20, vertical: 14),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30),
+                                ),
+                              ),
+                              child: const Text(
+                                "Mark as Done",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),

@@ -59,6 +59,9 @@ class CustomTextField extends StatelessWidget {
               prefixIcon: prefixIcon != null ? Padding(padding: const EdgeInsets.only(left: 5), child: prefixIcon) : null,
               suffixIcon: suffixIcon != null ? Padding(padding: const EdgeInsets.only(right: 5), child: suffixIcon) : null,
             ),
+            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+              color: primaryTextColor,
+            ),
             minLines: lines,
             maxLines: lines,
             validator: validator,

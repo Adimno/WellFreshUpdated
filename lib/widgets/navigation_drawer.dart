@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:wellfreshlogin/doctorSchedule.dart';
 import 'package:wellfreshlogin/theme.dart';
 import 'package:wellfreshlogin/widgets/widgets.dart';
 import 'package:wellfreshlogin/screens/screens.dart';
@@ -55,9 +54,9 @@ class NavigationDrawerWidget extends StatelessWidget {
                           const SizedBox(height: 10),
                           CustomListTile(
                             icon: IconlyBroken.calendar,
-                            text: role == 'patient' ? 'Appointment' : 'Doctor Appointments',
+                            text: 'My Appointments',
                             action: () => openScreen(context,
-                              role == 'patient' ? null /* TODO: For Appointment */ : null /* TODO: For doctor appointments */
+                              role == 'patient' ? const AppointmentsScreen() : const PatientListScreen(),
                             ),
                           ),
                           const SizedBox(height: 10),
@@ -72,15 +71,14 @@ class NavigationDrawerWidget extends StatelessWidget {
                             CustomListTile(
                               icon: IconlyBroken.timeCircle,
                               text: 'My Schedules',
-                              action: () => openScreen(context, DoctorSchedule(docId: FirebaseAuth.instance.currentUser!.uid)),
+                              action: () => openScreen(context, ScheduleScreen(docId: FirebaseAuth.instance.currentUser!.uid)),
                             ),
                             const SizedBox(height: 10),
                           ],
                           CustomListTile(
                             icon: IconlyBroken.call,
                             text: 'Contact us',
-                            // TODO: For contact us page
-                            action: () => openScreen(context, null),
+                            action: () => openScreen(context, const ContactUsScreen()),
                           ),
                           const SizedBox(height: 10),
                           CustomListTile(
@@ -104,12 +102,17 @@ class NavigationDrawerWidget extends StatelessWidget {
                         padding: const EdgeInsets.all(12),
                         child: Row(
                           children: [
-                            CircleAvatar(
-                              backgroundColor: tertiaryColor,
-                              radius: 24,
-                              backgroundImage: NetworkImage(
-                                data['imageUrl'] ?? defAvatar
+                            Container(
+                              width: 44,
+                              height: 44,
+                              clipBehavior: Clip.antiAlias,
+                              decoration: BoxDecoration(
+                                color: tertiaryColor,
+                                borderRadius: BorderRadius.circular(28),
                               ),
+                              child: data.containsKey('imageUrl') ?
+                              Image.network(data['imageUrl'], fit: BoxFit.cover)
+                              : Image.asset(defAvatar, fit: BoxFit.cover),
                             ),
                             const SizedBox(width: 16),
                             Expanded(

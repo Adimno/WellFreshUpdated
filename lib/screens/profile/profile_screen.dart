@@ -7,7 +7,6 @@ import 'package:wellfreshlogin/consts/consts.dart';
 import 'package:wellfreshlogin/theme.dart';
 import 'package:wellfreshlogin/widgets/widgets.dart';
 import 'package:wellfreshlogin/screens/screens.dart';
-import 'package:wellfreshlogin/doctorSchedule.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -40,15 +39,22 @@ class ProfileScreen extends StatelessWidget {
                             imageUrl: data['imageUrl'] ?? defAvatar,
                             altText: '${data['firstname']} ${data['lastname']}',
                             hero: 'profile',
+                            local: data.containsKey('imageUrl') ? false : true,
                           );
                         }));
                       },
                       child: Hero(
                         tag: 'profile',
-                        child: CircleAvatar(
-                          backgroundColor: tertiaryColor,
-                          backgroundImage: NetworkImage(data['imageUrl'] ?? defAvatar),
-                          radius: 90,
+                        child: Container(
+                          width: 150,
+                          height: 150,
+                          clipBehavior: Clip.antiAlias,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(99),
+                          ),
+                          child: data.containsKey('imageUrl') ?
+                          Image.network(data['imageUrl'], fit: BoxFit.cover)
+                          : Image.asset(defAvatar, fit: BoxFit.cover),
                         ),
                       ),
                     ),
@@ -181,23 +187,25 @@ class ProfileScreen extends StatelessWidget {
                             ),
                             const Divider(color: borderColor),
                           ],
-                          CustomListTile(
-                            icon: IconlyBroken.calendar,
-                            text: 'My Appointments',
-                            dense: true,
-                            action: () {
-                              // TODO: For Appointments
-                            },
-                          ),
-                          const Divider(color: borderColor),
                           if (data['role'].toLowerCase() == 'doctor') ...[
+                            CustomListTile(
+                              icon: IconlyBroken.calendar,
+                              text: 'My Appointments',
+                              dense: true,
+                              action: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => const PatientListScreen(),
+                                ));
+                              },
+                            ),
+                            const Divider(color: borderColor),
                             CustomListTile(
                               icon: IconlyBroken.timeCircle,
                               text: 'My Schedules',
                               dense: true,
                               action: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => DoctorSchedule(docId: FirebaseAuth.instance.currentUser!.uid),
+                                  builder: (context) => ScheduleScreen(docId: FirebaseAuth.instance.currentUser!.uid),
                                 ));
                               },
                             ),

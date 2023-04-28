@@ -4,12 +4,14 @@ class ImageScreen extends StatelessWidget {
   final String imageUrl;
   final String altText;
   final dynamic hero;
+  final bool local;
 
   const ImageScreen({
     Key? key,
     required this.imageUrl,
     required this.altText,
     required this.hero,
+    this.local = false,
   }) : super(key: key);
 
   @override
@@ -35,7 +37,8 @@ class ImageScreen extends StatelessWidget {
             ),
             Hero(
               tag: hero,
-              child: Image.network(imageUrl, height: MediaQuery.of(context).size.height - 300),
+              child: local == false ? Image.network(imageUrl, height: MediaQuery.of(context).size.height - 300)
+              : Image.asset(imageUrl, height: MediaQuery.of(context).size.height - 300),
             ),
             const SizedBox(height: 24),
             Text(

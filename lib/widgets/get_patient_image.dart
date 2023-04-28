@@ -19,7 +19,7 @@ class GetPatientImage extends StatelessWidget {
           Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
 
           return data['imageUrl'] != null ? Image.network(data['imageUrl'], fit: BoxFit.cover)
-          : Image.asset('assets/default.png', fit: BoxFit.cover);
+          : Image.asset(defAvatar, fit: BoxFit.cover);
         }
         return Container();
       }),

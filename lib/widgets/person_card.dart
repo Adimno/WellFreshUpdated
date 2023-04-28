@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:wellfreshlogin/theme.dart';
+import 'package:wellfreshlogin/consts/consts.dart';
 
 class PersonCard extends StatelessWidget {
   final String name;
@@ -27,7 +28,7 @@ class PersonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 94,
+      height: 84,
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
         color: cardColor,
@@ -41,23 +42,27 @@ class PersonCard extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                width: 94,
-                height: 94,
+                width: 84,
+                height: 84,
                 clipBehavior: Clip.hardEdge,
                 decoration: BoxDecoration(
                   color: accentColor,
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: customImage ?? Image.network(
-                  imageUrl,
-                  fit: BoxFit.cover,
-                  cacheWidth: 200,
-                  cacheHeight: 200,
+                child: customImage ?? (imageUrl != defAvatar ?
+                  Image.network(
+                    imageUrl,
+                    fit: BoxFit.cover,
+                    cacheWidth: 200,
+                    cacheHeight: 200,
+                  ) : Image.asset(
+                    imageUrl,
+                  )
                 ),
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.fromLTRB(16, 12, 12, 12),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,7 +70,7 @@ class PersonCard extends StatelessWidget {
                       customName ?? Text(
                         name,
                         overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
                           fontWeight: FontWeight.bold,
                           color: primaryTextColor,
                         ),

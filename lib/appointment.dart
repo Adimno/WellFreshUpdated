@@ -663,8 +663,7 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                                   if (newTime.isNotEmpty &&
                                       TimeButtonIndex >= 0 &&
                                       TimeButtonIndex < newTime.length) {
-                                    if (newTime[TimeButtonIndex]?.isEmpty ??
-                                        true) {
+                                    if (newTime[TimeButtonIndex].isEmpty) {
                                     } else {
                                       showDialog(
                                         context: context,
@@ -715,13 +714,7 @@ class _AppointmentScreen extends State<AppointmentScreen> {
                                                       }).then((value) => print('Schedule added successfully')).catchError((error) => print('Failed to add schedule: $error'));
 
                                                     }).catchError((error) => print('Failed to add schedule: $error'));
-
-
-
-
                                                   });
-
-
                                                   Navigator.of(context).pop();
                                                   showDialog(
                                                     context: context,

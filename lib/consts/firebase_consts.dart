@@ -5,6 +5,7 @@ FirebaseFirestore firestore = FirebaseFirestore.instance;
 const usersCollection = 'users';
 const appointmentsCollection = 'appointments';
 const schedulesCollection = 'schedules';
+const notificationsCollection = 'notifications';
 const productsCollection = 'products';
 const cartCollection = 'cart';
 const ordersCollection = 'orders';

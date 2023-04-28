@@ -4,10 +4,9 @@ import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:wellfreshlogin/theme.dart';
 import 'package:wellfreshlogin/widgets/widgets.dart';
+import 'package:wellfreshlogin/screens/screens.dart';
 import 'package:wellfreshlogin/consts/consts.dart';
 import 'package:wellfreshlogin/services/firebase_services.dart';
-
-import 'package:wellfreshlogin/patient_details.dart';
 
 class PatientListScreen extends StatefulWidget {
   const PatientListScreen({super.key});
@@ -105,7 +104,7 @@ class ListPatientsByStatus extends StatelessWidget {
                         subtext: appointment['time'],
                         imageUrl: appointment.containsKey('imageUrl') ? appointment['imageUrl'] : defAvatar,
                         customImage: GetPatientImage(documentId: appointment['patientReference']),
-                        action: () => Get.to(() => PatientDetails(
+                        action: () => Get.to(() => AppointmentDetailsDoctorScreen(
                           appointmentId: appointmentId,
                           docId: appointment['docReference'],
                           patientId: appointment['patientReference'],

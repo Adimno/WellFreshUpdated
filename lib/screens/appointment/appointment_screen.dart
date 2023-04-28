@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:intl/intl.dart';
@@ -87,8 +88,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         } else {
           newTime.add(time[i]);
         }
-      } else {
-        // newTime = [];
       }
     }
     return newTime;
@@ -105,8 +104,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         } else {
           availSlots.add(time[i]);
         }
-      } else {
-        // newTime = [];
       }
     }
     return availSlots;
@@ -128,7 +125,160 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
       appBar: CustomAppBar(title: 'Doctor\'s Detail', backButton: true, color: surfaceColor, scaffoldKey: scaffoldKey),
       bottomNavigationBar: selectedTimeIndex != -1 ? CustomNavBar(
         title: 'Book Appointment',
-        action: () {},
+        action: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                backgroundColor: surfaceColor,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(24))
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                title: Text(
+                  'Important Reminder',
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    color: secondaryTextColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Failure to go to your appointment will incur a charge of 500 pesos. This is due to the high volume of patients who want to settle an appointment. This fee shall be collected on your next visit in our clinic.',
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        color: secondaryTextColor,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        ActionButton(
+                          title: 'Cancel',
+                          backgroundColor: cardColor,
+                          foregroundColor: accentTextColor,
+                          fontSize: 14,
+                          action: () => Navigator.pop(context),
+                        ),
+                        ActionButton(
+                          title: 'Confirm',
+                          backgroundColor: accentColor,
+                          foregroundColor: invertTextColor,
+                          fontSize: 14,
+                          action: () {
+                            setState(() {
+                              String appointmentId;
+                              DocumentReference<Map<String, dynamic>> appointmentDoctorRef = FirebaseFirestore.instance.collection('users').doc(widget.docId);
+
+                              // Add appointment info to doctor
+                              appointmentDoctorRef.collection('appointments').add({
+                                'docReference': widget.docId,
+                                'patientReference': FirebaseAuth.instance.currentUser!.uid,
+                                'time': newTime[selectedTimeIndex],
+                                'day': selectedDayIndex,
+                                'month': allMonths[selectedMonthIndex],
+                                'year': DateTime.now().year,
+                                'status': 'ongoing',
+                                'notes:': [],
+                              }).then((value) {
+                                appointmentId = value.id;
+                                final String userId = FirebaseAuth.instance.currentUser!.uid;
+                                final appointmentPatientRef = FirebaseFirestore.instance.collection('users').doc(userId);
+
+                                // Add appointment info to patient
+                                appointmentPatientRef.collection('appointments').add({
+                                  'docReference': widget.docId,
+                                  'patientReference': FirebaseAuth.instance.currentUser!.uid,
+                                  'time': newTime[selectedTimeIndex],
+                                  'day': selectedDayIndex,
+                                  'month': allMonths[selectedMonthIndex],
+                                  'year': DateTime.now().year,
+                                  'appointmentReference': appointmentId,
+                                }).catchError((error) {
+                                  FloatingSnackBar.show(context, 'An error occured while booking your appointment. Please try again');
+                                  return error;
+                                });
+
+                                // Add appointment notification to doctor
+                                appointmentDoctorRef
+                                .collection('notifications')
+                                .doc()
+                                .set({
+                                  'type': 'appointment',
+                                  'message': 'You have a new appointment: #${value.id.substring(0, 7)}',
+                                  'reference': value.id,
+                                  'read': false,
+                                  'date': FieldValue.serverTimestamp(),
+                                  'data': {
+                                    'patientReference': FirebaseAuth.instance.currentUser!.uid,
+                                    'docReference': widget.docId,
+                                  },
+                                });
+                              }).catchError((error) {
+                                FloatingSnackBar.show(context, 'Error: Failed to add appointment');
+                                return error;
+                              });
+                            });
+                            Navigator.pop(context);
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  backgroundColor: surfaceColor,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(24))
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                                  title: Text(
+                                    'Appointment booked',
+                                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                      color: secondaryTextColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        'Your scheduled date is on ${allMonths[selectedMonthIndex]} $selectedDayIndex at ${newTime[selectedTimeIndex]}',
+                                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                          color: secondaryTextColor,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          ActionButton(
+                                            title: 'OK',
+                                            backgroundColor: accentColor,
+                                            foregroundColor: invertTextColor,
+                                            fontSize: 14,
+                                            action: () {
+                                              Navigator.of(context).pop();
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
       ) : null,
       body: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
         future: FirestoreServices.getTargetUser(widget.docId),
@@ -168,9 +318,11 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                             color: cardColor,
                             borderRadius: BorderRadius.circular(15),
                           ),
-                          child: Image.network(
-                            data['imageUrl'] ?? defAvatar,
+                          child: data.containsKey('imageUrl') ? Image.network(
+                            data['imageUrl'],
                             fit: BoxFit.cover,
+                          ) : Image.asset(
+                            defAvatar,
                           ),
                         ),
                         Column(
@@ -181,6 +333,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                 Text(
                                   '${data['firstname']} ${data['lastname']}',
                                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                    color: primaryTextColor,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -320,6 +473,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                                 setState(() {
                                                   selectedMonthIndex = index;
                                                   selectedDayIndex = -1;
+                                                  selectedTimeIndex = -1;
                                                   newTime = [];
               
                                                   getDaysInMonth(DateTime.now().year, index + 1);
@@ -341,14 +495,14 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                             children: [
                               Text(
                                 allMonths[selectedMonthIndex],
-                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                                   color: tertiaryTextColor,
                                 ),
                               ),
                               const Icon(
                                 IconlyLight.arrowRight2,
                                 color: tertiaryTextColor,
-                                size: 16,
+                                size: 20,
                               ),
                             ],
                           ),

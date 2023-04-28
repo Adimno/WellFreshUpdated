@@ -46,7 +46,13 @@ const containerShadow = BoxShadow(
 
 // const cardColor = Color.fromRGBO(34, 34, 34, 1);
 // const boxShadowColor = Colors.transparent;
-// const borderColor = Color.fromRGBO(178, 178, 178, 1);
+// const borderColor = Color.fromRGBO(178, 178, 178, .35);
+
+// const containerShadow = BoxShadow(
+//   color: Colors.transparent,
+//   blurRadius: 0,
+//   offset: Offset.zero,
+// );
 
 ThemeData theme() {
   return ThemeData(

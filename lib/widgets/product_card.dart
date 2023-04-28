@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:wellfreshlogin/controllers/product_controller.dart';
-import 'package:wellfreshlogin/theme.dart';
-import 'package:wellfreshlogin/widgets/widgets.dart';
-import 'package:wellfreshlogin/screens/screens.dart';
+import 'package:wellfresh/controllers/product_controller.dart';
+import 'package:wellfresh/theme.dart';
+import 'package:wellfresh/widgets/widgets.dart';
+import 'package:wellfresh/screens/screens.dart';
 
 class ProductCard extends StatelessWidget {
   final QueryDocumentSnapshot<Object?> product;

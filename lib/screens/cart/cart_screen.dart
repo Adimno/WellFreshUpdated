@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:wellfreshlogin/theme.dart';
-import 'package:wellfreshlogin/widgets/widgets.dart';
-import 'package:wellfreshlogin/screens/screens.dart';
-import 'package:wellfreshlogin/services/firebase_services.dart';
-import 'package:wellfreshlogin/controllers/cart_controller.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:wellfresh/theme.dart';
+import 'package:wellfresh/widgets/widgets.dart';
+import 'package:wellfresh/screens/screens.dart';
+import 'package:wellfresh/services/firebase_services.dart';
+import 'package:wellfresh/controllers/cart_controller.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -15,6 +16,7 @@ class CartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var controller = Get.put(CartController());
     var scaffoldKey = GlobalKey<ScaffoldState>();
+    var userId = FirebaseAuth.instance.currentUser!.uid;
 
     var appBar = CustomAppBar(
       title: 'Cart',
@@ -24,7 +26,7 @@ class CartScreen extends StatelessWidget {
     );
 
     return StreamBuilder(
-      stream: FirestoreServices.getCart(),
+      stream: FirestoreServices.getCart(userId),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (!snapshot.hasData) {
           return Scaffold(

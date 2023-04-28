@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:wellfreshlogin/screens/screens.dart';
-import 'package:wellfreshlogin/services/firebase_services.dart';
-import 'package:wellfreshlogin/theme.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:wellfresh/screens/screens.dart';
+import 'package:wellfresh/services/firebase_services.dart';
+import 'package:wellfresh/theme.dart';
 
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   final String title;
@@ -28,6 +29,7 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return AppBar(
       backgroundColor: color,
       foregroundColor: tertiaryTextColor,
@@ -125,6 +127,8 @@ class OverlayAppBar extends StatelessWidget with PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    var userId = FirebaseAuth.instance.currentUser!.uid;
+
     return AnimatedContainer(
       color: backgroundColor,
       clipBehavior: Clip.none,
@@ -171,7 +175,7 @@ class OverlayAppBar extends StatelessWidget with PreferredSizeWidget {
                 alignment: const Alignment(1.75, -0.9),
                 children: [
                   StreamBuilder(
-                    stream: FirestoreServices.getUnreadNotifications(),
+                    stream: FirestoreServices.getUnreadNotifications(userId),
                     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                         return Container();

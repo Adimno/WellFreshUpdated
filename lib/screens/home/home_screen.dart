@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:wellfreshlogin/screens/screens.dart';
-import 'package:wellfreshlogin/widgets/widgets.dart';
-import 'package:wellfreshlogin/consts/consts.dart';
+import 'package:wellfresh/screens/screens.dart';
+import 'package:wellfresh/widgets/widgets.dart';
+import 'package:wellfresh/consts/consts.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

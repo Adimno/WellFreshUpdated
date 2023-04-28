@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:wellfreshlogin/consts/consts.dart';
-import 'package:wellfreshlogin/services/firebase_services.dart';
-import 'package:wellfreshlogin/widgets/floating_snackbar.dart';
+import 'package:wellfresh/consts/consts.dart';
+import 'package:wellfresh/services/firebase_services.dart';
+import 'package:wellfresh/widgets/floating_snackbar.dart';
 
 class ProductController extends GetxController {
   addToCart({

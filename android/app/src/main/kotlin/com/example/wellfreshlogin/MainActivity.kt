@@ -1,4 +1,4 @@
-package com.example.wellfreshlogin
+package com.example.wellfresh
 
 import io.flutter.embedding.android.FlutterActivity
 

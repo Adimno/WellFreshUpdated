@@ -1,12 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:intl/intl.dart';
-import 'package:wellfreshlogin/consts/consts.dart';
-import 'package:wellfreshlogin/services/firebase_services.dart';
-import 'package:wellfreshlogin/theme.dart';
-import 'package:wellfreshlogin/widgets/widgets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:wellfresh/consts/consts.dart';
+import 'package:wellfresh/services/firebase_services.dart';
+import 'package:wellfresh/theme.dart';
+import 'package:wellfresh/widgets/widgets.dart';
 
 class AppointmentScreen extends StatefulWidget {
   final String docId;
@@ -170,52 +170,30 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                           fontSize: 14,
                           action: () {
                             setState(() {
-                              String appointmentId;
-                              DocumentReference<Map<String, dynamic>> appointmentDoctorRef = FirebaseFirestore.instance.collection('users').doc(widget.docId);
-
-                              // Add appointment info to doctor
-                              appointmentDoctorRef.collection('appointments').add({
-                                'docReference': widget.docId,
-                                'patientReference': FirebaseAuth.instance.currentUser!.uid,
+                              // Add appointment info to appointments
+                              firestore.collection(appointmentsCollection)
+                              .add({
+                                'docId': widget.docId,
+                                'patientId': FirebaseAuth.instance.currentUser!.uid,
                                 'time': newTime[selectedTimeIndex],
                                 'day': selectedDayIndex,
                                 'month': allMonths[selectedMonthIndex],
                                 'year': DateTime.now().year,
                                 'status': 'ongoing',
-                                'notes:': [],
+                                'notes': [],
                               }).then((value) {
-                                appointmentId = value.id;
-                                final String userId = FirebaseAuth.instance.currentUser!.uid;
-                                final appointmentPatientRef = FirebaseFirestore.instance.collection('users').doc(userId);
-
-                                // Add appointment info to patient
-                                appointmentPatientRef.collection('appointments').add({
-                                  'docReference': widget.docId,
-                                  'patientReference': FirebaseAuth.instance.currentUser!.uid,
-                                  'time': newTime[selectedTimeIndex],
-                                  'day': selectedDayIndex,
-                                  'month': allMonths[selectedMonthIndex],
-                                  'year': DateTime.now().year,
-                                  'appointmentReference': appointmentId,
-                                }).catchError((error) {
-                                  FloatingSnackBar.show(context, 'An error occured while booking your appointment. Please try again');
-                                  return error;
-                                });
-
                                 // Add appointment notification to doctor
-                                appointmentDoctorRef
+                                firestore.collection(usersCollection)
+                                .doc(widget.docId)
                                 .collection('notifications')
                                 .doc()
                                 .set({
                                   'type': 'appointment',
+                                  'role': 'doctor',
                                   'message': 'You have a new appointment: #${value.id.substring(0, 7)}',
                                   'reference': value.id,
                                   'read': false,
                                   'date': FieldValue.serverTimestamp(),
-                                  'data': {
-                                    'patientReference': FirebaseAuth.instance.currentUser!.uid,
-                                    'docReference': widget.docId,
-                                  },
                                 });
                               }).catchError((error) {
                                 FloatingSnackBar.show(context, 'Error: Failed to add appointment');
@@ -348,7 +326,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                               ],
                             ),
                             Text(
-                              data.containsKey('specialties') ? data['specialties'][0] : '',
+                              data.containsKey('specialties') ? data['specialties'][0] : 'N/A',
                               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                                 color: tertiaryTextColor,
                               ),

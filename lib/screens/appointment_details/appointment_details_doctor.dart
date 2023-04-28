@@ -2,20 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:wellfreshlogin/screens/screens.dart';
-import 'package:wellfreshlogin/theme.dart';
-import 'package:wellfreshlogin/widgets/widgets.dart';
-import 'package:wellfreshlogin/consts/consts.dart';
-import 'package:wellfreshlogin/services/firebase_services.dart';
+import 'package:wellfresh/screens/screens.dart';
+import 'package:wellfresh/theme.dart';
+import 'package:wellfresh/widgets/widgets.dart';
+import 'package:wellfresh/consts/consts.dart';
+import 'package:wellfresh/services/firebase_services.dart';
 
 class AppointmentDetailsDoctorScreen extends StatefulWidget {
-  final String patientId;
-  final String docId;
   final String appointmentId;
 
   const AppointmentDetailsDoctorScreen({
-    required this.patientId,
-    required this.docId,
     required this.appointmentId,
     super.key,
   });
@@ -32,6 +28,7 @@ class _AppointmentDetailsDoctorScreenState extends State<AppointmentDetailsDocto
 
   bool loaded = false;
   String status = 'ongoing';
+  String patientId = '';
   List<String> notes = [];
 
   @override
@@ -86,25 +83,20 @@ class _AppointmentDetailsDoctorScreenState extends State<AppointmentDetailsDocto
                           action: () async {
                             Navigator.pop(context);
 
-                            var appointmentReference = await getAppointmentReference(
-                              widget.patientId,
-                              widget.appointmentId
-                            );
-
                             setState(() {
-                              user.doc(widget.docId)
-                              .collection('appointments')
+                              firestore.collection('appointments')
                               .doc(widget.appointmentId)
                               .update({
                                 'status': 'done',
                               }).then((value) => {
-                                user.doc(widget.patientId)
+                                user.doc(patientId)
                                 .collection('notifications')
                                 .doc()
                                 .set({
                                   'type': 'appointment',
+                                  'role': 'patient',
                                   'message': 'Your appointment #${widget.appointmentId.substring(0, 7)} has been marked done',
-                                  'reference': appointmentReference,
+                                  'reference': widget.appointmentId,
                                   'read': false,
                                   'date': FieldValue.serverTimestamp(),
                                 }).then((value) => {
@@ -135,7 +127,7 @@ class _AppointmentDetailsDoctorScreenState extends State<AppointmentDetailsDocto
         ),
       ) : null,
       body: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-        future: FirestoreServices.getAppointment(widget.docId, widget.appointmentId),
+        future: FirestoreServices.getAppointment(widget.appointmentId),
         builder: (_, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
@@ -151,6 +143,7 @@ class _AppointmentDetailsDoctorScreenState extends State<AppointmentDetailsDocto
               setState(() {
                 loaded = true;
                 status = data['status'];
+                patientId = data['patientId'];
               });
             });
 
@@ -162,7 +155,7 @@ class _AppointmentDetailsDoctorScreenState extends State<AppointmentDetailsDocto
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                      future: FirestoreServices.getTargetUser(widget.patientId),
+                      future: FirestoreServices.getTargetUser(data['patientId']),
                       builder: (_, snapshot) {
                         if (!snapshot.hasData) {
                           return const Center(child: CircularProgressIndicator());
@@ -209,7 +202,7 @@ class _AppointmentDetailsDoctorScreenState extends State<AppointmentDetailsDocto
                                   ),
                                   const SizedBox(height: 6),
                                   GestureDetector(
-                                    onTap: () => Get.to(() => PatientHistoryScreen(patientId: widget.patientId)),
+                                    onTap: () => Get.to(() => PatientHistoryScreen(patientId: data['patientId'])),
                                     child: Text(
                                       'View appointment history',
                                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
@@ -325,7 +318,7 @@ class _AppointmentDetailsDoctorScreenState extends State<AppointmentDetailsDocto
                         borderRadius: BorderRadius.circular(28),
                         boxShadow: const [containerShadow],
                       ),
-                      child: notes.isNotEmpty ? ListView.separated(
+                      child: notes.isNotEmpty || status == 'ongoing' ? ListView.separated(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         padding: const EdgeInsets.symmetric(vertical: 8),
@@ -425,8 +418,11 @@ class _AppointmentDetailsDoctorScreenState extends State<AppointmentDetailsDocto
                           return const Divider(color: borderColor);
                         },
                       ) : const Padding(
-                        padding: EdgeInsets.all(20),
-                        child: ItemIndicator(icon: IconlyBroken.paper, text: 'No notes added'),
+                        padding: EdgeInsets.all(24),
+                        child: ItemIndicator(
+                          icon: IconlyBroken.paper,
+                          text: 'No notes added',
+                        ),
                       ),
                     ),
                   ],
@@ -437,19 +433,6 @@ class _AppointmentDetailsDoctorScreenState extends State<AppointmentDetailsDocto
         }
       ),
     );
-  }
-
-  Future<String> getAppointmentReference(userId, appointmentId) async {
-    String appointmentReference = '';
-    QuerySnapshot snapshot = await FirestoreServices.getAppointmentReference(userId, appointmentId);
-
-    for (var data in snapshot.docs) {
-      if (appointmentId == data['appointmentReference']) {
-        appointmentReference = data.id;
-        break;
-      }
-    }
-    return appointmentReference;
   }
 
   showNotesDialog(BuildContext context, index, action) {
@@ -511,7 +494,9 @@ class _AppointmentDetailsDoctorScreenState extends State<AppointmentDetailsDocto
                   fontSize: 14,
                   action: action == 'add' ? () {
                     if (formkey.currentState!.validate()) {
-                      user.doc(widget.docId).collection('appointments').doc(widget.appointmentId).update({
+                      firestore.collection('appointments')
+                      .doc(widget.appointmentId)
+                      .update({
                         'notes': FieldValue.arrayUnion([noteController.text])
                       }).then((value) {
                         setState(() {
@@ -525,7 +510,9 @@ class _AppointmentDetailsDoctorScreenState extends State<AppointmentDetailsDocto
                       setState(() {
                         notes[index] = noteController.text;
                       });
-                      user.doc(widget.docId).collection('appointments').doc(widget.appointmentId).update({
+                      firestore.collection('appointments')
+                      .doc(widget.appointmentId)
+                      .update({
                         'notes': notes,
                       });
                       Navigator.pop(context);
@@ -534,7 +521,9 @@ class _AppointmentDetailsDoctorScreenState extends State<AppointmentDetailsDocto
                     setState(() {
                       notes.removeAt(index);
                     });
-                    user.doc(widget.docId).collection('appointments').doc(widget.appointmentId).update({
+                    firestore.collection('appointments')
+                    .doc(widget.appointmentId)
+                    .update({
                       'notes': notes,
                     });
                     Navigator.pop(context);

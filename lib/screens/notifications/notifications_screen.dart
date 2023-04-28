@@ -1,14 +1,14 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:timeago/timeago.dart' as timeago;
-import 'package:wellfreshlogin/theme.dart';
-import 'package:wellfreshlogin/widgets/widgets.dart';
-import 'package:wellfreshlogin/screens/screens.dart';
-import 'package:wellfreshlogin/consts/firebase_consts.dart';
-import 'package:wellfreshlogin/services/firebase_services.dart';
+import 'package:wellfresh/theme.dart';
+import 'package:wellfresh/widgets/widgets.dart';
+import 'package:wellfresh/screens/screens.dart';
+import 'package:wellfresh/consts/firebase_consts.dart';
+import 'package:wellfresh/services/firebase_services.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -19,14 +19,14 @@ class NotificationsScreen extends StatefulWidget {
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
   var scaffoldKey = GlobalKey<ScaffoldState>();
-  var user = FirebaseFirestore.instance.collection(usersCollection);
+  var userId = FirebaseAuth.instance.currentUser!.uid;
 
   late Future<QuerySnapshot> notifications;
 
   @override
   void initState() {
     super.initState();
-    notifications = FirestoreServices.getNotifications();
+    notifications = FirestoreServices.getNotifications(userId);
   }
 
   @override
@@ -39,7 +39,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         scaffoldKey: scaffoldKey,
         endIcon: IconlyBroken.delete,
         endAction: () async {
-          await FirestoreServices.removeAllNotifications();
+          await FirestoreServices.removeAllNotifications(userId);
           _pullRefresh();
           
           Future.delayed(Duration.zero).then((value) => {
@@ -48,7 +48,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         },
       ),
       body: FutureBuilder(
-        future: FirestoreServices.getNotifications(),
+        future: FirestoreServices.getNotifications(userId),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
@@ -58,7 +58,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           }
           else {
             var data = snapshot.data!.docs;
-                    
+
             return RefreshIndicator(
               onRefresh: _pullRefresh,
               child: Container(
@@ -80,8 +80,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           data[index]['reference'],
                           data[index]['read'],
                           data[index]['date'],
-                          (data[index].data() as Map<String,dynamic>).containsKey('data')
-                          ? data[index]['data'] : [],
+                          data[index]['role'],
                         ),
                       );
                     }
@@ -102,7 +101,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     String reference,
     bool read,
     Timestamp date,
-    dynamic data,
+    String role,
   ) {
     bool updateRead = true;
 
@@ -121,11 +120,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           () async {
             readNotification(notificationId, read, true);
             reference != '' ?
-            Get.to(() => data.isEmpty ?
+            Get.to(() => role == 'patient' ?
               AppointmentDetailsPatientScreen(appointmentId: reference)
               : AppointmentDetailsDoctorScreen(
-                patientId: data['patientReference'],
-                docId: data['docReference'],
                 appointmentId: reference,
               ))
             : FloatingSnackBar.show(context, 'Referenced appointment does not exist');
@@ -196,7 +193,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       readNotification(notificationId, read, updateRead),
                     }
                     else if (item == 1) {
-                      user.doc(FirebaseAuth.instance.currentUser!.uid)
+                      firestore.collection(usersCollection)
+                      .doc(userId)
                       .collection(notificationsCollection)
                       .doc(notificationId)
                       .delete(),
@@ -244,7 +242,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   readNotification(notificationId, read, status) async {
     if (!read && !status) {
-      user.doc(FirebaseAuth.instance.currentUser!.uid)
+      firestore.collection(usersCollection)
+      .doc(userId)
       .collection(notificationsCollection)
       .doc(notificationId)
       .update({
@@ -252,7 +251,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       });
     }
     else {
-      user.doc(FirebaseAuth.instance.currentUser!.uid)
+      firestore.collection(usersCollection)
+      .doc(userId)
       .collection(notificationsCollection)
       .doc(notificationId)
       .update({
@@ -263,7 +263,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   }
 
   Future<void> _pullRefresh() async {
-    QuerySnapshot getNotifications = await FirestoreServices.getNotifications();
+    QuerySnapshot getNotifications = await FirestoreServices.getNotifications(userId);
     setState(() {
       notifications = Future.value(getNotifications);
     });

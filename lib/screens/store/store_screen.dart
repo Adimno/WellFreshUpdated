@@ -3,11 +3,12 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:wellfreshlogin/theme.dart';
-import 'package:wellfreshlogin/widgets/widgets.dart';
-import 'package:wellfreshlogin/screens/screens.dart';
-import 'package:wellfreshlogin/controllers/home_controller.dart';
-import 'package:wellfreshlogin/services/firebase_services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:wellfresh/theme.dart';
+import 'package:wellfresh/widgets/widgets.dart';
+import 'package:wellfresh/screens/screens.dart';
+import 'package:wellfresh/controllers/home_controller.dart';
+import 'package:wellfresh/services/firebase_services.dart';
 
 class StoreScreen extends StatefulWidget {
   const StoreScreen({Key? key}) : super(key: key);
@@ -19,6 +20,7 @@ class StoreScreen extends StatefulWidget {
 class _StoreScreenState extends State<StoreScreen> {
   var controller = Get.put(HomeController());
   var scaffoldKey = GlobalKey<ScaffoldState>();
+  var userId = FirebaseAuth.instance.currentUser!.uid;
 
   bool _showFab = true;
 
@@ -93,7 +95,7 @@ class _StoreScreenState extends State<StoreScreen> {
                 child: const Icon(IconlyBroken.buy),
               ),
               StreamBuilder(
-                stream: FirestoreServices.getCart(),
+                stream: FirestoreServices.getCart(userId),
                 builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                     return Container();

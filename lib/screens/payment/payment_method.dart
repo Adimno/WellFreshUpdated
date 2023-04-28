@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
-import 'package:wellfreshlogin/theme.dart';
-import 'package:wellfreshlogin/widgets/widgets.dart';
-import 'package:wellfreshlogin/screens/screens.dart';
-import 'package:wellfreshlogin/consts/consts.dart';
-import 'package:wellfreshlogin/controllers/cart_controller.dart';
+import 'package:wellfresh/theme.dart';
+import 'package:wellfresh/widgets/widgets.dart';
+import 'package:wellfresh/screens/screens.dart';
+import 'package:wellfresh/consts/consts.dart';
+import 'package:wellfresh/controllers/cart_controller.dart';
 
 class PaymentMethods extends StatelessWidget {
   const PaymentMethods({Key? key}) : super(key: key);
@@ -32,24 +32,15 @@ class PaymentMethods extends StatelessWidget {
               title: 'Place order',
               backgroundColor: accentColor,
               action: () async {
-                if (paymentMethods[controller.paymentIndex.value]['name'] == 'PayPal') {
-                  // TODO: Put dummy PayPal here
-                  // When making changes to this screen, make sure to go back to the
-                  // shipping screen, save, and go back, as it will crash the application!
-
-                  FloatingSnackBar.show(context, 'You got PayPal!');
-                  Get.offAll(const StoreScreen());
-                }
-                else if (paymentMethods[controller.paymentIndex.value]['name'] == 'Cash') {
-                  await controller.placeMyOrder(
-                    orderPaymentMethod: paymentMethods[controller.paymentIndex.value]['name'],
-                    total: controller.total.value,
-                  );
-                  await controller.clearCart();
-                  // ignore: use_build_context_synchronously
-                  FloatingSnackBar.show(context, 'Your order has been placed successfully!');
-                  Get.offAll(() => const StoreScreen());
-                }
+                await controller.placeMyOrder(
+                  orderPaymentMethod: paymentMethods[controller.paymentIndex.value]['name'],
+                  total: controller.total.value,
+                );
+                await controller.clearCart();
+                Future.delayed(Duration.zero).then((value) => {
+                  FloatingSnackBar.show(context, 'Your order has been placed successfully!'),
+                  Get.offAll(() => const StoreScreen())
+                });
               },
             ),
           ),

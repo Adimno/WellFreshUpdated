@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:wellfreshlogin/controllers/cart_controller.dart';
-import 'package:wellfreshlogin/theme.dart';
+import 'package:wellfresh/controllers/cart_controller.dart';
+import 'package:wellfresh/theme.dart';
 
 class OrderSummary extends StatelessWidget {
   const OrderSummary({Key? key}) : super(key: key);

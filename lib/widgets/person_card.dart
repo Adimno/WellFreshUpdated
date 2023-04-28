@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
-import 'package:wellfreshlogin/theme.dart';
-import 'package:wellfreshlogin/consts/consts.dart';
+import 'package:wellfresh/theme.dart';
+import 'package:wellfresh/consts/consts.dart';
 
 class PersonCard extends StatelessWidget {
   final String name;

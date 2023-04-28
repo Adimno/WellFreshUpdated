@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:wellfreshlogin/theme.dart';
+import 'package:wellfresh/theme.dart';
 
 class GetPatientName extends StatelessWidget {
   final String documentId;

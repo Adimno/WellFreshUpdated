@@ -3,11 +3,11 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:wellfreshlogin/theme.dart';
-import 'package:wellfreshlogin/widgets/widgets.dart';
-import 'package:wellfreshlogin/screens/screens.dart';
-import 'package:wellfreshlogin/consts/firebase_consts.dart';
-import 'package:wellfreshlogin/controllers/cart_controller.dart';
+import 'package:wellfresh/theme.dart';
+import 'package:wellfresh/widgets/widgets.dart';
+import 'package:wellfresh/screens/screens.dart';
+import 'package:wellfresh/consts/firebase_consts.dart';
+import 'package:wellfresh/controllers/cart_controller.dart';
 
 class ShippingScreen extends StatefulWidget {
   const ShippingScreen({Key? key}) : super(key: key);

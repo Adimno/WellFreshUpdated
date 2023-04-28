@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:wellfreshlogin/theme.dart';
-import 'package:wellfreshlogin/widgets/widgets.dart';
-import 'package:wellfreshlogin/screens/screens.dart';
-import 'package:wellfreshlogin/consts/consts.dart';
+import 'package:wellfresh/theme.dart';
+import 'package:wellfresh/widgets/widgets.dart';
+import 'package:wellfresh/screens/screens.dart';
+import 'package:wellfresh/consts/consts.dart';
 
 class NavigationDrawerWidget extends StatelessWidget {
   const NavigationDrawerWidget({super.key});
@@ -29,16 +29,13 @@ class NavigationDrawerWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 64),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 12),
-                    child: GestureDetector(
-                      onTap: () => openScreen(context, const WidgetTest()),
-                      child: const Image(
-                        image: AssetImage('assets/logo/logowork.png'),
-                        width: 72,
-                        height: 72,
-                        alignment: Alignment.centerLeft,
-                      ),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 12),
+                    child: Image(
+                      image: AssetImage('assets/logo/logowork.png'),
+                      width: 72,
+                      height: 72,
+                      alignment: Alignment.centerLeft,
                     ),
                   ),
                   const SizedBox(height: 48),

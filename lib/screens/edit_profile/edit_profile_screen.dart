@@ -3,10 +3,10 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:wellfreshlogin/theme.dart';
-import 'package:wellfreshlogin/widgets/widgets.dart';
-import 'package:wellfreshlogin/consts/consts.dart';
-import 'package:wellfreshlogin/services/firebase_services.dart';
+import 'package:wellfresh/theme.dart';
+import 'package:wellfresh/widgets/widgets.dart';
+import 'package:wellfresh/consts/consts.dart';
+import 'package:wellfresh/services/firebase_services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
@@ -20,8 +20,9 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formkey = GlobalKey<FormState>();
   final _specialtyKey = GlobalKey<FormState>();
-  var scaffoldKey = GlobalKey<ScaffoldState>();
-  var user = FirebaseFirestore.instance.collection(usersCollection);
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  var userId = FirebaseAuth.instance.currentUser!.uid;
   String? selectedGender;
 
   var firstNameController = TextEditingController();
@@ -69,7 +70,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               TaskSnapshot taskSnapshot = await uploadTask;
               String downloadUrl = await taskSnapshot.ref.getDownloadURL();
 
-              await user.doc(FirebaseAuth.instance.currentUser!.uid).update({
+              await firestore.collection(usersCollection)
+              .doc(userId)
+              .update({
                 'firstname': firstNameController.text,
                 'lastname': lastNameController.text,
                 'gender': selectedGender,
@@ -81,7 +84,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               });
             }
             else {
-              await user.doc(FirebaseAuth.instance.currentUser!.uid).update({
+              await firestore.collection(usersCollection)
+              .doc(userId)
+              .update({
                 'firstname': firstNameController.text,
                 'lastname': lastNameController.text,
                 'gender': selectedGender,
@@ -109,7 +114,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           child: Form(
             key: _formkey,
             child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-              future: FirestoreServices.getUser(),
+              future: FirestoreServices.getUser(userId),
               builder: (_, snapshot) {
                 if (!snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
@@ -280,7 +285,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         CustomTextField(
                           title: 'Biography',
                           hintText: 'Briefly describe yourself',
-                          prefixIcon: const Icon(IconlyBroken.paper, color: tertiaryTextColor),
+                          prefixIcon: const Padding(
+                            padding: EdgeInsets.only(bottom: 72),
+                            child: Icon(IconlyBroken.paper, color: tertiaryTextColor),
+                          ),
                           controller: biographyController,
                           lines: 5,
                           validator: (value) {
@@ -465,7 +473,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   action: action == 'add' ? () async {
                     if (_formkey.currentState!.validate() && _specialtyKey.currentState!.validate()) {
                       Navigator.pop(context);
-                      await user.doc(FirebaseAuth.instance.currentUser!.uid).update({
+                      await firestore.collection(usersCollection)
+                      .doc(userId)
+                      .update({
                         'specialties': FieldValue.arrayUnion([specialtyController.text])
                       }).then((value) {
                         setState(() {
@@ -479,7 +489,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         specialties[index] = specialtyController.text;
                       });
                       Navigator.pop(context);
-                      await user.doc(FirebaseAuth.instance.currentUser!.uid).update({
+                      await firestore.collection(usersCollection)
+                      .doc(userId)
+                      .update({
                         'specialties': specialties,
                       });
                     }
@@ -489,7 +501,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         specialties.removeAt(index);
                       });
                       Navigator.pop(context);
-                      await user.doc(FirebaseAuth.instance.currentUser!.uid).update({
+                      await firestore.collection(usersCollection)
+                      .doc(userId)
+                      .update({
                         'specialties': specialties,
                       });
                     }

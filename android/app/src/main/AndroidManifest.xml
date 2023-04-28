@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.wellfreshlogin">
+    package="com.example.wellfresh">
    <application
         android:label="WellFresh"
         android:name="${applicationName}"

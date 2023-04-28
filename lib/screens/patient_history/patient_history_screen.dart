@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
-import 'package:wellfreshlogin/theme.dart';
-import 'package:wellfreshlogin/widgets/widgets.dart';
-import 'package:wellfreshlogin/consts/consts.dart';
-import 'package:wellfreshlogin/services/firebase_services.dart';
+import 'package:wellfresh/theme.dart';
+import 'package:wellfresh/widgets/widgets.dart';
+import 'package:wellfresh/consts/consts.dart';
+import 'package:wellfresh/services/firebase_services.dart';
 
 class PatientHistoryScreen extends StatefulWidget {
   final String patientId;
@@ -90,7 +90,7 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
                     ),
                     const SizedBox(height: 12),
                     FutureBuilder(
-                      future: FirestoreServices.getUserAppointments(widget.patientId),
+                      future: FirestoreServices.getPatientAppointments(widget.patientId),
                       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                         if (!snapshot.hasData) {
                           return const Center(child: CircularProgressIndicator());
@@ -135,7 +135,7 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
                                                 ),
                                               ),
                                               FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                                                future: FirestoreServices.getDoctorName(appointment['docReference']),
+                                                future: FirestoreServices.getDoctorName(appointment['docId']),
                                                 builder: (_, snapshot) {
                                                   if (!snapshot.hasData) {
                                                     return Container(
@@ -168,91 +168,79 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
                                           title: 'View Notes',
                                           fontSize: 12,
                                           action: () {
+                                            double notesLength = appointment.containsKey('notes') ?
+                                            double.parse(appointment['notes'].length.toString()) + 1 : 1;
+
                                             showDialog(
                                               context: context,
                                               builder: (BuildContext context) {
-                                                return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                                                  future: FirestoreServices.getAppointment(appointment['docReference'], appointment['appointmentReference']),
-                                                  builder: (_, snapshot) {
-                                                    if (!snapshot.hasData) {
-                                                      return const Center(child: CircularProgressIndicator());
-                                                    }
-                                                    else {
-                                                      var notes = snapshot.data!.data();
-                                                      double notesLength = notes!.containsKey('notes') ?
-                                                      double.parse(notes['notes'].length.toString()) + 1
-                                                      : 1;
-
-                                                      return AlertDialog(
-                                                        backgroundColor: surfaceColor,
-                                                        shape: const RoundedRectangleBorder(
-                                                          borderRadius: BorderRadius.all(Radius.circular(24))
-                                                        ),
-                                                        title: Text(
-                                                          '$doctorName\'s Notes',
-                                                          style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                                            color: primaryTextColor,
-                                                            fontWeight: FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                        content: SizedBox(
-                                                          width: double.maxFinite,
-                                                          height: 100 + (36 * notesLength),
-                                                          child: Column(
-                                                            mainAxisSize: MainAxisSize.min,
-                                                            children: [
-                                                              notes.containsKey('notes') ? notes['notes'].length > 0 ? ListView.separated(
-                                                                shrinkWrap: true,
-                                                                padding: const EdgeInsets.symmetric(vertical: 8),
-                                                                itemCount: notes['notes'].length,
-                                                                itemBuilder: (BuildContext context, int index) {
-                                                                  return SizedBox(
-                                                                    height: 40,
-                                                                    child: Row(
-                                                                      children: [
-                                                                        const Icon(
-                                                                          IconlyBroken.paper,
-                                                                          color: tertiaryTextColor,
-                                                                        ),
-                                                                        const SizedBox(width: 16),
-                                                                        Expanded(
-                                                                          child: Text(
-                                                                            notes['notes'][index],
-                                                                            style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                                                                              color: primaryTextColor,
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                      ],
+                                                return AlertDialog(
+                                                  backgroundColor: surfaceColor,
+                                                  shape: const RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.all(Radius.circular(24))
+                                                  ),
+                                                  title: Text(
+                                                    '$doctorName\'s Notes',
+                                                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                                      color: primaryTextColor,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  content: SizedBox(
+                                                    width: double.maxFinite,
+                                                    height: 100 + (42 * notesLength),
+                                                    child: Column(
+                                                      mainAxisSize: MainAxisSize.min,
+                                                      children: [
+                                                        appointment['notes'].length > 0 ? Expanded(
+                                                          child: ListView.separated(
+                                                            shrinkWrap: true,
+                                                            padding: const EdgeInsets.symmetric(vertical: 8),
+                                                            itemCount: appointment['notes'].length,
+                                                            itemBuilder: (BuildContext context, int index) {
+                                                              return SizedBox(
+                                                                height: 40,
+                                                                child: Row(
+                                                                  children: [
+                                                                    const Icon(
+                                                                      IconlyBroken.paper,
+                                                                      color: tertiaryTextColor,
                                                                     ),
-                                                                  );
-                                                                },
-                                                                separatorBuilder: (BuildContext context, int index) {
-                                                                  return const Divider(color: borderColor);
-                                                                },
-                                                              ) : const ItemIndicator(icon: IconlyBroken.paper, text: 'No notes available')
-                                                              : const ItemIndicator(icon: IconlyBroken.paper, text: 'No notes available'),
-                                                              const Spacer(),
-                                                              Row(
-                                                                mainAxisAlignment: MainAxisAlignment.end,
-                                                                children: [
-                                                                  ActionButton(
-                                                                    title: 'OK',
-                                                                    backgroundColor: accentColor,
-                                                                    foregroundColor: invertTextColor,
-                                                                    fontSize: 14,
-                                                                    action: () => Navigator.pop(context),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ],
+                                                                    const SizedBox(width: 16),
+                                                                    Expanded(
+                                                                      child: Text(
+                                                                        appointment['notes'][index],
+                                                                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                                                                          color: primaryTextColor,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              );
+                                                            },
+                                                            separatorBuilder: (BuildContext context, int index) {
+                                                              return const Divider(color: borderColor);
+                                                            },
                                                           ),
+                                                        ) : const Expanded(child: ItemIndicator(icon: IconlyBroken.paper, text: 'No notes available')),
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.end,
+                                                          children: [
+                                                            ActionButton(
+                                                              title: 'OK',
+                                                              backgroundColor: accentColor,
+                                                              foregroundColor: invertTextColor,
+                                                              fontSize: 14,
+                                                              action: () => Navigator.pop(context),
+                                                            ),
+                                                          ],
                                                         ),
-                                                      );
-                                                    }
-                                                  }
+                                                      ],
+                                                    ),
+                                                  ),
                                                 );
-                                              },
+                                              }
                                             );
                                           },
                                         ),

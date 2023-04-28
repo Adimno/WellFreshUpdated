@@ -25,4 +25,3 @@ export 'orders/orders_screen.dart';
 export 'order_details/order_details_screen.dart';
 export 'about/about_screen.dart';
 export 'contact_us/contact_us_screen.dart';
-export 'widget_test/widget_test.dart';

@@ -3,11 +3,11 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:wellfreshlogin/theme.dart';
-import 'package:wellfreshlogin/widgets/widgets.dart';
-import 'package:wellfreshlogin/screens/screens.dart';
-import 'package:wellfreshlogin/consts/consts.dart';
-import 'package:wellfreshlogin/services/firebase_services.dart';
+import 'package:wellfresh/theme.dart';
+import 'package:wellfresh/widgets/widgets.dart';
+import 'package:wellfresh/screens/screens.dart';
+import 'package:wellfresh/consts/consts.dart';
+import 'package:wellfresh/services/firebase_services.dart';
 
 class DoctorModule extends StatefulWidget {
   final String firstname;
@@ -23,6 +23,7 @@ class DoctorModule extends StatefulWidget {
 
 class _DoctorModuleState extends State<DoctorModule> {
   var scaffoldKey = GlobalKey<ScaffoldState>();
+  var userId = FirebaseAuth.instance.currentUser!.uid;
   final _controller = ScrollController();
 
   late Future<QuerySnapshot> appointmentsList;
@@ -34,7 +35,7 @@ class _DoctorModuleState extends State<DoctorModule> {
   @override
   void initState() {
     super.initState();
-    appointmentsList = FirestoreServices.getAppointments('ongoing');
+    appointmentsList = FirestoreServices.getAppointments(userId, 'ongoing');
     
     _controller.addListener(() {
       if (_controller.position.pixels > 160) {
@@ -177,15 +178,13 @@ class _DoctorModuleState extends State<DoctorModule> {
                               children: [
                                 PersonCard(
                                   name: '',
-                                  customName: GetPatientName(documentId: appointment['patientReference']),
+                                  customName: GetPatientName(documentId: appointment['patientId']),
                                   description: '${appointment['month']} ${appointment['day']}',
                                   subtext: appointment['time'],
                                   imageUrl: appointment.containsKey('imageUrl') ? appointment['imageUrl'] : defAvatar,
-                                  customImage: GetPatientImage(documentId: appointment['patientReference']),
+                                  customImage: GetPatientImage(documentId: appointment['patientId']),
                                   action: () => Get.to(() => AppointmentDetailsDoctorScreen(
                                     appointmentId: appointmentId,
-                                    docId: appointment['docReference'],
-                                    patientId: appointment['patientReference'],
                                   )),
                                 ),
                                 const SizedBox(height: 12),
@@ -206,7 +205,7 @@ class _DoctorModuleState extends State<DoctorModule> {
   }
 
   Future<void> _pullRefresh() async {
-    QuerySnapshot appointments = await FirestoreServices.getAppointments('ongoing');
+    QuerySnapshot appointments = await FirestoreServices.getAppointments(userId, 'ongoing');
     setState(() {
       appointmentsList = Future.value(appointments);
     });

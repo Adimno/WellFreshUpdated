@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:wellfreshlogin/consts/consts.dart';
+import 'package:wellfresh/consts/consts.dart';
 
 class GetPatientImage extends StatelessWidget {
   final String documentId;

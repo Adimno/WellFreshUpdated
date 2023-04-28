@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
-import 'package:wellfreshlogin/widgets/widgets.dart';
-import 'package:wellfreshlogin/services/firebase_services.dart';
+import 'package:wellfresh/widgets/widgets.dart';
+import 'package:wellfresh/services/firebase_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProductCarousel extends StatelessWidget {

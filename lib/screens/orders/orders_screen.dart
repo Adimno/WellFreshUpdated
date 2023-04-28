@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:wellfreshlogin/theme.dart';
-import 'package:wellfreshlogin/widgets/widgets.dart';
-import 'package:wellfreshlogin/screens/screens.dart';
-import 'package:wellfreshlogin/services/firebase_services.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:wellfresh/theme.dart';
+import 'package:wellfresh/widgets/widgets.dart';
+import 'package:wellfresh/screens/screens.dart';
+import 'package:wellfresh/services/firebase_services.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
@@ -26,6 +27,7 @@ class _OrdersScreenState extends State<OrdersScreen> with TickerProviderStateMix
   @override
   Widget build(BuildContext context) {
     var scaffoldKey = GlobalKey<ScaffoldState>();
+    var userId = FirebaseAuth.instance.currentUser!.uid;
 
     return Scaffold(
       appBar: CustomAppBar(title: 'My Orders', backButton: true, color: surfaceColor, scaffoldKey: scaffoldKey),
@@ -48,10 +50,10 @@ class _OrdersScreenState extends State<OrdersScreen> with TickerProviderStateMix
             child: TabBarView(
               controller: _tabController,
               children: [
-                OrdersByStatus(stream: FirestoreServices.getOrdersByStatus('')),
-                OrdersByStatus(stream: FirestoreServices.getOrdersByStatus('pending')),
-                OrdersByStatus(stream: FirestoreServices.getOrdersByStatus('received')),
-                OrdersByStatus(stream: FirestoreServices.getOrdersByStatus('cancelled')),
+                OrdersByStatus(stream: FirestoreServices.getOrdersByStatus(userId, '')),
+                OrdersByStatus(stream: FirestoreServices.getOrdersByStatus(userId, 'pending')),
+                OrdersByStatus(stream: FirestoreServices.getOrdersByStatus(userId, 'received')),
+                OrdersByStatus(stream: FirestoreServices.getOrdersByStatus(userId, 'cancelled')),
               ],
             ),
           ),

@@ -7,8 +7,8 @@ import 'package:wellfresh/screens/screens.dart';
 import 'package:wellfresh/consts/consts.dart';
 import 'package:wellfresh/controllers/cart_controller.dart';
 import 'package:flutter_paypal/flutter_paypal.dart';
-
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 
 class PaymentMethods extends StatelessWidget {
@@ -178,6 +178,13 @@ class PaymentMethods extends StatelessWidget {
                                               "currency": currency,
                                             };
                                           }).toList(),
+                                        },
+                                        "shipping_address": {
+                                          "line1": controller.addressController.text,
+                                          "city": controller.cityController.text,
+                                          "state": controller.stateController.text,
+                                          "postal_code": controller.zipCodeController.text,
+                                          "country_code": "PH"
                                         }
                                       }
                                     ],
@@ -189,11 +196,49 @@ class PaymentMethods extends StatelessWidget {
                                         title: 'Payment Successful',
                                         middleText: 'Thank you for your purchase!',
                                         textConfirm: 'OK',
-                                        onConfirm: () {
+
+                                        onConfirm: () async {
+                                          List<Map<String, dynamic>> products = [];
+                                          for (var product in controller.productSnapshot) {
+                                            Map<String, dynamic> productMap = {
+                                              'category': product['category'],
+                                              'imageUrl': product['imageUrl'],
+                                              'name': product['name'],
+                                              'price': product['price'],
+                                              'quantity': product['quantity'],
+                                            };
+
+                                            products.add(productMap);
+                                          }
+                                          // Get the address details entered by the user
+                                          final address = controller.addressController.text;
+                                          final city = controller.cityController.text;
+                                          final state = controller.stateController.text;
+                                          final zipCode = controller.zipCodeController.text;
+                                          String initialStatus = 'pending';
+
+                                          // Save the order details to Firestore
+
+                                          await FirebaseFirestore.instance.collection('orders').add({
+                                            'userId': FirebaseAuth.instance.currentUser!.uid,
+                                            'total': total.value + cartController.shippingFee,
+                                            'address': address,
+                                            'city': city,
+                                            'state': state,
+                                            'zip_code': zipCode,
+                                            'products': products,
+                                            'payment_method': 'Paypal',
+                                            'order_status': initialStatus,
+                                            'order_date': DateTime.now(),
+                                          });
+
                                           Get.offAll(() => HomeScreen());
                                         },
+
+
                                       );
                                     },
+
                                     onError: (error) {
                                       print("onError: $error");
                                     },

@@ -121,15 +121,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 }
                 else {
                   var data = snapshot.data!.data();
+                  var role = data!['role'].toLowerCase() ?? 'patient';
 
-                  firstNameController.text = data!['firstname'];
+                  firstNameController.text = data['firstname'];
                   lastNameController.text = data['lastname'];
                   emailController.text = data['email'];
                   addressController.text = data['address'] ?? '';
                   phoneNumberController.text = data['phoneNumber'] ?? '';
                   selectedGender = data['gender'];
 
-                  if (data['role'] == 'Doctor') {
+                  if (role == 'doctor') {
                     biographyController.text = data['biography'] ?? '';
 
                     specialties = [];
@@ -271,7 +272,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         },
                       ),
 
-                      if (data['role'] == 'Doctor') ...[
+                      if (role == 'doctor') ...[
                         Padding(
                           padding: const EdgeInsets.all(12),
                           child: Text(

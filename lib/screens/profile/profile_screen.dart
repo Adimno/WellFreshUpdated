@@ -27,6 +27,7 @@ class ProfileScreen extends StatelessWidget {
             builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
               if (snapshot.hasData && snapshot.data!.exists) {
                 var data = snapshot.data!.data() as Map<String, dynamic>;
+                var role = data['role'].toLowerCase() ?? 'patient';
               
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -174,7 +175,7 @@ class ProfileScreen extends StatelessWidget {
                             },
                           ),
                           const Divider(color: borderColor),
-                          if (data['role'].toLowerCase() == 'patient') ...[
+                          if (role == 'patient') ...[
                             CustomListTile(
                               icon: IconlyBroken.paper,
                               text: 'My Delivery Details',
@@ -187,7 +188,7 @@ class ProfileScreen extends StatelessWidget {
                             ),
                             const Divider(color: borderColor),
                           ],
-                          if (data['role'].toLowerCase() == 'doctor') ...[
+                          if (role == 'doctor') ...[
                             CustomListTile(
                               icon: IconlyBroken.calendar,
                               text: 'My Appointments',
@@ -211,7 +212,7 @@ class ProfileScreen extends StatelessWidget {
                             ),
                             const Divider(color: borderColor),
                           ],
-                          if (data['role'].toLowerCase() == 'patient') ...[
+                          if (role == 'patient') ...[
                             CustomListTile(
                               icon: IconlyBroken.bag,
                               text: 'My Orders',

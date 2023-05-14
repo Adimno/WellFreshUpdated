@@ -26,6 +26,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   int selectedMonthIndex = DateTime.now().month - 1;
   int selectedDayIndex = -1;
   int selectedTimeIndex = -1;
+  int currentYear = 1900;
 
   List<String> newTime = [];
   List<String> time = [];
@@ -35,6 +36,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
 
   List<int> numbersInMonth = [];
   List<String> daysInMonths = [];
+
+  bool toggleView = true;
 
   static const List<String> allMonths = [
     'January',
@@ -49,6 +52,16 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     'October',
     'November',
     'December',
+  ];
+
+  static const List<String> daysOfWeek = [
+    'Sun',
+    'Mon',
+    'Tue',
+    'Wed',
+    'Thu',
+    'Fri',
+    'Sat',
   ];
 
   List<int> getDaysInMonth(int year, int month) {
@@ -113,7 +126,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   void initState() {
     super.initState();
     int currentMonth = DateTime.now().month;
-    int currentYear = DateTime.now().year;
+    currentYear = DateTime.now().year;
 
     getDaysInMonth(currentYear, currentMonth);
     getDayOfWeekInMonth(currentYear, currentMonth);
@@ -402,15 +415,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                     ),
                     const SizedBox(height: 20),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          'Date',
-                          style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                            color: primaryTextColor,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
                         GestureDetector(
                           onTap: () {
                             showModalBottomSheet(
@@ -472,22 +477,125 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                           child: Row(
                             children: [
                               Text(
-                                allMonths[selectedMonthIndex],
-                                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                  color: tertiaryTextColor,
+                                '${allMonths[selectedMonthIndex]} $currentYear',
+                                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                                  color: primaryTextColor,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
+                              const SizedBox(width: 5),
                               const Icon(
-                                IconlyLight.arrowRight2,
+                                IconlyLight.arrowDown2,
                                 color: tertiaryTextColor,
                                 size: 20,
                               ),
                             ],
                           ),
                         ),
+                        const Spacer(),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              toggleView = !toggleView;
+                            });
+                          },
+                           child: Text(
+                            toggleView ? 'Calendar View' : 'Scroll View',
+                            style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                              color: accentTextColor,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
-                    Container(
+                    toggleView == false ? Container(
+                      margin: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        color: cardColor,
+                        borderRadius: BorderRadius.circular(15.0),
+                        boxShadow: const [containerShadow],
+                      ),
+                      child: Column(
+                        children: [
+                          GridView.builder(
+                            shrinkWrap: true,
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7),
+                            physics: const NeverScrollableScrollPhysics(),
+                            padding: EdgeInsets.zero,
+                            itemCount: daysOfWeek.length,
+                            itemBuilder:(context, index) {
+                              return Center(
+                                child: Text(
+                                  daysOfWeek[index],
+                                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    color: tertiaryTextColor,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          GridView.builder(
+                            shrinkWrap: true,
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 7,
+                              mainAxisSpacing: 8,
+                              childAspectRatio: 1.1,
+                            ),
+                            physics: const NeverScrollableScrollPhysics(),
+                            padding: EdgeInsets.zero,
+                            itemCount: numbersInMonth.length + daysOfWeek.indexOf(daysInMonths[0]),
+                            itemBuilder:(context, index) {
+                              if (index < daysOfWeek.indexOf(daysInMonths[0])) {
+                                return const Text('');
+                              }
+                              int totalDays = index - daysOfWeek.indexOf(daysInMonths[0]);
+                    
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    showTime(allMonths[selectedMonthIndex], numbersInMonth[totalDays]);
+                                    selectedDayIndex = numbersInMonth[totalDays];
+                                    
+                                    selectedTimeIndex = -1;
+                                  });
+                                },
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    AnimatedContainer(
+                                      width: 32,
+                                      height: 32,
+                                      alignment: Alignment.center,
+                                      margin: const EdgeInsets.all(4),
+                                      decoration: BoxDecoration(
+                                        color: selectedDayIndex == numbersInMonth[totalDays] ? accentColor : Colors.transparent,
+                                        borderRadius: BorderRadius.circular(99),
+                                        boxShadow: const [containerShadow],
+                                      ),
+                                      duration: const Duration(milliseconds: 150),
+                                      child: Text(
+                                        numbersInMonth[totalDays].toString(),
+                                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                                          color: selectedDayIndex == numbersInMonth[totalDays] ? invertTextColor : primaryTextColor,
+                                        ),
+                                      ),
+                                    ),
+                                    CircleAvatar(
+                                      backgroundColor: showAvailDots(allMonths[selectedMonthIndex], totalDays + 1).isNotEmpty ?
+                                      accentColor
+                                      : Colors.transparent,
+                                      radius: 3,
+                                    )
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 24),
+                        ],
+                      ),
+                    ) : Container(
                       height: 70,
                       margin: const EdgeInsets.symmetric(vertical: 16),
                       child: ListView.builder(

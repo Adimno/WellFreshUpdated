@@ -160,7 +160,7 @@ class NavigationDrawerWidget extends StatelessWidget {
               );
             }
             else if (snapshot.hasError) {
-              return FloatingSnackBar.show(context, 'Error loading items');
+              return const ItemIndicator(icon: IconlyBroken.danger, text: 'Error loading items');
             }
             else {
               return SizedBox(

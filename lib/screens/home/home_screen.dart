@@ -16,25 +16,34 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   var user = FirebaseFirestore.instance.collection(usersCollection);
   
-  Widget homeModule = Container();
+  Widget homeModule = const Center(child: CircularProgressIndicator());
 
   void displayUserScreen() async {
-    DocumentSnapshot snapshot = await user.doc(FirebaseAuth.instance.currentUser!.uid).get();
+    try {
+      DocumentSnapshot snapshot = await user.doc(FirebaseAuth.instance.currentUser!.uid).get();
 
-    if (snapshot.exists) {
-      Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+      if (snapshot.exists) {
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
 
-      setState(() {
-        if (data['role'] == 'Patient') {
-          homeModule = PatientModule(firstname: data['firstname']);
-        }
-        else {
-          homeModule = DoctorModule(firstname: data['firstname']);
-        }
-      });
+        setState(() {
+          if (data['role'].toLowerCase() == 'patient') {
+            homeModule = PatientModule(firstname: data['firstname']);
+          }
+          else {
+            homeModule = DoctorModule(firstname: data['firstname']);
+          }
+        });
+      }
+      else {
+        invalidSession();
+      }
     }
-    else {
-      invalidSession();
+    on FirebaseException catch (e) {
+      if (e.code == 'resource-exhausted') {
+        setState(() {
+          homeModule = serverErrorScreen(context);
+        });
+      }
     }
   }
 
@@ -47,7 +56,36 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: homeModule == Container() ? const Center(child: CircularProgressIndicator()) : homeModule,
+      body: homeModule,
+    );
+  }
+
+  // If there's a problem with the server, display this
+  Widget serverErrorScreen(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          const Spacer(),
+          const ItemIndicator(
+            icon: Icons.sentiment_dissatisfied_outlined,
+            text: 'Our servers are currently busy right now.',
+          ),
+          const SizedBox(height: 12),
+          FittedBox(
+            child: ActionButton(
+              title: 'Reload app',
+              fontSize: Theme.of(context).textTheme.bodyLarge!.fontSize!,
+              action: () {
+                setState(() {
+                  homeModule = const Center(child: CircularProgressIndicator());
+                });
+                displayUserScreen();
+              }
+            ),
+          ),
+          const Spacer(),
+        ],
+      ),
     );
   }
 

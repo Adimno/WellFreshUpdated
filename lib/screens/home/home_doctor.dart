@@ -164,7 +164,24 @@ class _DoctorModuleState extends State<DoctorModule> {
                       }
                       else {
                         var data = snapshot.data!.docs;
-          
+
+                        data.sort((a, b) {
+                          Map<String, dynamic> appointmentA = a.data() as Map<String, dynamic>;
+                          Map<String, dynamic> appointmentB = b.data() as Map<String, dynamic>;
+
+                          int compareMonth = appointmentA['month'].compareTo(appointmentB['month']);
+                          if (compareMonth != 0) {
+                            return compareMonth;
+                          }
+
+                          int compareDay = appointmentA['day'].compareTo(appointmentB['day']);
+                          if (compareDay != 0) {
+                            return compareDay;
+                          }
+
+                          return appointmentA['time'].compareTo(appointmentB['time']);
+                        });
+
                         return ListView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
@@ -173,7 +190,7 @@ class _DoctorModuleState extends State<DoctorModule> {
                             DocumentSnapshot appointmentTmp = data[index];
                             Map<String, dynamic> appointment = appointmentTmp.data() as Map<String, dynamic>;
                             String appointmentId = data[index].id;
-          
+
                             return Column(
                               children: [
                                 PersonCard(
